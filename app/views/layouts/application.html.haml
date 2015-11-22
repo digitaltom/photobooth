@@ -1,0 +1,22 @@
+!!!
+%html{'ng-app'=>'photoBooth', 'ng-controller'=>'MainCtrl', 'ng-strict-di'=> true}
+  %head
+    %title Photobooth
+    %meta{:content => 'initial-scale=1', :name => 'viewport'}
+    = favicon_link_tag '/favicon.ico'
+    = stylesheet_link_tag 'application', media: 'all'
+    = javascript_include_tag 'vendor_application'
+    = javascript_include_tag 'application'
+    = csrf_meta_tags
+
+    = yield(:head)
+
+  %body
+    %button{ 'ng-click' => 'takePicture()'}
+      Take picture
+    %button{ 'ng-click' => 'update()'}
+      Update
+
+
+    %div{ 'ng-repeat' => 'picture in pictures'}
+      %img{'ng-src' => '{{picture.path}}'}
