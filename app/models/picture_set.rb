@@ -19,7 +19,7 @@ class PictureSet
 
   def self.create
     date = Time.new.strftime(DATE_FORMAT)
-    angle = -15 + Random.rand(30)
+    angle = -10 + Random.rand(20) + 360
     caption = date
     Syscall.execute("mkdir #{date}", dir: PICTURE_PATH)
     (1..4).each do |i|

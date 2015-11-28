@@ -17,6 +17,6 @@
     %button{ 'ng-click' => 'update()'}
       Update
 
-
-    %div{ 'ng-repeat' => 'picture_set in picture_sets'}
-      %img{'ng-src' => '{{picture_set.path}}/{{picture_set.animation}}'}
+    .picture-sets
+      %span{ 'ng-repeat' => 'picture_set in picture_sets'}
+        %img{'ng-src' => '{{picture_set.path}}/{{picture_set.animation}}'}

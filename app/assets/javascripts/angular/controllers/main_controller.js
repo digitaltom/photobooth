@@ -9,7 +9,7 @@ photoBoothApp.controller('MainCtrl', [
       $http.post('/pictures.json').success(function (data) {
         $scope.picture_sets.unshift(data);
       }).error(function (data) {
-        alert(data);
+        alert(data.error);
       })
     };
 
@@ -18,7 +18,7 @@ photoBoothApp.controller('MainCtrl', [
       $http.get('/pictures.json').success(function (data) {
         $scope.picture_sets = data;
       }).error(function (data) {
-        alert(data);
+        alert(data.error);
       })
     };
 
