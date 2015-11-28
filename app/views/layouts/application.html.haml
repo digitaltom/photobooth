@@ -18,5 +18,5 @@
       Update
 
 
-    %div{ 'ng-repeat' => 'picture in pictures'}
-      %img{'ng-src' => '{{picture.path}}'}
+    %div{ 'ng-repeat' => 'picture_set in picture_sets'}
+      %img{'ng-src' => '{{picture_set.path}}/{{picture_set.animation}}'}

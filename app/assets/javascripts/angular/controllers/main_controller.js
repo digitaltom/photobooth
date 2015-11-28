@@ -7,14 +7,14 @@ photoBoothApp.controller('MainCtrl', [
 
     $scope.takePicture = function () {
       $http.post('/pictures.json').success(function (data) {
-        $scope.pictures.unshift(data);
+        $scope.picture_sets.unshift(data);
       })
     };
 
 
     $scope.update = function () {
       $http.get('/pictures.json').success(function (data) {
-        $scope.pictures = data;
+        $scope.picture_sets = data;
       })
     };
 
