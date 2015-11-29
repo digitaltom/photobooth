@@ -96,13 +96,6 @@ GEM
       thor (>= 0.18.1, < 2.0)
     raindrops (0.15.0)
     rake (10.4.2)
-    sass (3.4.19)
-    sass-rails (5.0.4)
-      railties (>= 4.0.0, < 5.0)
-      sass (~> 3.1)
-      sprockets (>= 2.8, < 4.0)
-      sprockets-rails (>= 2.0, < 4.0)
-      tilt (>= 1.1, < 3)
     spring (1.4.4)
     sprockets (3.4.0)
       rack (> 1, < 3)
@@ -114,6 +107,11 @@ GEM
     thor (0.19.1)
     thread_safe (0.3.5)
     tilt (2.0.1)
+    twitter-bootstrap-rails (3.2.0)
+      actionpack (~> 4.1)
+      execjs (~> 2.2)
+      rails (~> 4.1)
+      railties (~> 4.1)
     tzinfo (1.2.2)
       thread_safe (~> 0.1)
     uglifier (2.7.2)
@@ -142,9 +140,9 @@ DEPENDENCIES
   haml
   jbuilder (~> 2.0)
   rails (~> 4.2.4)
-  sass-rails (~> 5.0)
   spring
   sqlite3
+  twitter-bootstrap-rails
   uglifier (>= 1.3.0)
   unicorn-rails
   web-console (~> 2.0)

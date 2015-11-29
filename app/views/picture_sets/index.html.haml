@@ -1,9 +1,9 @@
-%button{ 'ng-click' => 'takePicture()'}
+%button.btn.btn-default{ 'ng-click' => 'takePicture()'}
   Take picture
-  %button{ 'ng-click' => 'update()'}
+  %button.btn.btn-default{ 'ng-click' => 'update()'}
     Update
 
-  .picture-sets
+  .picture-sets.text-center
     %span{ 'ng-repeat' => 'picture_set in picture_sets'}
       %a{href: '{{picture_set.path}}'}
         %img{'ng-src' => '{{picture_set.path}}/{{picture_set.animation}}'}
