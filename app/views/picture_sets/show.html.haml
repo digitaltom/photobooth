@@ -1,0 +1,7 @@
+= @picture_set.inspect
+
+- @picture_set[:pictures].each do |picture|
+
+  %img{src: '/' + @picture_set[:path] + '/' + picture[:polaroid]}
+
+

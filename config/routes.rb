@@ -1,7 +1,11 @@
 Rails.application.routes.draw do
 
-  root 'application#index'
+  root 'picture_sets#index'
 
-  resources :pictures, only: [:create, :index, :show]
+  # angular routes
+  get '/picture_sets/list', to: 'picture_sets#list'
+  post '/picture_sets', to: 'picture_sets#create'
+
+  resources :picture_sets, only: [:index, :show]
 
 end

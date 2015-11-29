@@ -12,11 +12,4 @@
     = yield(:head)
 
   %body
-    %button{ 'ng-click' => 'takePicture()'}
-      Take picture
-    %button{ 'ng-click' => 'update()'}
-      Update
-
-    .picture-sets
-      %span{ 'ng-repeat' => 'picture_set in picture_sets'}
-        %img{'ng-src' => '{{picture_set.path}}/{{picture_set.animation}}'}
+    = yield

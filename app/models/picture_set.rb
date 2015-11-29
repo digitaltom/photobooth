@@ -3,7 +3,7 @@ class PictureSet
   DATE_FORMAT = '%Y-%m-%d_%H-%M-%S'
   POLAROID_SUFFIX = '_polaroid.png'
   ANIMATION_SUFFIX = '_animation.gif'
-  PICTURE_PATH = File.join(Rails.root, 'public', 'pictures')
+  PICTURE_PATH = File.join(Rails.root, 'public', 'picture_sets')
 
 
   def self.all
@@ -12,8 +12,8 @@ class PictureSet
   end
 
   def self.find date
-    { path: "pictures/#{date}", date: date, animation: "#{date}#{ANIMATION_SUFFIX}",
-      pictures: (1..4).map{|i| { preview: "#{date}_#{i}#{POLAROID_SUFFIX}", full: "#{date}_#{i}.jpg" } }
+    { path: "picture_sets/#{date}", date: date, animation: "#{date}#{ANIMATION_SUFFIX}",
+      pictures: (1..4).map{|i| { polaroid: "#{date}_#{i}#{POLAROID_SUFFIX}", full: "#{date}_#{i}.jpg" } }
     }
   end
 
