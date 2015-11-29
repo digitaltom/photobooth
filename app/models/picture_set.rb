@@ -24,9 +24,10 @@ class PictureSet
     Syscall.execute("mkdir #{date}", dir: PICTURE_PATH)
     (1..4).each do |i|
       Syscall.execute("gphoto2 --capture-image-and-download --filename #{date}_#{i}.jpg", dir: "#{PICTURE_PATH}/#{date}")
-      Syscall.execute("convert -caption '#{caption}' #{date}_#{i}.jpg -thumbnail 640x480 -bordercolor Snow -border 5x5 -density 200 -gravity center -pointsize 14 -background black -polaroid -#{angle} -resize 50% #{date}_#{i}#{POLAROID_SUFFIX}", dir: "#{PICTURE_PATH}/#{date}")
+      Syscall.execute("time convert -caption '#{caption}' #{date}_#{i}.jpg -thumbnail 320x240 -bordercolor Snow -density 200 -gravity center -pointsize 18 -polaroid -#{angle} #{date}_#{i}#{POLAROID_SUFFIX}", dir: "#{PICTURE_PATH}/#{date}")
     end
-    Syscall.execute("convert -delay 70 #{date}_1#{POLAROID_SUFFIX} #{date}_2#{POLAROID_SUFFIX} #{date}_3#{POLAROID_SUFFIX} #{date}_4#{POLAROID_SUFFIX} #{date}_animation.gif", dir: "#{PICTURE_PATH}/#{date}")
+
+    Syscall.execute("time convert -delay 70 #{date}_1#{POLAROID_SUFFIX} #{date}_2#{POLAROID_SUFFIX} #{date}_3#{POLAROID_SUFFIX} #{date}_4#{POLAROID_SUFFIX} #{date}_animation.gif", dir: "#{PICTURE_PATH}/#{date}")
     self.find date
   end
 
