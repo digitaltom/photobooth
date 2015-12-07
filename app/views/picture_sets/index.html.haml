@@ -1,7 +1,9 @@
-%button.btn.btn-default{ 'ng-click' => 'takePicture()'}
-  Take picture
+%div{'ng-controller'=>'MainCtrl'}
+  %button.btn.btn-default{ 'ng-click' => 'takePicture()'}
+    Take picture
   %button.btn.btn-default{ 'ng-click' => 'update()'}
     Update
+
 
   .picture-sets.text-center
     %span{ 'ng-repeat' => 'picture_set in picture_sets'}
