@@ -7,7 +7,7 @@ class PictureSet
 
 
   def self.all
-    dirs = Dir.glob(File.join(PICTURE_PATH, '*')).map{|f| f.gsub(PICTURE_PATH + '/', '')}
+    dirs = Dir.glob(File.join(PICTURE_PATH, "*/*#{ANIMATION_SUFFIX}")).map{|f| f.gsub(PICTURE_PATH + '/', '').gsub(/\/[0-9-_]*#{ANIMATION_SUFFIX}/, '')}
     dirs.sort.reverse.map{|dir| self.find dir}
   end
 
@@ -21,14 +21,14 @@ class PictureSet
     date = Time.new.strftime(DATE_FORMAT)
     angle = -10 + Random.rand(20) + 360
     caption = date
-    Syscall.execute("mkdir #{date}", dir: PICTURE_PATH)
-    (1..4).each do |i|
-      Syscall.execute("gphoto2 --capture-image-and-download --filename #{date}_#{i}.jpg", dir: "#{PICTURE_PATH}/#{date}")
-      Syscall.execute("time convert -caption '#{caption}' #{date}_#{i}.jpg -thumbnail 380 -bordercolor Snow -density 100 -gravity center -pointsize 9 -polaroid -#{angle} #{date}_#{i}#{POLAROID_SUFFIX}", dir: "#{PICTURE_PATH}/#{date}")
-    end
-
-    Syscall.execute("time convert -delay 70 #{date}_1#{POLAROID_SUFFIX} #{date}_2#{POLAROID_SUFFIX} #{date}_3#{POLAROID_SUFFIX} #{date}_4#{POLAROID_SUFFIX} #{date}_animation.gif", dir: "#{PICTURE_PATH}/#{date}")
-    self.find date
+    dir = "#{PICTURE_PATH}/#{date}"
+      Syscall.execute("mkdir #{date}", dir: PICTURE_PATH)
+      (1..4).each do |i|
+        Syscall.execute("gphoto2 --capture-image-and-download --filename #{date}_#{i}.jpg", dir: dir)
+        Syscall.execute("time convert -caption '#{caption}' #{date}_#{i}.jpg -thumbnail 380 -bordercolor Snow -density 100 -gravity center -pointsize 9 -polaroid -#{angle} #{date}_#{i}#{POLAROID_SUFFIX}", dir: dir)
+      end
+      Syscall.execute("time convert -delay 70 #{date}_1#{POLAROID_SUFFIX} #{date}_2#{POLAROID_SUFFIX} #{date}_3#{POLAROID_SUFFIX} #{date}_4#{POLAROID_SUFFIX} #{date}#{ANIMATION_SUFFIX}", dir: dir)
+      self.find date
   end
 
 end
