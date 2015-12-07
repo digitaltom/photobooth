@@ -7,7 +7,6 @@ gem 'rails', '~> 4.2.4'
 gem 'sqlite3'
 
 gem 'haml'
-gem "twitter-bootstrap-rails"
 gem 'angular_rails_csrf'
 
 # Use Uglifier as compressor for JavaScript assets

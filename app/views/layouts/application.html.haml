@@ -1,9 +1,10 @@
 !!!
-%html{'ng-app'=>'photoBooth', 'ng-controller'=>'MainCtrl', 'ng-strict-di'=> true}
+%html{'ng-app'=>'photoBooth', 'ng-strict-di'=> true}
   %head
     %title Photobooth
     %meta{:content => 'width=device-width, initial-scale=1', :name => 'viewport'}
     = favicon_link_tag '/favicon.ico'
+    = stylesheet_link_tag 'vendor_application', media: 'all'
     = stylesheet_link_tag 'application', media: 'all'
     = javascript_include_tag 'vendor_application'
     = javascript_include_tag 'application'
