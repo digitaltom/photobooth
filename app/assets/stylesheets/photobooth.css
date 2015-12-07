@@ -1,3 +1,5 @@
+.nav, .pagination, .carousel, .panel-title a { cursor: pointer; }
+
 .picture-sets {
     background-color: #000;
 }

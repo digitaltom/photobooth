@@ -11,4 +11,7 @@
 // about supported directives.
 //
 
+//= require_self
 //= require_tree .
+
+var photoBoothApp = angular.module('photoBooth', ['ui.bootstrap'])
