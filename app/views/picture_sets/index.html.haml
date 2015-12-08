@@ -13,6 +13,16 @@
   %button.btn.btn-default{ 'ng-click' => 'update()'}
     Update
 
+
+  %script{'type'=>"text/ng-template", 'id'=>"picture_shoot.html"}
+    %div.modal-header
+      %h3.modal-title
+        Taking pictures
+    %div.modal-body
+      Please wait, taking 4 pictures
+    %div.modal-footer
+
+
   .picture-sets.text-center
     %span{ 'ng-repeat' => 'picture_set in picture_sets'}
       %a{href: '{{picture_set.path}}'}
