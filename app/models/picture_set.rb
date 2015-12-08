@@ -38,4 +38,8 @@ class PictureSet
     self.find date
   end
 
+  def self.destroy date
+    Syscall.execute("rmdir #{date}", dir: PICTURE_PATH)
+  end
+
 end

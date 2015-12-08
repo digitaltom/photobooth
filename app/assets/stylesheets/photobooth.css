@@ -1,5 +1,12 @@
-.nav, .pagination, .carousel, .panel-title a { cursor: pointer; }
+.nav, .pagination, .carousel, .panel-title a {
+    cursor: pointer;
+}
 
-.picture-sets {
+body {
     background-color: #000;
+    color: #fff;
+}
+
+.modal-dialog {
+    color: #000;
 }

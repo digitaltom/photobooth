@@ -14,4 +14,9 @@ class PictureSetsController < ApplicationController
     render json: PictureSet.create
   end
 
+  def destroy
+    PictureSet.find params[:id]
+  end
+
+
 end

@@ -14,4 +14,20 @@
 //= require_self
 //= require_tree .
 
-var photoBoothApp = angular.module('photoBooth', ['ui.bootstrap'])
+var photoBoothApp = angular.module('photoBooth', ['ui.bootstrap', 'ngRoute'])
+
+photoBoothApp.config(['$routeProvider',
+  function ($routeProvider) {
+    $routeProvider.
+    when('/', {
+      templateUrl: 'partials/picture_sets.html',
+      controller: 'MainCtrl'
+    }).
+    when('/picture_set/:pictureSetId', {
+      templateUrl: 'partials/picture_set.html',
+      controller: 'PictureSetCtrl'
+    }).
+    otherwise({
+      redirectTo: '/'
+    });
+  }]);

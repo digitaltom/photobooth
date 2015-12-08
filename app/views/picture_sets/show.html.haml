@@ -1,7 +1,7 @@
-= @picture_set.inspect
+%div{'ng-controller'=>"PictureSetCtrl"}
 
-- @picture_set[:pictures].each do |picture|
+  - @picture_set[:pictures].each do |picture|
+    = link_to image_tag('/' + @picture_set[:path] + '/' + picture[:polaroid]), image_url('/' + @picture_set[:path] + '/' + picture[:full])
 
-  %img{src: '/' + @picture_set[:path] + '/' + picture[:polaroid]}
-
-
+  -#%button.btn.btn-default{ 'ng-click' => 'destroy()'}
+  -#  Delete this set
