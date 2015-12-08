@@ -1,23 +1,17 @@
-%div{'ng-controller'=>"AlertCtrl"}
+%div{'ng-controller'=>"MainCtrl"}
+
   %script{'type'=>"text/ng-template", 'id'=>"alert.html"}
     %div.alert{'style'=>"background-color:#fa39c3;color:white", 'role'=>"alert"}
       %div{'ng-transclude'=>'true'}
 
-
-  -#%uib-alert{'ng-repeat'=>"alert in alerts", 'type'=>"{{alert.type}}", 'close'=>"closeAlert($index)"}
-  -#  {{alert.msg}}
-  -#%uib-alert{'template-url'=>"alert.html"}
-  -#  A happy alert!
-  -#%button{'type'=>"button", 'class'=>'btn btn-default', 'ng-click'=>"addAlert()"}
-  -#  Add Alert
+  %uib-alert{'ng-repeat'=>"alert in alerts", 'type'=>"{{alert.type}}", 'close'=>"closeAlert($index)"}
+    {{alert.msg}}
 
 
-%div{'ng-controller'=>'MainCtrl'}
   %button.btn.btn-default{ 'ng-click' => 'takePicture()'}
     Take picture
   %button.btn.btn-default{ 'ng-click' => 'update()'}
     Update
-
 
   .picture-sets.text-center
     %span{ 'ng-repeat' => 'picture_set in picture_sets'}
