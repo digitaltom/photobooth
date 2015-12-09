@@ -26,5 +26,8 @@
         Please wait, taking 4 pictures
       %div.modal-footer
 
+    %uib-alert{'ng-repeat'=>"alert in alerts", 'type'=>"{{alert.type}}", 'close'=>"closeAlert($index)"}
+      {{alert.msg}}
+
 
     %div{'ng-view' => true}

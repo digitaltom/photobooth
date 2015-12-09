@@ -15,7 +15,8 @@ class PictureSetsController < ApplicationController
   end
 
   def destroy
-    PictureSet.find params[:id]
+    PictureSet.destroy(params[:id])
+    render json: ''
   end
 
 end

@@ -14,7 +14,13 @@
 //= require_self
 //= require_tree .
 
-var photoBoothApp = angular.module('photoBooth', ['ngRoute', 'ui.bootstrap'])
+var photoBoothApp = angular.module('photoBooth', ['ngRoute', 'ui.bootstrap']);
+
+// make alerts available globally
+photoBoothApp.run(['$rootScope', function($rootScope) {
+    $rootScope.alerts = [];
+}]);
+
 
 photoBoothApp.config(['$routeProvider',
   function ($routeProvider) {

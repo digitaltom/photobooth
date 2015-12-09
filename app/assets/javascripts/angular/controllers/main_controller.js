@@ -3,9 +3,8 @@ photoBoothApp.controller('MainCtrl', [
   '$http',
   '$uibModal',
   '$log',
-  function ($scope, $http, $uibModal, $log) {
-
-    $scope.alerts = [];
+  '$rootScope',
+  function ($scope, $http, $uibModal, $log, $rootScope) {
 
     $scope.takePicture = function () {
       $scope.openShootModal();
@@ -19,7 +18,7 @@ photoBoothApp.controller('MainCtrl', [
       }, function errorCallback(response) {
         $scope.closeShootModal();
         //alert(response.data.error);
-        $scope.alerts.push({type: 'danger', msg: response.data.error});
+        $rootScope.alerts.push({type: 'danger', msg: response.data.error});
       }
       );
     };
@@ -31,12 +30,12 @@ photoBoothApp.controller('MainCtrl', [
       }).then(function successCallback(response) {
         $scope.picture_sets = response.data;
       }, function errorCallback(response) {
-        $scope.alerts.push({type: 'error', msg: response.data.error});
+        $rootScope.alerts.push({type: 'error', msg: response.data.error});
       });
     };
 
     $scope.closeAlert = function (index) {
-      $scope.alerts.splice(index, 1);
+      $rootScope.alerts.splice(index, 1);
     };
 
     $scope.openShootModal = function () {

@@ -39,7 +39,7 @@ class PictureSet
   end
 
   def self.destroy date
-    Syscall.execute("rmdir #{date}", dir: PICTURE_PATH)
+    Syscall.execute("rm -r #{date}", dir: PICTURE_PATH)
   end
 
 end
