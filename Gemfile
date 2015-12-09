@@ -7,7 +7,7 @@ gem 'rails', '~> 4.2.4'
 gem 'sqlite3'
 gem 'haml'
 gem 'angular_rails_csrf'
-#gem 'angular-rails-templates'
+gem 'angular-rails-templates'
 
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '>= 1.3.0'

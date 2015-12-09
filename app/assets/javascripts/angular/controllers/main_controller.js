@@ -26,7 +26,7 @@ photoBoothApp.controller('MainCtrl', [
     $scope.update = function () {
       $http({
         method: 'GET',
-        url: '/picture_sets'
+        url: '/picture_sets.json'
       }).then(function successCallback(response) {
         $scope.picture_sets = response.data;
       }, function errorCallback(response) {

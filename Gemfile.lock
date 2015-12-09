@@ -36,6 +36,10 @@ GEM
       minitest (~> 5.1)
       thread_safe (~> 0.3, >= 0.3.4)
       tzinfo (~> 1.1)
+    angular-rails-templates (0.1.4)
+      railties (>= 3.1)
+      sprockets
+      tilt
     angular_rails_csrf (1.0.4)
       rails (>= 3, < 5)
     arel (6.0.3)
@@ -129,6 +133,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  angular-rails-templates
   angular_rails_csrf
   awesome_print
   byebug
