@@ -1,0 +1,17 @@
+<div ng-controller="MainCtrl">
+
+    <uib-alert ng-repeat="alert in alerts" , type="{{alert.type}}" , close="closeAlert($index)">
+        {{alert.msg}}
+    </uib-alert>
+
+    <div class="picture-sets text-center">
+        <img src="/images/take_picture.png" ng-click='takePicture()'>
+
+        <span ng-repeat='picture_set in picture_sets'>
+          <a href="#/picture_set/{{picture_set.date}}">
+              <img ng-src='{{picture_set.path}}/{{picture_set.animation}}'>
+          </a>
+        </span>
+    </div>
+
+</div>

@@ -1,0 +1,10 @@
+<div ng-controller="PictureSetCtrl">
+
+    <div ng-repeat="picture in picture_set.pictures">
+        <a href="/{{picture_set.path}}/{{picture.full}}">
+            <img src="/{{picture_set.path}}/{{picture.polaroid}}"/>
+        </a>
+    </div>
+
+</div>
+

@@ -13,4 +13,18 @@
     = yield(:head)
 
   %body
-    = yield
+
+    %script{'type'=>"text/ng-template", 'id'=>"alert.html"}
+      %div.alert{'style'=>"background-color:#fa39c3;color:white", 'role'=>"alert"}
+        %div{'ng-transclude'=>'true'}
+
+    %script{'type'=>"text/ng-template", 'id'=>"picture_shoot.html"}
+      %div.modal-header
+        %h3.modal-title
+          Taking pictures
+      %div.modal-body
+        Please wait, taking 4 pictures
+      %div.modal-footer
+
+
+    %div{'ng-view' => true}

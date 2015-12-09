@@ -4,6 +4,7 @@ photoBoothApp.controller('MainCtrl', [
   '$uibModal',
   '$log',
   function ($scope, $http, $uibModal, $log) {
+
     $scope.alerts = [];
 
     $scope.takePicture = function () {
@@ -17,7 +18,7 @@ photoBoothApp.controller('MainCtrl', [
         $scope.picture_sets.unshift(response.data);
       }, function errorCallback(response) {
         $scope.closeShootModal();
-        //alert(data.error);
+        //alert(response.data.error);
         $scope.alerts.push({type: 'danger', msg: response.data.error});
       }
       );
@@ -26,7 +27,7 @@ photoBoothApp.controller('MainCtrl', [
     $scope.update = function () {
       $http({
         method: 'GET',
-        url: '/picture_sets/list.json'
+        url: '/picture_sets'
       }).then(function successCallback(response) {
         $scope.picture_sets = response.data;
       }, function errorCallback(response) {
@@ -49,6 +50,7 @@ photoBoothApp.controller('MainCtrl', [
       $scope.shootModalInstance.dismiss('cancel')
     }
 
+    $log.log('Getting picture sets')
     $scope.update();
 
   }]);

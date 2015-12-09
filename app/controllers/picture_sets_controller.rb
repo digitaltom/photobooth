@@ -2,12 +2,12 @@ class PictureSetsController < ApplicationController
 
   protect_from_forgery with: :exception
 
-  def show
-    @picture_set = PictureSet.find params[:id]
+  def index
+    render json: PictureSet.all
   end
 
-  def list
-    render json: PictureSet.all
+  def show
+    render json: PictureSet.find(params[:id])
   end
 
   def create
@@ -17,6 +17,5 @@ class PictureSetsController < ApplicationController
   def destroy
     PictureSet.find params[:id]
   end
-
 
 end

@@ -7,13 +7,6 @@
   %uib-alert{'ng-repeat'=>"alert in alerts", 'type'=>"{{alert.type}}", 'close'=>"closeAlert($index)"}
     {{alert.msg}}
 
-
-  -#%button.btn.btn-default.btn-xl{ 'ng-click' => 'takePicture()'}
-  -#  Take picture
-  -#%button.btn.btn-default{ 'ng-click' => 'update()'}
-  -#  Update
-
-
   %script{'type'=>"text/ng-template", 'id'=>"picture_shoot.html"}
     %div.modal-header
       %h3.modal-title
@@ -28,3 +21,4 @@
     %span{ 'ng-repeat' => 'picture_set in picture_sets'}
       %a{href: '{{picture_set.path}}'}
         %img{'ng-src' => '{{picture_set.path}}/{{picture_set.animation}}'}
+
