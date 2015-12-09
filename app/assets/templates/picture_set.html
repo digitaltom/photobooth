@@ -1,12 +1,16 @@
-<div ng-controller="PictureSetCtrl">
+<div>
+
+    <a class="btn btn-default btn-lg" ng-href="#/about">
+        Back
+    </a>
 
     <div ng-repeat="picture in picture_set.pictures">
         <a href="/{{picture_set.path}}/{{picture.full}}">
-            <img src="/{{picture_set.path}}/{{picture.polaroid}}"/>
+            <img ng-src="/{{picture_set.path}}/{{picture.polaroid}}"/>
         </a>
     </div>
 
-    <button class="btn btn-default" ng-click='destroy()'>
+    <button class="btn btn-default btn-lg" ng-click='destroy()'>
       Delete this set
     </button>
 

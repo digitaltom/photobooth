@@ -34,10 +34,6 @@ photoBoothApp.controller('MainCtrl', [
       });
     };
 
-    $scope.closeAlert = function (index) {
-      $rootScope.alerts.splice(index, 1);
-    };
-
     $scope.openShootModal = function () {
       $scope.shootModalInstance = $uibModal.open({
         animation: true,
@@ -49,7 +45,6 @@ photoBoothApp.controller('MainCtrl', [
       $scope.shootModalInstance.dismiss('cancel')
     }
 
-    $log.log('Getting picture sets')
     $scope.update();
 
   }]);

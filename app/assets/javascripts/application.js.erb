@@ -17,8 +17,13 @@
 var photoBoothApp = angular.module('photoBooth', ['ngRoute', 'ui.bootstrap']);
 
 // make alerts available globally
-photoBoothApp.run(['$rootScope', function($rootScope) {
-    $rootScope.alerts = [];
+photoBoothApp.run(['$rootScope', function ($rootScope) {
+  $rootScope.alerts = [];
+
+  $rootScope.closeAlert = function (index) {
+    $rootScope.alerts.splice(index, 1);
+  };
+
 }]);
 
 
