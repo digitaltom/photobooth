@@ -4,7 +4,7 @@ class ApplicationController < ActionController::Base
   rescue_from Exception, :with => :handle_exception
 
   def index
-    render :text => '', :layout => true
+    render 'layouts/application'
   end
 
   private

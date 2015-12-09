@@ -9,6 +9,11 @@ gem 'haml'
 gem 'angular_rails_csrf'
 gem 'angular-rails-templates'
 
+source 'https://rails-assets.org' do
+  gem 'rails-assets-angular'
+  gem 'rails-assets-angular-route'
+end
+
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '>= 1.3.0'
 
