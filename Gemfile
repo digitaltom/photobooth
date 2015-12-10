@@ -21,9 +21,12 @@ gem 'uglifier', '>= 1.3.0'
 # Use Unicorn as the app server
 gem 'unicorn-rails'
 
-group :development, :test do
+group :development do
   gem 'byebug'
   gem 'awesome_print'
+end
+
+group :development, :test do
   gem 'rubocop'
 end
 
