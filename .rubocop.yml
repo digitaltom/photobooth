@@ -4,11 +4,23 @@ LineLength:
 Style/EmptyLinesAroundClassBody:
   Enabled: false
 
+Style/EmptyLinesAroundBlockBody:
+  Enabled: false
+
 Style/MethodLength:
   Max: 20
 
+Style/RegexpLiteral:
+  Enabled: false
+
+Style/NegatedWhile:
+  Enabled: false
+
 Documentation:
   Enabled: false
+
+Style/MultilineOperationIndentation:
+  EnforcedStyle: indented
 
 AllCops:
   Exclude:
