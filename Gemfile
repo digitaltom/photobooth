@@ -27,11 +27,12 @@ group :development do
 end
 
 group :development, :test do
-  gem 'rubocop'
+  gem 'rubocop', :require => false
 end
 
 group :test do
   gem 'rspec-rails'
   gem 'capybara'
   gem 'simplecov'
+  gem 'coveralls', :require => false
 end
