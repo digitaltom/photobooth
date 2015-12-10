@@ -2,7 +2,6 @@
 [![Dependency Status](https://gemnasium.com/digitaltom/photobooth.svg)](https://gemnasium.com/digitaltom/photobooth)
 [![Code Climate](https://codeclimate.com/github/digitaltom/photobooth.png)](https://codeclimate.com/github/digitaltom/photobooth)
 [![Test Coverage](https://codeclimate.com/github/digitaltom/photobooth/badges/coverage.png)](https://codeclimate.com/github/digitaltom/photobooth/coverage)
-[//]: # [![Coverage Status](https://coveralls.io/repos/SUSE/connect/badge.png?branch=master)](https://coveralls.io/r/SUSE/connect)
 
 # Photobooth
 
