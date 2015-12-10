@@ -1,7 +1,7 @@
 [![Build Status](https://travis-ci.org/digitaltom/photobooth.png?branch=master)](https://travis-ci.org/digitaltom/photobooth)
 [![Dependency Status](https://gemnasium.com/digitaltom/photobooth.svg)](https://gemnasium.com/digitaltom/photobooth)
 [![Code Climate](https://codeclimate.com/github/digitaltom/photobooth.png)](https://codeclimate.com/github/digitaltom/photobooth)
-[![Test Coverage](https://codeclimate.com/github/digitaltom/photobooth/badges/coverage.png)](https://codeclimate.com/github/digitaltom/photobooth/coverage)
+[![Test Coverage](https://coveralls.io/repos/digitaltom/photobooth/badge.png?branch=master)](https://coveralls.io/r/digitaltom/photobooth)
 
 # Photobooth
 
