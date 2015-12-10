@@ -3,4 +3,4 @@
 
   %span{ 'ng-repeat' => 'picture_set in picture_sets'}
     %a{href: '#/picture_set/{{picture_set.date}}'}
-      %img{'ng-src' => '{{picture_set.path}}/{{picture_set.animation}}'}
+      %img.lazyload{'data-src' => '{{picture_set.path}}/{{picture_set.animation}}'}

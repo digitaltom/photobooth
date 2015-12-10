@@ -12,6 +12,7 @@ gem 'angular-rails-templates'
 source 'https://rails-assets.org' do
   gem 'rails-assets-angular'
   gem 'rails-assets-angular-route'
+  gem 'rails-assets-lazysizes'
 end
 
 # Use Uglifier as compressor for JavaScript assets
