@@ -5,7 +5,6 @@ class PictureSet
   ANIMATION_SUFFIX = '_animation.gif'
   PICTURE_PATH = File.join(Rails.root, 'public', 'picture_sets')
 
-
   def self.all
     dirs = Dir.glob(File.join(PICTURE_PATH, "*/*#{ANIMATION_SUFFIX}")).map { |f| f.gsub(PICTURE_PATH + '/', '').gsub(/\/[0-9\-_]*#{ANIMATION_SUFFIX}/, '') }
     dirs.sort.reverse.map { |dir| self.find dir }

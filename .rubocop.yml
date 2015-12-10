@@ -1,0 +1,16 @@
+LineLength:
+  Max: 120
+
+Style/EmptyLinesAroundClassBody:
+  Enabled: false
+
+Style/MethodLength:
+  Max: 20
+
+Documentation:
+  Enabled: false
+
+AllCops:
+  Exclude:
+    - bin/**/*
+    - vendor/**/*

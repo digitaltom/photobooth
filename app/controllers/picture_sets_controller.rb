@@ -1,5 +1,4 @@
 class PictureSetsController < ApplicationController
-
   protect_from_forgery with: :exception
 
   def index
@@ -18,5 +17,4 @@ class PictureSetsController < ApplicationController
     PictureSet.destroy(params[:id])
     render json: ''
   end
-
 end

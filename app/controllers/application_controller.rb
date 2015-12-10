@@ -1,7 +1,6 @@
 class ApplicationController < ActionController::Base
-
   protect_from_forgery with: :exception
-  rescue_from Exception, :with => :handle_exception
+  rescue_from Exception, with: :handle_exception
 
   def index
     render 'layouts/application'
@@ -10,7 +9,7 @@ class ApplicationController < ActionController::Base
   private
 
   def handle_exception(exception)
-    render json: {error: exception.message}.to_json, status: 422
+    render json: { error: exception.message }.to_json, status: 422
   end
 
 end
