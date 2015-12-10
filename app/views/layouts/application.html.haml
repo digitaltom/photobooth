@@ -25,6 +25,7 @@
       %div.modal-body
         %h3
           Please wait, taking 4 pictures
+        = image_tag 'shoot_animation.gif'
       %div.modal-footer
 
     %uib-alert{'ng-repeat'=>"alert in alerts", 'type'=>"{{alert.type}}", 'dismiss-on-timeout'=>'15000', 'close'=>"closeAlert($index)"}
