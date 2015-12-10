@@ -20,7 +20,7 @@ class PictureSet
     end
 
     def create
-      date = Time.new.strftime(DATE_FORMAT)
+      date = Time.zone.new.strftime(DATE_FORMAT)
       dir = "#{PICTURE_PATH}/#{date}"
       angle = -7 + Random.rand(14) + 360
       Syscall.execute("mkdir #{date}", dir: PICTURE_PATH)

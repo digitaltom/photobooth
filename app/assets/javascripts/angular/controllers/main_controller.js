@@ -13,13 +13,14 @@ photoBoothApp.controller('MainCtrl', [
         url: '/picture_sets.json'
       }).then(
         function successCallback(response) {
-        $scope.closeShootModal();
-        $scope.picture_sets.unshift(response.data);
-      }, function errorCallback(response) {
-        $scope.closeShootModal();
-        //alert(response.data.error);
-        $rootScope.alerts.push({type: 'danger', msg: response.data.error});
-      }
+          $scope.closeShootModal();
+          $scope.picture_sets.unshift(response.data);
+        },
+        function errorCallback(response) {
+          $scope.closeShootModal();
+          //alert(response.data.error);
+          $rootScope.alerts.push({type: 'danger', msg: response.data.error});
+        }
       );
     };
 

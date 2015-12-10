@@ -1,0 +1,34 @@
+rules:
+  indent:
+    - 2
+    - 2
+  no-mixed-spaces-and-tabs:
+    - 2
+  quotes:
+    - 2
+    - "single"
+    - "avoid-escape"
+  linebreak-style:
+    - 2
+    - unix
+  no-extra-semi:
+    - 2
+  no-redeclare:
+    - 2
+  no-unused-vars:
+    - 2
+  comma-dangle:
+    - 2
+  no-cond-assign:
+    - 2
+    - "always"
+  no-console:
+    - 2
+  no-constant-condition:
+    - 2
+  no-control-regex:
+    - 2
+env:
+  browser: true
+  jquery: true
+# extends: 'eslint:recommended'

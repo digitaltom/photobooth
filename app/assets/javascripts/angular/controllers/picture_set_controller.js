@@ -26,9 +26,9 @@ photoBoothApp.controller('PictureSetCtrl', [
       $http({
         method: 'DELETE',
         url: '/picture_sets/' + $routeParams.pictureSetId
-      }).then(function successCallback(response) {
+      }).then(function successCallback() {
         $scope.alerts.push({type: 'success', msg: 'Pictureset ' + $routeParams.pictureSetId + ' destroyed'});
-        $location.path( "/" );
+        $location.path( '/' );
       }, function errorCallback(response) {
         $rootScope.alerts.push({type: 'error', msg: response.data.error});
       });
