@@ -19,6 +19,9 @@ Style/NegatedWhile:
 Documentation:
   Enabled: false
 
+Style/BlockComments:
+  Enabled: false
+
 Style/MultilineOperationIndentation:
   EnforcedStyle: indented
 
