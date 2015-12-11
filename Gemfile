@@ -20,6 +20,11 @@ gem 'uglifier', '>= 1.3.0'
 
 # Use Unicorn as the app server
 gem 'unicorn-rails'
+gem 'quiet_assets'
+
+# file upload + qrcode
+gem 'config-parser'
+gem 'dropbox-api'
 
 group :development do
   gem 'byebug'
@@ -28,6 +33,11 @@ end
 
 group :development, :test do
   gem 'rubocop', require: false
+end
+
+group :development, :production do
+  # gpio, architecture + root dependant -> do not include in test
+  gem 'pi_piper'
 end
 
 group :test do

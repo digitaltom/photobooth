@@ -9,6 +9,8 @@ class ApplicationController < ActionController::Base
   private
 
   def handle_exception(exception)
+    logger.error "Exception: #{exception.class}: #{exception.message}"
+    logger.error exception.backtrace.join("\n")
     render json: { error: exception.message }.to_json, status: 422
   end
 

@@ -1,0 +1,7 @@
+default:
+
+  dropbox:
+
+    # raspi photobooth dropbox app:
+    app_key: 123
+    app_secret: 123

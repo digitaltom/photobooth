@@ -3,6 +3,6 @@ rvm:
  - 2.2
 script:
  - 'bundle exec rspec'
- - 'bundle exec rubocop'
+ - 'bundle exec rubocop -S'
 
 bundler_args: --without production

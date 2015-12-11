@@ -25,8 +25,12 @@ RSpec.describe Syscall, type: :model do
       expect(output).to match(/root/)
     end
 
+    it 'raises on non-existing command' do
+      expect { Syscall.execute('xyz') }.to raise_error(RuntimeError, /xyz: command not found/)
+    end
+
     it 'raises on non-zero exit code' do
-      expect { Syscall.execute('xyz') }.to raise_error(SystemCallError, /No such file or directory - xyz/)
+      expect { Syscall.execute('ls /no') }.to raise_error(RuntimeError, /cannot access \/no/)
     end
 
   end

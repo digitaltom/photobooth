@@ -43,6 +43,8 @@ RSpec.describe PictureSet, type: :model do
 
     it 'takes new picture' do
       expect(PictureSet).to receive(:find)
+      allow(GpioPort).to receive(:on)
+      allow(GpioPort).to receive(:off)
       PictureSet.create
     end
 
