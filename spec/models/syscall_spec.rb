@@ -26,7 +26,7 @@ RSpec.describe Syscall, type: :model do
     end
 
     it 'raises on non-existing command' do
-      expect { Syscall.execute('xyz') }.to raise_error(RuntimeError, /xyz: command not found/)
+      expect { Syscall.execute('xyz') }.to raise_error(RuntimeError, /not found/)
     end
 
     it 'raises on non-zero exit code' do
