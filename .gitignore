@@ -13,6 +13,9 @@ capybara-*.html
 rerun.txt
 pickle-email-*.html
 .idea
+config/options-local.yml
+
+public/picture_sets/20*
 
 
 # Comment out these rules if you are OK with secrets being uploaded to the repo

@@ -11,6 +11,16 @@ I've build it to run on a raspberry pi 2 with openSUSE, connected to a Nikon D60
 The Angular.js frontend uses a Rails server on the backend to trigger and process the pictures.
 As this is a webserver, any tablet with a web-browser will work as a screen.
 
+=== TODO:
+
+* Run without gpio support
+* Image upload
+* generate qrcode + shortlink for images
+* design
+
+
+=== Prototype pictures:
+
 ![alt tag](https://raw.github.com/digitaltom/photobooth/master/public/images/readme/box_front.jpg)
 ![alt tag](https://raw.github.com/digitaltom/photobooth/master/public/images/readme/internals.jpg)
 ![alt tag](https://raw.github.com/digitaltom/photobooth/master/public/images/readme/picture_list.jpg)
