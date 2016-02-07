@@ -9,11 +9,15 @@ This application is supposed to run on a linux machine which is connected to a g
 I've build it to run on a raspberry pi 2 with openSUSE, connected to a Nikon D60 camera.
 
 The Angular.js frontend uses a Rails server on the backend to trigger and process the pictures.
-As this is a webserver, any tablet with a web-browser will work as a screen.
+Because this is a webapp, any tablet with a web-browser connected to the same wifi as the raspi
+will work as a screen.
+
+LEDs can get connected to the raspberry pi's gpio ports.
+It uses port 23 for 'ready', port 4 for 'picture 1', port 5 for 'picture 2',
+port 6 for 'picture 3', port 17 for 'picture 4' and port 24 for 'image procesing'.
 
 === TODO:
 
-* Run without gpio support
 * Image upload
 * generate qrcode + shortlink for images
 * design

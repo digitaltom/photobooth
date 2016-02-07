@@ -37,7 +37,7 @@ end
 
 group :development, :production do
   # gpio, architecture + root dependant -> do not include in test
-  gem 'pi_piper'
+  gem 'pi_piper', require: false
 end
 
 group :test do

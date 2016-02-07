@@ -13,12 +13,14 @@ class GpioPort
   class << self
 
     def on(num)
+      return unless defined?(PiPiper)
       unexport(num)
       pin = PiPiper::Pin.new(pin: num, direction: :out)
       pin.on
     end
 
     def off(num)
+      return unless defined?(PiPiper)
       unexport(num)
       pin = PiPiper::Pin.new(pin: num, direction: :out)
       pin.off
