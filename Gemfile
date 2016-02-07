@@ -3,6 +3,8 @@ source 'https://rubygems.org'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 4.2.4'
 gem 'sqlite3'
+# angular-rails-templates currently only works with sprocket-rails 2
+gem 'sprockets-rails', '~> 2.3.3'
 
 gem 'haml'
 gem 'angular_rails_csrf'
