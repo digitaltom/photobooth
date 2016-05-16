@@ -8,7 +8,7 @@ class GpioPort
                  'PICTURE2' => 5,
                  'PICTURE3' => 6,
                  'PICTURE4' => 17,
-                 'PROCESSING' => 24 }
+                 'PROCESSING' => 24 }.freeze
 
   class << self
 

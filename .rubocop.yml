@@ -1,5 +1,7 @@
+Rails:
+  Enabled: true 
+
 AllCops:
-  RunRailsCops: true
   DisplayCopNames: true
   DisplayStyleGuide: true
   ExtraDetails: true

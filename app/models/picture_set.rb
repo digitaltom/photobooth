@@ -1,15 +1,15 @@
 class PictureSet
 
-  DATE_FORMAT = '%Y-%m-%d_%H-%M-%S'
-  POLAROID_SUFFIX = '_polaroid.png'
-  ANIMATION_SUFFIX = '_animation.gif'
+  DATE_FORMAT = '%Y-%m-%d_%H-%M-%S'.freeze
+  POLAROID_SUFFIX = '_polaroid.png'.freeze
+  ANIMATION_SUFFIX = '_animation.gif'.freeze
   PICTURE_PATH = File.join(Rails.root, 'public', 'picture_sets')
 
   class << self
 
     def all
       dirs = Dir.glob(File.join(PICTURE_PATH, "*/*#{ANIMATION_SUFFIX}"))
-        .map { |f| f.gsub(PICTURE_PATH + '/', '').gsub(/\/[0-9\-_]*#{ANIMATION_SUFFIX}/, '') }
+                .map { |f| f.gsub(PICTURE_PATH + '/', '').gsub(/\/[0-9\-_]*#{ANIMATION_SUFFIX}/, '') }
       dirs.sort.reverse.map { |dir| find dir }
     end
 
@@ -41,7 +41,7 @@ class PictureSet
 
     private
 
-    def capture_job(i, date, dir, angle, caption=nil)
+    def capture_job(i, date, dir, angle, caption = nil)
       GpioPort.on(GpioPort::GPIO_PORTS["PICTURE#{i}"])
       caption ||= date
       Syscall.execute("gphoto2 --capture-image-and-download --filename #{date}_#{i}.jpg", dir: dir)

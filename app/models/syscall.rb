@@ -11,7 +11,7 @@ class Syscall
       Rails.logger.debug("Stderr: #{output}")
       exit_status = wait_thr.value
       unless exit_status.success?
-        fail "Command '#{cmd}' failed (#{exit_status.to_i}): #{output}"
+        raise "Command '#{cmd}' failed (#{exit_status.to_i}): #{output}"
       end
     end
     output
