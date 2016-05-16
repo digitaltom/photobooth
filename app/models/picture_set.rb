@@ -20,11 +20,11 @@ class PictureSet
     end
 
     def create
-      date = Time.zone.now.strftime(DATE_FORMAT)
+      date = Time.now.strftime(DATE_FORMAT)
       dir = "#{PICTURE_PATH}/#{date}"
       angle = -7 + Random.rand(14) + 360
       Syscall.execute("mkdir #{date}", dir: PICTURE_PATH)
-      jobs = (1..4).collect { |i| capture_job(i, date, dir, angle) }
+      jobs = (1..4).collect { |i| capture_job(i, date, dir, angle, OPTS.image_caption) }
       (1..4).each { |i| GpioPort.off(GpioPort::GPIO_PORTS["PICTURE#{i}"]) }
       GpioPort.on(GpioPort::GPIO_PORTS['PROCESSING'])
       # wait until convert jobs are finished
@@ -41,9 +41,9 @@ class PictureSet
 
     private
 
-    def capture_job(i, date, dir, angle)
+    def capture_job(i, date, dir, angle, caption=nil)
       GpioPort.on(GpioPort::GPIO_PORTS["PICTURE#{i}"])
-      caption = date
+      caption ||= date
       Syscall.execute("gphoto2 --capture-image-and-download --filename #{date}_#{i}.jpg", dir: dir)
       t = Thread.new do
         Syscall.execute("time convert -caption '#{caption}' #{date}_#{i}.jpg -sample 380 -bordercolor Snow " \
