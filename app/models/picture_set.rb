@@ -45,8 +45,8 @@ class PictureSet
       caption ||= date
       Syscall.execute("gphoto2 --capture-image-and-download --filename #{date}_#{i}.jpg", dir: dir)
       t = Thread.new do
-        Syscall.execute("time convert -caption '#{caption}' #{date}_#{i}.jpg -sample 380 -bordercolor Snow " \
-        "-density 100 -gravity center -pointsize 9 -polaroid -#{angle} #{date}_#{i}#{POLAROID_SUFFIX}", dir: dir)
+        Syscall.execute("time convert -caption '#{caption}' #{date}_#{i}.jpg -sample 390 -bordercolor Snow " \
+        "-density 100 -gravity center -pointsize 10 -polaroid -#{angle} #{date}_#{i}#{POLAROID_SUFFIX}", dir: dir)
       end
       t.abort_on_exception = true
       t

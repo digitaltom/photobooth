@@ -25,10 +25,19 @@
       %div.modal-body
         %h3
           Please wait, taking 4 pictures
-        = image_tag 'shoot_animation.gif'
+
+        %uib-progressbar.progress-striped.active{ max: "4", value: "current_shoot" }
+          %i
+            {{shoot_progress}}
+
+        - (1..4).each_with_index do |i|
+          = image_tag 'shoot_still_sw.png', { 'class' => 'countdown-img', 'ng-class' => "{ 'hidden': current_shoot >= #{i} }" }
+          = image_tag 'shoot_animation.gif', { 'class' => 'countdown-img', 'ng-class' => "{ 'hidden': current_shoot != #{i} }" }
+          = image_tag 'shoot_still.png', { 'class' => 'countdown-img', 'ng-class' => "{ 'hidden': current_shoot <= #{i} }" }
+
       %div.modal-footer
 
-    %uib-alert{'ng-repeat'=>"alert in alerts", 'type'=>"{{alert.type}}", 'dismiss-on-timeout'=>'15000', 'close'=>"closeAlert($index)"}
+    %uib-alert{'ng-repeat'=>"alert in alerts", 'type'=>"{{alert.type}}", 'dismiss-on-timeout'=>'10000', 'close'=>"closeAlert($index)"}
       {{alert.msg}}
 
 

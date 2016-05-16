@@ -5,8 +5,25 @@
 body {
     background-color: #000;
     color: #fff;
+    margin:0px;
+    padding:0px;
 }
 
 .modal-dialog {
     color: #000;
 }
+
+.modal-lg {
+    width: 900px;
+}
+
+.countdown-img {
+    width: 210px;
+    padding: 10px;
+}
+
+.shoot_button {
+    height: 300px;
+    margin: 0px 70px 0px 70px;
+}
+
