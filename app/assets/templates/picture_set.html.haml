@@ -1,9 +1,10 @@
 %a.btn.btn-default.btn-lg{ 'ng-href' => "#/" }
   Back
+%br
 
 %span{ 'ng-repeat'=>"picture in picture_set.pictures"}
-  %a{ 'href' => "/{{picture_set.path}}/{{picture.full}}"}
-    %img{'ng-src'=>'/{{picture_set.path}}/{{picture.polaroid}}'}
+  /%a{ 'href' => "/{{picture_set.path}}/{{picture.full}}"}
+  %img{'ng-src'=>'/{{picture_set.path}}/{{picture.polaroid}}'}
 
 %button.btn.btn-default.btn-lg{ 'ng-click' => 'destroy()'}
   Delete this set
