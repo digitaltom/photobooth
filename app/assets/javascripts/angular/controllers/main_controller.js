@@ -19,9 +19,9 @@ photoBoothApp.controller('MainCtrl', [
 
       $rootScope.shoot_progress = 100;
       countdown = $interval(function() {
-        $rootScope.shoot_progress = $rootScope.shoot_progress - 1;
+        $rootScope.shoot_progress = $rootScope.shoot_progress - 5;
         if ($rootScope.shoot_progress <= 0) { $interval.cancel(countdown); }
-      }, countdown_delay/100);
+      }, countdown_delay/20);
 
       $timeout(function() {
         $rootScope.shoot_txt = 'Action, taking 4 pictures';
