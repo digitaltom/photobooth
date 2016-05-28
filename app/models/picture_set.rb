@@ -33,12 +33,12 @@ class PictureSet
       angle = -7 + Random.rand(14) + 360
       Syscall.execute("mkdir #{date}", dir: PICTURE_PATH)
       jobs = (1..4).collect { |i| capture_job(i, date, dir, angle, OPTS.image_caption) }
-      (1..4).each { |i| GpioPort.off(GpioPort::GPIO_PORTS["PICTURE#{i}"]) }
       GpioPort.on(GpioPort::GPIO_PORTS['PROCESSING'])
       # wait until convert jobs are finished
       until !jobs.any?(&:status) do end
       # Merge all polaroid previews to an animated gif
       Syscall.execute("time convert -delay 60 #{date}_*#{POLAROID_SUFFIX} #{date}#{ANIMATION_SUFFIX}", dir: dir)
+      (1..4).each { |i| GpioPort.off(GpioPort::GPIO_PORTS["PICTURE#{i}"]) }
       GpioPort.off(GpioPort::GPIO_PORTS['PROCESSING'])
       new(date)
     end
