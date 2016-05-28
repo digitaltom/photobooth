@@ -19,18 +19,14 @@
         %div{'ng-transclude'=>'true'}
 
     %script{'type'=>"text/ng-template", 'id'=>"picture_shoot.html"}
-      %div.modal-header
-        %h3.modal-title
-          Taking pictures
-      %div.modal-body
+      %div.modal-body.text-center
         %h3
           %b
-            Action,
-          taking 4 pictures
+            {{shoot_txt}}
 
-        %uib-progressbar.progress-striped.active{ max: "4", value: "current_shoot" }
+        %uib-progressbar.progress-striped.active#shoot-progress{ max: '100', value: 'shoot_progress' }
           %i
-            {{shoot_progress}}
+            {{shoot_progress_txt}}
 
         - (1..4).each_with_index do |i|
           = image_tag 'shoot_still_sw.png', { 'class' => 'countdown-img', 'ng-class' => "{ 'hidden': current_shoot >= #{i} }" }
