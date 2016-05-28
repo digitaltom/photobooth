@@ -10,12 +10,12 @@ class PictureSet
     def all
       dirs = Dir.glob(File.join(PICTURE_PATH, "*/*#{ANIMATION_SUFFIX}"))
                 .map { |f| f.gsub(PICTURE_PATH + '/', '').gsub(/\/[0-9\-_]*#{ANIMATION_SUFFIX}/, '') }
-      dirs.sort.reverse.map { |dir| new( dir ) }
+      dirs.sort.reverse.map { |dir| new(dir) }
     end
 
     def find(date)
       all_sets = PictureSet.all
-      ps = all_sets.detect{|ps| ps[:date] == date}
+      ps = all_sets.detect { |set| set[:date] == date }
       raise 'PictureSet not found' unless ps
       ps[:next] = all_sets[all_sets.index(ps) - 1]
       ps[:last] = all_sets[all_sets.index(ps) + 1]
@@ -40,7 +40,7 @@ class PictureSet
       # Merge all polaroid previews to an animated gif
       Syscall.execute("time convert -delay 60 #{date}_*#{POLAROID_SUFFIX} #{date}#{ANIMATION_SUFFIX}", dir: dir)
       GpioPort.off(GpioPort::GPIO_PORTS['PROCESSING'])
-      new( date )
+      new(date)
     end
 
     def destroy(date)
