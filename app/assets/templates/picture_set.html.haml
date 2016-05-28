@@ -3,16 +3,18 @@
 
 #button-start
   %a.btn.btn-default.btn-lg{ 'ng-href' => "#/" }
-    Start
+    %span
+      = image_tag 'take_picture.png', {:class => 'shoot_img_btn'}
+    %b Start
 
 #button-next
   %a.btn.btn-default.btn-lg{ 'ng-href' => "#/picture_set/{{picture_set.next.date}}" }
-    Next
+    %b > Next
 
 #button-last
   %a.btn.btn-default.btn-lg{ 'ng-href' => "#/picture_set/{{picture_set.last.date}}" }
-    Last
+    %b Last <
 
 #button-delete
-  %button.btn.btn-default.btn-lg{ 'ng-click' => 'destroy()'}
+  %button.btn.btn-default.btn-sm{ 'ng-click' => 'destroy()'}
     Delete this set

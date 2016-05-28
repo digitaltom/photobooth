@@ -25,12 +25,17 @@ body {
 
 .shoot_button {
     width: 430px;
-    margin: 0px 20px 0px 20px;
+    margin: 10px 20px 10px 20px;
 }
 
 .shoot_img {
     height: 200px;
     margin: 0px 70px 0px 70px;
+}
+
+.shoot_img_btn {
+    height: 30px;
+    margin: 0px 10px 0px 0px;
 }
 
 .gallery-img {
@@ -58,24 +63,24 @@ body {
 
 #button-start {
     position: absolute;
-    top: 0;
-    left: 40%;
+    top: 3px;
+    left: 3px;
 }
 
 #button-last {
     position: absolute;
     top: 45%;
-    left: 0;
+    left: 3px;
 }
 
 #button-next {
     position: absolute;
     top: 45%;
-    right: 0;
+    right: 3px;
 }
 
 #button-delete {
     position: absolute;
-    left: 40%;
-    bottom: 0;
+    right: 3px;
+    bottom: 3px;
 }
