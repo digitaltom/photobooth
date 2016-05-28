@@ -18,9 +18,11 @@ port 6 for 'picture 3', port 17 for 'picture 4' and port 24 for 'image procesing
 
 === TODO:
 
+* initial sleep
+* button responsiveness
 * Image upload
 * generate qrcode + shortlink for images
-* design
+* photo gallery
 
 
 === Prototype pictures:
