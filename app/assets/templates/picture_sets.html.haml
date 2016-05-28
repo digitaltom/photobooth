@@ -1,8 +1,10 @@
 .picture-sets.text-center
 
-  %button.btn.btn-default{type: 'button', 'ng-click' => 'takePicture()' }
+  %button.btn.btn-default.shoot_button{type: 'button', 'ng-click' => 'takePicture()' }
     %span
-      = image_tag 'take_picture.png', {:class => 'shoot_button'}
+      = image_tag 'take_picture.png', {:class => 'shoot_img'}
+    %h2
+      Click here to take an image
 
   %span{ 'ng-repeat' => 'picture_set in picture_sets'}
     %a{href: '#/picture_set/{{picture_set.date}}'}

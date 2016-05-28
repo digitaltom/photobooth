@@ -24,7 +24,12 @@ body {
 }
 
 .shoot_button {
-    height: 300px;
+    width: 430px;
+    margin: 0px 20px 0px 20px;
+}
+
+.shoot_img {
+    height: 200px;
     margin: 0px 70px 0px 70px;
 }
 
