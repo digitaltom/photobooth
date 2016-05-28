@@ -22,10 +22,10 @@ RSpec.describe PictureSet, type: :model do
 
   end
 
-  describe '#find' do
+  describe '#new' do
 
     it 'returns hash with all needed values' do
-      set = PictureSet.find '2099-01-01_01-48-33'
+      set = PictureSet.new '2099-01-01_01-48-33'
       expect(set).to_not be_empty
       expect(set[:path]).to_not be_empty
       expect(set[:date]).to_not be_empty
@@ -42,7 +42,7 @@ RSpec.describe PictureSet, type: :model do
     end
 
     it 'takes new picture' do
-      expect(PictureSet).to receive(:find)
+      expect(PictureSet).to receive(:new)
       allow(GpioPort).to receive(:on)
       allow(GpioPort).to receive(:off)
       PictureSet.create

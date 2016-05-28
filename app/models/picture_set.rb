@@ -17,8 +17,8 @@ class PictureSet
       all_sets = PictureSet.all
       ps = all_sets.detect{|ps| ps[:date] == date}
       raise 'PictureSet not found' unless ps
-      ps[:next] = all_sets[all_sets.index(ps) + 1]
-      ps[:last] = all_sets[all_sets.index(ps) - 1]
+      ps[:next] = all_sets[all_sets.index(ps) - 1]
+      ps[:last] = all_sets[all_sets.index(ps) + 1]
       ps
     end
 
