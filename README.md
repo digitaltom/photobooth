@@ -14,7 +14,7 @@ will work as a screen.
 
 LEDs can get connected to the raspberry pi's gpio ports.
 It uses port 23 for 'ready', port 4 for 'picture 1', port 5 for 'picture 2',
-port 6 for 'picture 3', port 17 for 'picture 4' and port 24 for 'image procesing'.
+port 6 for 'picture 3', port 17 for 'picture 4' and port 24 for 'image processing'.
 
 === TODO:
 
