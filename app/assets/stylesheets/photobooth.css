@@ -56,7 +56,26 @@ body {
     min-height: 40%;
 }
 
-#pictureset-buttons {
+#button-start {
     position: absolute;
-    z-index: 99;
+    top: 0;
+    left: 40%;
+}
+
+#button-last {
+    position: absolute;
+    top: 45%;
+    left: 0;
+}
+
+#button-next {
+    position: absolute;
+    top: 45%;
+    right: 0;
+}
+
+#button-delete {
+    position: absolute;
+    left: 40%;
+    bottom: 0;
 }

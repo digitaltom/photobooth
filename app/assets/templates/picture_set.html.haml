@@ -1,15 +1,18 @@
 .fullscreen
   %img{'ng-src'=>'/{{picture_set.path}}/{{picture_set.animation}}'}
 
-#pictureset-buttons
+#button-start
   %a.btn.btn-default.btn-lg{ 'ng-href' => "#/" }
     Start
 
+#button-next
   %a.btn.btn-default.btn-lg{ 'ng-href' => "#/picture_set/{{picture_set.next.date}}" }
     Next
 
+#button-last
   %a.btn.btn-default.btn-lg{ 'ng-href' => "#/picture_set/{{picture_set.last.date}}" }
     Last
 
+#button-delete
   %button.btn.btn-default.btn-lg{ 'ng-click' => 'destroy()'}
     Delete this set
