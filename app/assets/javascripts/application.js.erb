@@ -39,6 +39,10 @@ photoBoothApp.config(['$routeProvider',
       templateUrl: '<%= asset_path('picture_set.html') %>',
       controller: 'PictureSetCtrl'
     }).
+    when('/picture_set/:pictureSetId/gallery', {
+        templateUrl: '<%= asset_path('picture_set_gallery.html') %>',
+        controller: 'PictureSetCtrl'
+    }).
     otherwise({
       redirectTo: '/'
     });

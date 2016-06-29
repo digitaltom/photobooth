@@ -15,6 +15,10 @@
   %a.btn.btn-default.btn-lg{ 'ng-href' => "#/picture_set/{{picture_set.last.date}}" }
     %b Last <
 
+#button-all
+  %a.btn.btn-default.btn-lg{ 'ng-href' => "#/picture_set/{{picture_set.date}}/gallery" }
+    %b All pictures
+
 #button-delete
   %button.btn.btn-default.btn-sm{ 'ng-click' => 'destroy()'}
     Delete this set
