@@ -3,6 +3,7 @@ class PictureSet
   DATE_FORMAT = '%Y-%m-%d_%H-%M-%S'.freeze
   POLAROID_SUFFIX = '_polaroid.png'.freeze
   ANIMATION_SUFFIX = '_animation.gif'.freeze
+  COMBINED_SUFFIX = '_combined.jpg'.freeze
   PICTURE_PATH = File.join(Rails.root, 'public', 'picture_sets')
 
   class << self
@@ -23,7 +24,8 @@ class PictureSet
     end
 
     def new(date)
-      { path: "picture_sets/#{date}", date: date, animation: "#{date}#{ANIMATION_SUFFIX}",
+      { path: "picture_sets/#{date}", date: date,
+        animation: "#{date}#{ANIMATION_SUFFIX}", combined: "#{date}#{COMBINED_SUFFIX}",
         pictures: (1..4).map { |i| { polaroid: "#{date}_#{i}#{POLAROID_SUFFIX}", full: "#{date}_#{i}.jpg" } } }
     end
 
@@ -38,6 +40,12 @@ class PictureSet
       until !jobs.any?(&:status) do end
       # Merge all polaroid previews to an animated gif
       Syscall.execute("time convert -delay 60 #{date}_*#{POLAROID_SUFFIX} #{date}#{ANIMATION_SUFFIX}", dir: dir)
+      # Merge all images in one combined image
+      Thread.new do
+        Syscall.execute("time montage -geometry '25%x25%+25+25<' -background 'LightCoral' " \
+          "-title '#{OPTS.image_caption}' -font '#{OPTS.image_font}' -fill 'white' -pointsize 72 -gravity 'Center' " \
+          "#{date}_*.jpg #{date}#{COMBINED_SUFFIX}", dir: dir)
+      end
       (1..4).each { |i| GpioPort.off(GpioPort::GPIO_PORTS["PICTURE#{i}"]) }
       GpioPort.off(GpioPort::GPIO_PORTS['PROCESSING'])
       new(date)
