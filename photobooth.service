@@ -2,8 +2,8 @@
 Description=Starting photobooth rails app
 
 [Service]
-ExecStartPre=/usr/bin/rm -f /root/raspi/photobooth/tmp/pids/server.pid
-ExecStart=/root/raspi/photobooth/bin/rails s -b 0.0.0.0 -e production -p 80
+ExecStartPre=/bin/rm -f /root/photobooth/tmp/pids/server.pid
+ExecStart=/root/photobooth/bin/rails s -b 0.0.0.0 -e production -p 80
 
 [Install]
 WantedBy=multi-user.target
