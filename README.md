@@ -7,6 +7,7 @@
 
 This application is supposed to run on a linux machine which is connected to a gphoto supported camera.
 I've build it to run on a raspberry pi 2 with openSUSE, connected to a Nikon D60 camera.
+It also runs on a raspberry pi 3 with raspbian, see INSTALL file for an installation manual. 
 
 The Angular.js frontend uses a Rails server on the backend to trigger and process the pictures.
 Because this is a webapp, any tablet with a web-browser connected to the same wifi as the raspi
@@ -18,9 +19,7 @@ port 6 for 'picture 3', port 17 for 'picture 4' and port 24 for 'image processin
 
 === TODO:
 
-* Image upload
-* generate qrcode + shortlink for images
-
+* User access to images via wifi
 
 === Prototype pictures:
 
