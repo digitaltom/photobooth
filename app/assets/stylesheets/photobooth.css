@@ -25,6 +25,7 @@ body {
 
 .shoot_button {
     width: 430px;
+    max-width: 100%;
     margin: 10px 20px 10px 20px;
 }
 
@@ -40,6 +41,7 @@ body {
 
 .gallery-img {
     width: 470px;
+    max-width: 100%;
 }
 
 .fullscreen {
