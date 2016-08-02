@@ -17,11 +17,11 @@ LEDs can get connected to the raspberry pi's gpio ports.
 It uses port 23 for 'ready', port 4 for 'picture 1', port 5 for 'picture 2',
 port 6 for 'picture 3', port 17 for 'picture 4' and port 24 for 'image processing'.
 
-=== TODO:
+=== TODO:===
 
 * User access to images via wifi
 
-=== Prototype pictures:
+=== Prototype pictures:===
 
 ![alt tag](https://raw.github.com/digitaltom/photobooth/master/public/images/readme/box_front.jpg)
 ![alt tag](https://raw.github.com/digitaltom/photobooth/master/public/images/readme/internals.jpg)
