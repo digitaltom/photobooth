@@ -42,7 +42,7 @@ class PictureSet
       Syscall.execute("time convert -delay 60 #{date}_*#{POLAROID_SUFFIX} #{date}#{ANIMATION_SUFFIX}", dir: dir)
       # Merge all images in one combined image
       Thread.new do
-        Syscall.execute("time montage -geometry '25%x25%+25+25<' -background 'LightCoral' " \
+        Syscall.execute("time montage -geometry '25%x25%+25+25<' -background '#{OPTS.image_color}' " \
           "-title '#{OPTS.image_caption}' -font '#{OPTS.image_font}' -fill 'white' -pointsize 72 -gravity 'Center' " \
           "#{date}_*.jpg #{date}#{COMBINED_SUFFIX}", dir: dir)
       end
