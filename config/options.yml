@@ -1,7 +1,11 @@
 default:
   image_caption: 'Photobooth'
   image_font: 'LMMonoCaps10-Regular'
-  image_color: 'LightCoral'
+  image_fontsize: 11
+
+  combined_image_fontsize: 72
+  combined_image_bgcolor: 'LightCoral'
+
   dropbox:
     # raspi photobooth dropbox app:
     app_key: 123
