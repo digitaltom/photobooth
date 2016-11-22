@@ -41,11 +41,7 @@ class PictureSet
       # Merge all polaroid previews to an animated gif
       Syscall.execute("time convert -delay 60 #{date}_*#{POLAROID_SUFFIX} #{date}#{ANIMATION_SUFFIX}", dir: dir)
       # Merge all images in one combined image
-      Thread.new do
-        Syscall.execute("time montage -geometry '25%x25%+25+25<' -background '#{OPTS.image_color}' " \
-          "-title '#{OPTS.image_caption}' -font '#{OPTS.image_font}' -fill 'white' -pointsize 72 -gravity 'Center' " \
-          "#{date}_*.jpg #{date}#{COMBINED_SUFFIX}", dir: dir)
-      end
+      combine_images(date, dir)
       (1..4).each { |i| GpioPort.off(GpioPort::GPIO_PORTS["PICTURE#{i}"]) }
       GpioPort.off(GpioPort::GPIO_PORTS['PROCESSING'])
       new(date)
@@ -56,6 +52,14 @@ class PictureSet
     end
 
     private
+
+    def combine_images(date, dir)
+      Thread.new do
+        Syscall.execute("time montage -geometry '25%x25%+25+25<' -background '#{OPTS.image_color}' " \
+          "-title '#{OPTS.image_caption}' -font '#{OPTS.image_font}' -fill 'white' -pointsize 72 -gravity 'Center' " \
+          "#{date}_*.jpg #{date}#{COMBINED_SUFFIX}", dir: dir)
+      end
+    end
 
     def capture_job(i, date, dir, angle, caption = nil)
       GpioPort.on(GpioPort::GPIO_PORTS["PICTURE#{i}"])
