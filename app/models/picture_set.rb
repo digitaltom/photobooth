@@ -56,8 +56,9 @@ class PictureSet
     def combine_images(date, dir)
       Thread.new do
         Syscall.execute("time montage -geometry '25%x25%+25+25<' -background '#{OPTS.combined_image_bgcolor}' " \
-          "-title '#{OPTS.image_caption}' -font '#{OPTS.image_font}' -fill 'white' -pointsize #{OPTS.combined_image_fontsize} -gravity 'Center' " \
-          "#{date}_*.jpg #{date}#{COMBINED_SUFFIX}", dir: dir)
+          "-title '#{OPTS.image_caption}' -font '#{OPTS.image_font}' -fill 'white' " \
+          "-pointsize #{OPTS.combined_image_fontsize} -gravity 'Center' #{date}_*.jpg #{date}#{COMBINED_SUFFIX}",
+                        dir: dir)
       end
     end
 
@@ -67,7 +68,8 @@ class PictureSet
       Syscall.execute("gphoto2 --capture-image-and-download --filename #{date}_#{i}.jpg", dir: dir)
       t = Thread.new do
         Syscall.execute("time convert -caption '#{caption}' #{date}_#{i}.jpg -sample 600 -bordercolor Snow " \
-        "-density 100 -gravity center -pointsize #{OPTS.image_fontsize} -polaroid -#{angle} #{date}_#{i}#{POLAROID_SUFFIX}", dir: dir)
+        "-density 100 -gravity center -pointsize #{OPTS.image_fontsize} " \
+        "-polaroid -#{angle} #{date}_#{i}#{POLAROID_SUFFIX}", dir: dir)
       end
       t.abort_on_exception = true
       t
