@@ -1,4 +1,4 @@
-== Installation of the photobooth software on a raspberry pi 3 with raspbian: 
+##Installation of the photobooth software on a raspberry pi 3 with raspbian: 
 
 - Download and install raspbian: https://www.raspberrypi.org/downloads/raspbian/
 - Boot raspbian (connected to monitor and keyboard) and set up ssh for easy access (default login: pi:raspberry)
