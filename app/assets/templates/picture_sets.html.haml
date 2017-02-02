@@ -1,6 +1,6 @@
 .picture-sets.text-center
 
-  %button.btn.btn-default.shoot_button{type: 'button', 'ng-click' => 'takePicture()' }
+  %button.btn.btn-default.shoot_button{type: 'button', 'ng-click' => 'takePicture()', 'ng-hide' => 'rw'  }
     %span
       = image_tag 'take_picture.png', {:class => 'shoot_img'}
     %h2

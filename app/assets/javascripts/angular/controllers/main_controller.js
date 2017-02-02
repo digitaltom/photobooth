@@ -96,5 +96,7 @@ photoBoothApp.controller('MainCtrl', [
 
     $scope.update();
 
+    $scope.rw = (location.search != '?rw/');
+
   }]);
 

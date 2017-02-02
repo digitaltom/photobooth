@@ -36,5 +36,7 @@ photoBoothApp.controller('PictureSetCtrl', [
 
     $scope.loadPictureSet()
 
+    $scope.rw = (location.search != '?rw/');
+
   }]);
 
