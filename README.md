@@ -17,9 +17,17 @@ LEDs can get connected to the raspberry pi's gpio ports.
 It uses port 23 for 'ready', port 4 for 'picture 1', port 5 for 'picture 2',
 port 6 for 'picture 3', port 17 for 'picture 4' and port 24 for 'image processing'.
 
-## TODO:
+By default, the UI runs in read-only mode, so that you can share the url with the users, 
+that are connected to the same wifi. So they can directly download and share the picture 
+with their mobile phone. 
 
-* User access to images via wifi
+To load the UI in record mode (with 'take picture' button), access it with: http://<ip>/?rw/#/
+
+## Photobox pictures: 
+
+As a wedding box: 
+
+![wedding_box](https://user-images.githubusercontent.com/582520/32445572-765e1e0a-c306-11e7-92b4-99331baf6092.png)
 
 ## Prototype pictures:
 
