@@ -10,7 +10,7 @@ class PictureSet
 
     def all
       dirs = Dir.glob(File.join(PICTURE_PATH, "*/*#{ANIMATION_SUFFIX}")).map do |animation|
-        File.dirname(animation).gsub(PICTURE_PATH + '/', '')
+        File.basename(File.dirname(animation))
       end
       dirs.sort.reverse.map { |dir| new(dir) }
     end
@@ -65,8 +65,25 @@ class PictureSet
 
     def capture_job(num, date, dir, angle)
       GpioPort.on(GpioPort::GPIO_PORTS["PICTURE#{num}"])
+      begin
+        retries ||= 0
+        Syscall.execute("gphoto2 --capture-image-and-download --filename #{date}_#{num}.jpg", dir: dir)
+        raise 'Image capture failed' unless File.exist?(File.join(dir, "#{date}_#{num}.jpg"))
+      rescue StandardError => e
+        # rubocop:disable GuardClause
+        if (retries += 1) < 3
+          Rails.logger.warn("Retrying image ##{num} capture...")
+          retry
+        else
+          raise e
+        end
+        # rubocop:enable GuardClause
+      end
+      convert_thread(num, date, dir, angle)
+    end
+
+    def convert_thread(num, date, dir, angle)
       caption = OPTS.image_caption || date
-      Syscall.execute("gphoto2 --capture-image-and-download --filename #{date}_#{num}.jpg", dir: dir)
       t = Thread.new do
         Syscall.execute("time convert -caption '#{caption}' #{date}_#{num}.jpg -sample 600 -bordercolor Snow " \
         "-density 100 -gravity center -pointsize #{OPTS.image_fontsize} " \
@@ -75,7 +92,6 @@ class PictureSet
       t.abort_on_exception = true
       t
     end
-
   end
 
 end

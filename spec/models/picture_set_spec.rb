@@ -3,17 +3,16 @@ require 'rails_helper'
 # rubocop:disable BlockLength
 RSpec.describe PictureSet, type: :model do
 
-  describe '#all' do
+  before do
+    stub_const('PictureSet::PICTURE_PATH', Rails.root.join('spec', 'fixtures', 'filesystem'))
+  end
 
-    before do
-      # PictureSet::PICTURE_PATH = Rails.root.join('spec', 'fixtures', 'filesystem').to_s
-      allow(Rails.root).to receive(:join).with('public', 'picture_sets')
-                                         .and_return(Rails.root, 'spec', 'fixtures', 'filesystem')
-    end
+  describe '#all' do
 
     it 'finds all picture sets' do
       sets = PictureSet.all
       expect(sets).to_not be_empty
+      expect(sets.first[:path]).to eq 'picture_sets/2099-01-01_01-48-33'
     end
 
     it 'skips incomplete picture sets' do
@@ -46,6 +45,7 @@ RSpec.describe PictureSet, type: :model do
       expect(PictureSet).to receive(:new)
       allow(GpioPort).to receive(:on)
       allow(GpioPort).to receive(:off)
+      allow(File).to receive(:exist?).and_return(true)
       PictureSet.create
     end
 

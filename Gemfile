@@ -28,10 +28,10 @@ gem 'config-parser'
 
 group :development do
   gem 'awesome_print'
-  gem 'byebug'
 end
 
 group :development, :test do
+  gem 'byebug'
   gem 'rubocop', require: false
 end
 
