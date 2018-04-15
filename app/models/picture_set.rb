@@ -9,8 +9,9 @@ class PictureSet
   class << self
 
     def all
-      dirs = Dir.glob(File.join(PICTURE_PATH, "*/*#{ANIMATION_SUFFIX}"))
-                .map { |f| f.gsub(PICTURE_PATH + '/', '').gsub(/\/[0-9\-_]*#{ANIMATION_SUFFIX}/, '') }
+      dirs = Dir.glob(File.join(PICTURE_PATH, "*/*#{ANIMATION_SUFFIX}")).map do |animation|
+        File.dirname(animation).gsub(PICTURE_PATH + '/', '')
+      end
       dirs.sort.reverse.map { |dir| new(dir) }
     end
 
