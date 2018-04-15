@@ -30,7 +30,7 @@ RSpec.describe Syscall, type: :model do
     end
 
     it 'raises on non-zero exit code' do
-      expect { Syscall.execute('ls /no') }.to raise_error(RuntimeError, /cannot access \/no/)
+      expect { Syscall.execute('ls /no') }.to raise_error(RuntimeError, /No such file/)
     end
 
   end

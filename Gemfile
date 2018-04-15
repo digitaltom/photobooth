@@ -1,6 +1,5 @@
 source 'https://rubygems.org'
 
-# Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 4.2.4'
 gem 'sqlite3'
 # angular-rails-templates currently only works with sprocket-rails 2
@@ -26,7 +25,6 @@ gem 'quiet_assets'
 
 # file upload + qrcode
 gem 'config-parser'
-gem 'dropbox-api'
 
 group :development do
   gem 'byebug'
