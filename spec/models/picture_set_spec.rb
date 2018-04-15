@@ -1,13 +1,14 @@
 require 'rails_helper'
 
+# rubocop:disable BlockLength
 RSpec.describe PictureSet, type: :model do
 
   describe '#all' do
 
     before do
-      expect(File).to receive(:join).with(PictureSet::PICTURE_PATH, "*/*#{PictureSet::ANIMATION_SUFFIX}")
-        .and_return(File.join(File.join(Rails.root, 'spec', 'fixtures', 'filesystem'),
-                              "*/*#{PictureSet::ANIMATION_SUFFIX}"))
+      # PictureSet::PICTURE_PATH = Rails.root.join('spec', 'fixtures', 'filesystem').to_s
+      allow(Rails.root).to receive(:join).with('public', 'picture_sets')
+                                         .and_return(Rails.root, 'spec', 'fixtures', 'filesystem')
     end
 
     it 'finds all picture sets' do
@@ -61,3 +62,4 @@ RSpec.describe PictureSet, type: :model do
   end
 
 end
+# rubocop:enable BlockLength

@@ -1,5 +1,5 @@
 Rails:
-  Enabled: true 
+  Enabled: true
 
 AllCops:
   DisplayCopNames: true
@@ -12,10 +12,10 @@ AllCops:
 LineLength:
   Max: 120
 
-Style/EmptyLinesAroundClassBody:
+Layout/EmptyLinesAroundClassBody:
   Enabled: false
 
-Style/EmptyLinesAroundBlockBody:
+Layout/EmptyLinesAroundBlockBody:
   Enabled: false
 
 Metrics/MethodLength:
@@ -36,5 +36,5 @@ Documentation:
 Style/BlockComments:
   Enabled: false
 
-Style/MultilineOperationIndentation:
+Layout/MultilineOperationIndentation:
   EnforcedStyle: indented

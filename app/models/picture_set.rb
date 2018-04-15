@@ -4,7 +4,7 @@ class PictureSet
   POLAROID_SUFFIX = '_polaroid.png'.freeze
   ANIMATION_SUFFIX = '_animation.gif'.freeze
   COMBINED_SUFFIX = '_combined.jpg'.freeze
-  PICTURE_PATH = File.join(Rails.root, 'public', 'picture_sets')
+  PICTURE_PATH = Rails.root.join('public', 'picture_sets').to_s
 
   class << self
 
@@ -33,12 +33,12 @@ class PictureSet
     def create
       date = Time.now.getlocal.strftime(DATE_FORMAT)
       dir = "#{PICTURE_PATH}/#{date}"
-      angle = -7 + Random.rand(14) + 360
+      angle = Random.rand(353..366)
       Syscall.execute("mkdir #{date}", dir: PICTURE_PATH)
-      jobs = (1..4).collect { |i| capture_job(i, date, dir, angle, OPTS.image_caption) }
+      jobs = (1..4).collect { |i| capture_job(i, date, dir, angle) }
       GpioPort.on(GpioPort::GPIO_PORTS['PROCESSING'])
       # wait until convert jobs are finished
-      until !jobs.any?(&:status) do end
+      until jobs.none?(&:status) do end
       # Merge all polaroid previews to an animated gif
       Syscall.execute("time convert -delay 60 #{date}_*#{POLAROID_SUFFIX} #{date}#{ANIMATION_SUFFIX}", dir: dir)
       # Merge all images in one combined image
@@ -63,14 +63,14 @@ class PictureSet
       end
     end
 
-    def capture_job(i, date, dir, angle, caption = nil)
-      GpioPort.on(GpioPort::GPIO_PORTS["PICTURE#{i}"])
-      caption ||= date
-      Syscall.execute("gphoto2 --capture-image-and-download --filename #{date}_#{i}.jpg", dir: dir)
+    def capture_job(num, date, dir, angle)
+      GpioPort.on(GpioPort::GPIO_PORTS["PICTURE#{num}"])
+      caption = OPTS.image_caption || date
+      Syscall.execute("gphoto2 --capture-image-and-download --filename #{date}_#{num}.jpg", dir: dir)
       t = Thread.new do
-        Syscall.execute("time convert -caption '#{caption}' #{date}_#{i}.jpg -sample 600 -bordercolor Snow " \
+        Syscall.execute("time convert -caption '#{caption}' #{date}_#{num}.jpg -sample 600 -bordercolor Snow " \
         "-density 100 -gravity center -pointsize #{OPTS.image_fontsize} " \
-        "-polaroid -#{angle} #{date}_#{i}#{POLAROID_SUFFIX}", dir: dir)
+        "-polaroid -#{angle} #{date}_#{num}#{POLAROID_SUFFIX}", dir: dir)
       end
       t.abort_on_exception = true
       t

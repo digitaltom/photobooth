@@ -5,9 +5,9 @@ gem 'sqlite3'
 # angular-rails-templates currently only works with sprocket-rails 2
 gem 'sprockets-rails', '~> 2.3.3'
 
-gem 'haml'
-gem 'angular_rails_csrf'
 gem 'angular-rails-templates'
+gem 'angular_rails_csrf'
+gem 'haml'
 
 source 'https://rails-assets.org' do
   gem 'rails-assets-angular'
@@ -20,15 +20,15 @@ gem 'uglifier', '>= 1.3.0'
 # gem 'therubyracer', platforms: :ruby
 
 # Use Unicorn as the app server
-gem 'unicorn-rails'
 gem 'quiet_assets'
+gem 'unicorn-rails'
 
 # file upload + qrcode
 gem 'config-parser'
 
 group :development do
-  gem 'byebug'
   gem 'awesome_print'
+  gem 'byebug'
 end
 
 group :development, :test do
@@ -41,8 +41,8 @@ group :development, :production do
 end
 
 group :test do
-  gem 'rspec-rails'
   gem 'capybara'
-  gem 'simplecov'
   gem 'coveralls', require: false
+  gem 'rspec-rails'
+  gem 'simplecov'
 end
