@@ -22,6 +22,18 @@ RSpec.describe PictureSet, type: :model do
 
   end
 
+  describe '#find' do
+
+    it 'returns found set' do
+      expect(PictureSet.find('2099-01-01_01-48-33')).to be_kind_of Hash
+    end
+
+    it 'raises if not found' do
+      expect { PictureSet.find('123') }.to raise_error('PictureSet not found')
+    end
+
+  end
+
   describe '#new' do
 
     it 'returns hash with all needed values' do
@@ -47,6 +59,12 @@ RSpec.describe PictureSet, type: :model do
       allow(GpioPort).to receive(:off)
       allow(File).to receive(:exist?).and_return(true)
       PictureSet.create
+    end
+
+    it 'raises if image capture failed' do
+      allow(GpioPort).to receive(:on)
+      allow(GpioPort).to receive(:off)
+      expect { PictureSet.create }.to raise_error('Image capture failed')
     end
 
   end
