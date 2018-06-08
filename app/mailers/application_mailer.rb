@@ -1,4 +1,4 @@
 class ApplicationMailer < ActionMailer::Base
-  default from: 'noreply@photobooth.org'
+  default from: OPTS.mail_from
   layout 'mailer'
 end

@@ -6,6 +6,8 @@ default:
   background_color: '#f1f1f2'
   combined_image_fontsize: 48
 
+  mail_from: 'noreply@photobooth.org'
+
 
   dropbox:
     # raspi photobooth dropbox app:
