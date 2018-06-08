@@ -25,7 +25,7 @@ class PictureSet
     end
 
     def new(date)
-      { path: "picture_sets/#{date}", date: date,
+      { path: "picture_sets/#{date}", full_path: Rails.root.join('public', "picture_sets/#{date}"), date: date,
         animation: "#{date}#{ANIMATION_SUFFIX}", combined: "#{date}#{COMBINED_SUFFIX}",
         pictures: (1..4).map { |i| { polaroid: "#{date}_#{i}#{POLAROID_SUFFIX}", full: "#{date}_#{i}.jpg" } } }
     end
@@ -57,7 +57,7 @@ class PictureSet
     def combine_images(date, dir)
       Thread.new do
         Syscall.execute("time montage -geometry '25%x25%+25+25<' -background '#{OPTS.background_color}' " \
-          "-title '#{OPTS.image_caption}' -font '#{OPTS.image_font}' -fill '#{OPTS.font_color}' " \
+          "-title '#{OPTS.image_caption}' -font '#{OPTS.font}' -fill '#{OPTS.font_color}' " \
           "-pointsize #{OPTS.combined_image_fontsize} -gravity 'Center' #{date}_*.jpg #{date}#{COMBINED_SUFFIX}",
                         dir: dir)
       end

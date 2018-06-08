@@ -1,0 +1,15 @@
+.container.mail-container
+  .row
+    .col-lg-8.col-lg-offset-2
+      %img.img-responsive.center-block{'ng-src'=>'/{{picture_set.path}}/{{picture_set.animation}}'}
+  .row
+    .col-md-8.col-md-offset-2
+      %p.lead.text-center
+        Please enter your email adress here to get your memories sent immediately:
+  .row
+    .col-md-8.col-md-offset-2
+      %form.center-block
+        .form-group
+          %input.form-control#email{ 'ng-model' => 'emailFormData.email', 'type' => 'email', 'placeholder' => 'Email' }
+        %a.btn.btn-default.btn-lg{ 'ng-click' => "send_email()" }
+          %b Send email
