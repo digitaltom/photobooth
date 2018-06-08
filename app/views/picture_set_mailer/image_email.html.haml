@@ -1,6 +1,6 @@
 %div{ 'style' => "text-align: center; color: #{OPTS.font_color};" }
   %h1
-    Kind regards from 
+    Kind regards from
     = OPTS.image_caption
   %p
     We hope you also had an amazing time. Four of these unforgettable memories are attached to this email.
@@ -8,5 +8,6 @@
     Have fun!
   %p
     = image_tag attachments['animation.gif'].url
-  %p
-    = image_tag attachments['combined.jpg'].url
+  - if attachments.inline['combined.jpg']
+    %p
+      = image_tag attachments['combined.jpg'].url
