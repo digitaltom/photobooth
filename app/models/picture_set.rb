@@ -56,8 +56,8 @@ class PictureSet
 
     def combine_images(date, dir)
       Thread.new do
-        Syscall.execute("time montage -geometry '25%x25%+25+25<' -background '#{OPTS.combined_image_bgcolor}' " \
-          "-title '#{OPTS.image_caption}' -font '#{OPTS.image_font}' -fill 'white' " \
+        Syscall.execute("time montage -geometry '25%x25%+25+25<' -background '#{OPTS.background_color}' " \
+          "-title '#{OPTS.image_caption}' -font '#{OPTS.image_font}' -fill '#{OPTS.font_color}' " \
           "-pointsize #{OPTS.combined_image_fontsize} -gravity 'Center' #{date}_*.jpg #{date}#{COMBINED_SUFFIX}",
                         dir: dir)
       end
