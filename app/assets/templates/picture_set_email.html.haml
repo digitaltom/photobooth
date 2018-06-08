@@ -4,11 +4,11 @@
       %p.lead.text-center
         Get your picture send to you immediately:
   .row
-    .col-sm-9
+    .col-sm-10
       %form.center-block
         .form-group
           %input.input-lg.form-control#email{ 'ng-model' => 'emailFormData.email', 'type' => 'email', 'placeholder' => 'Email', 'size' => '20' }
-    .col-sm-3
+    .col-sm-2
       %a.btn.btn-default.btn-lg{ 'ng-click' => "send_email()" }
         %b Send email
   .row

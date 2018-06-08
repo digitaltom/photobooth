@@ -25,7 +25,7 @@ class PictureSet
     end
 
     def new(date)
-      { path: "picture_sets/#{date}", full_path: Rails.root.join('public', "picture_sets/#{date}"), date: date,
+      { path: "picture_sets/#{date}", date: date,
         animation: "#{date}#{ANIMATION_SUFFIX}", combined: "#{date}#{COMBINED_SUFFIX}",
         pictures: (1..4).map { |i| { polaroid: "#{date}_#{i}#{POLAROID_SUFFIX}", full: "#{date}_#{i}.jpg" } } }
     end
