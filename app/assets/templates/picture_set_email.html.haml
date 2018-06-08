@@ -1,15 +1,20 @@
 .container.mail-container
   .row
-    .col-lg-8.col-lg-offset-2
-      %img.img-responsive.center-block{'ng-src'=>'/{{picture_set.path}}/{{picture_set.animation}}'}
-  .row
-    .col-md-8.col-md-offset-2
+    .col-sm-12
       %p.lead.text-center
-        Please enter your email adress here to get your memories sent immediately:
+        Get your picture send to you immediately:
   .row
-    .col-md-8.col-md-offset-2
+    .col-sm-9
       %form.center-block
         .form-group
-          %input.form-control#email{ 'ng-model' => 'emailFormData.email', 'type' => 'email', 'placeholder' => 'Email' }
-        %a.btn.btn-default.btn-lg{ 'ng-click' => "send_email()" }
-          %b Send email
+          %input.input-lg.form-control#email{ 'ng-model' => 'emailFormData.email', 'type' => 'email', 'placeholder' => 'Email', 'size' => '20' }
+    .col-sm-3
+      %a.btn.btn-default.btn-lg{ 'ng-click' => "send_email()" }
+        %b Send email
+  .row
+    .col-sm-12
+      %img.img-responsive.center-block{'ng-src'=>'/{{picture_set.path}}/{{picture_set.animation}}'}
+
+  .row.text-center
+    %a.btn.btn-default.btn-lg{ 'ng-href' => "#/picture_set/{{picture_set.date}}" }
+      %b Back

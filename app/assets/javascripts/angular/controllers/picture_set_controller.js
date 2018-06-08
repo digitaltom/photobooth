@@ -41,7 +41,7 @@ photoBoothApp.controller('PictureSetCtrl', [
         data: $scope.emailFormData,
         url: '/picture_sets/'+ $routeParams.pictureSetId + '/emails'
       }).then(function successCallback(response) {
-        $scope.alerts.push({type: 'success', msg: 'Successfully sent email.'});
+        $scope.alerts.push({type: 'success', msg: 'Successfully sent email to ' + $scope.emailFormData.email});
         $location.path( '/' );
       }, function errorCallback(response) {
         $rootScope.alerts.push({type: 'error', msg: response.data.error});

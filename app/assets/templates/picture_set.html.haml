@@ -17,9 +17,10 @@
 
 #button-all
   %a.btn.btn-default.btn-lg{ 'ng-href' => "#/picture_set/{{picture_set.date}}/email" }
-    %b Send per Mail
+    %b Send per email
+  %br
   %a.btn.btn-default.btn-lg{ 'ng-href' => "#/picture_set/{{picture_set.date}}/gallery" }
-    %b All pictures
+    %b Single pictures
 
 #button-delete{ 'ng-hide' => 'rw' }
   %button.btn.btn-default.btn-sm{ 'ng-click' => 'destroy()'}
