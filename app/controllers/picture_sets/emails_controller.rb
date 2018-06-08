@@ -1,6 +1,5 @@
 module PictureSets
   class EmailsController < ApplicationController
-    protect_from_forgery with: :exception
 
     def create
       picture_set = PictureSet.find(params[:picture_set_id])
