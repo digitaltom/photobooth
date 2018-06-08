@@ -6,8 +6,14 @@ default:
   background_color: '#f1f1f2'
   combined_image_fontsize: 48
 
-  mail_from: 'noreply@photobooth.org'
-
+  mail_settings:
+    from: ''
+    address: ''
+    port: 587
+    user_name: ''
+    password: ''
+    authentication: 'plain'
+    enable_starttls_auto: true
 
   dropbox:
     # raspi photobooth dropbox app:

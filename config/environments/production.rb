@@ -79,11 +79,11 @@ Rails.application.configure do
 
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
-    address: '',
-    port: 587,
-    user_name: '',
-    password: '',
-    authentication: 'plain',
-    enable_starttls_auto: true
+    address: OPTS.mail_settings['address'],
+    port: OPTS.mail_settings['port'],
+    user_name: OPTS.mail_settings['user_name'],
+    password: OPTS.mail_settings['password'],
+    authentication: OPTS.mail_settings['authentication'],
+    enable_starttls_auto: OPTS.mail_settings['enable_starttls_auto']
   }
 end
