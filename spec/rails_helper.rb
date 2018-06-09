@@ -19,6 +19,7 @@ Capybara.register_driver :headless_chrome do |app|
                                  desired_capabilities: capabilities
 end
 
+# capybara cheat sheet: https://gist.github.com/zhengjia/428105
 Capybara.javascript_driver = :headless_chrome
 
 RSpec.configure do |config|
