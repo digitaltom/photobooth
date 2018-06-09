@@ -1,6 +1,9 @@
 language: ruby
 rvm:
  - 2.1.5
+sudo: required
+addons:
+  chrome: stable
 script:
  - 'bundle exec rspec'
  - 'bundle exec rubocop -S'
