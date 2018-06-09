@@ -6,6 +6,8 @@ class PictureSetMailer < ApplicationMailer
     if File.exist?(File.join(image_path, picture_set[:combined]))
       attachments.inline['combined.jpg'] = File.read(File.join(image_path, picture_set[:combined]))
     end
-    mail(to: email, subject: "Your Photobox picture from '#{OPTS.image_caption}'")
+    I18n.with_locale(OPTS.locale) do
+      mail(to: email, subject: I18n.t('picture_set_mailer.image_email.subject', name: OPTS.image_caption))
+    end
   end
 end

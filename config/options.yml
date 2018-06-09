@@ -5,6 +5,7 @@ default:
   font_color: '#1995AD'
   background_color: '#f1f1f2'
   combined_image_fontsize: 48
+  locale: :de # available :en, :de
 
   mail_settings:
     from: ''

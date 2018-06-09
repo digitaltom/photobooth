@@ -1,11 +1,10 @@
 %div{ 'style' => "text-align: center; color: #{OPTS.font_color};" }
   %h1
-    Kind regards from
-    = OPTS.image_caption
+    = t('.header', name: OPTS.image_caption)
   %p
-    We hope you also had an amazing time. Four of these unforgettable memories are attached to this email.
+    = t('.content')
   %p
-    Have fun!
+    = t('.greeting')
   %p
     = image_tag attachments['animation.gif'].url
   - if attachments.inline['combined.jpg']
