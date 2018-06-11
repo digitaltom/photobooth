@@ -19,10 +19,10 @@
 # To learn more, please read the Rails Internationalization guide
 # available at http://guides.rubyonrails.org/i18n.html.
 
-en:
+de:
   picture_set_mailer:
     image_email:
-      subject: "Your Photobox picture from '%{name}'"
-      header: 'Kind regards from %{name}'
-      content: 'We hope you also had an amazing time. Four of these unforgettable memories are attached to this email.'
-      greeting: 'Have fun!'
+      subject: "Deine Photobox Bilder von '%{name}'"
+      header: 'Viele Grüße von %{name}'
+      content: 'Wir hoffen du hattest eine ebenso unvergessliche Zeit wie wir. Vier dieser einmaligen Momente haben wir für dich festgehalten. Hier sind deine Erinnerungsstücke!'
+      greeting: 'Viel Spaß!'

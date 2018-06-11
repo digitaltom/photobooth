@@ -10,6 +10,7 @@ photoBoothApp.controller('PictureSetCtrl', [
 
     $log.log('$routeParams.pictureSetId: ' + $routeParams.pictureSetId)
     $scope.pictureSetId = $routeParams.pictureSetId;
+    $scope.emailFormData = {}
 
     $scope.loadPictureSet = function () {
       $http({
@@ -34,9 +35,21 @@ photoBoothApp.controller('PictureSetCtrl', [
       });
     };
 
+    $scope.send_email = function() {
+      $http({
+        method: 'POST',
+        data: $scope.emailFormData,
+        url: '/picture_sets/'+ $routeParams.pictureSetId + '/emails'
+      }).then(function successCallback(response) {
+        $scope.alerts.push({type: 'success', msg: 'Successfully sent email to ' + $scope.emailFormData.email});
+        $location.path( '/' );
+      }, function errorCallback(response) {
+        $rootScope.alerts.push({type: 'error', msg: response.data.error});
+      });
+    };
+
     $scope.loadPictureSet()
 
     $scope.rw = (location.search != '?rw/');
 
   }]);
-

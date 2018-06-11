@@ -1,10 +1,20 @@
 default:
   image_caption: 'Photobooth'
-  image_font: 'LMMonoCaps10-Regular'
   image_fontsize: 11
+  font: 'LMMonoCaps10-Regular'
+  font_color: '#1995AD'
+  background_color: '#f1f1f2'
+  combined_image_fontsize: 48
+  locale: :de # available :en, :de
 
-  combined_image_fontsize: 72
-  combined_image_bgcolor: 'LightCoral'
+  mail_settings:
+    from: ''
+    address: ''
+    port: 587
+    user_name: ''
+    password: ''
+    authentication: 'plain'
+    enable_starttls_auto: true
 
   dropbox:
     # raspi photobooth dropbox app:

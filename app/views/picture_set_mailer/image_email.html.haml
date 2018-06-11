@@ -1,0 +1,12 @@
+%div{ 'style' => "text-align: center; color: #{OPTS.font_color};" }
+  %h1
+    = t('.header', name: OPTS.image_caption)
+  %p
+    = t('.content')
+  %p
+    = t('.greeting')
+  %p
+    = image_tag attachments['animation.gif'].url
+  - if attachments.inline['combined.jpg']
+    %p
+      = image_tag attachments['combined.jpg'].url

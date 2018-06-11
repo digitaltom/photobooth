@@ -2,10 +2,12 @@
   .row
     .col-lg-3.col-md-4.col-xs-6.thumb{ 'ng-repeat' => 'picture in picture_set.pictures'}
       %a.thumbnail{ 'ng-href' => "{{picture_set.path}}/{{picture.full}}" }
-        %img.img-responsive{ style: 'width:400px;', src: "{{picture_set.path}}/{{picture.full}}", alt: "" }
+        %img.img-responsive{ style: 'width:400px;', src: "{{picture_set.path}}/{{picture.polaroid}}", alt: "" }
     .col-lg-3.col-md-4.col-xs-6.thumb
       %a.thumbnail{ 'ng-href' => "{{picture_set.path}}/{{picture_set.combined}}" }
         %img.img-responsive{ style: 'width:400px;', 'ng-src' => "{{picture_set.path}}/{{picture_set.combined}}", alt: "" }
-  .row
+  .row.text-center
     %a.btn.btn-default.btn-lg{ 'ng-href' => "#/picture_set/{{picture_set.date}}" }
       %b Back
+    %a.btn.btn-default.btn-lg{ 'ng-href' => "#/picture_set/{{picture_set.date}}/email" }
+      %b Send per email
