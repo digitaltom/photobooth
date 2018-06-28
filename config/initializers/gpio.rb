@@ -1,4 +1,5 @@
-# rubocop:disable Output Lint/RescueException
+# rubocop:disable Output
+# rubocop:disable Lint/RescueException
 begin
   $VERBOSE = nil
   require 'pi_piper'
@@ -11,3 +12,4 @@ ensure
   $VERBOSE = false
 end
 # rubocop:enable Output
+# rubocop:enable Lint/RescueException
