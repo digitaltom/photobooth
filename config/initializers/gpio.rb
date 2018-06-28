@@ -8,6 +8,6 @@ rescue Exception
   Object.send(:remove_const, :PiPiper)
   puts '*** Running without gpio support'
 ensure
-  $VERBOSE = nil
+  $VERBOSE = false
 end
 # rubocop:enable Output
