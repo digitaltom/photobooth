@@ -53,6 +53,7 @@ namespace :picture_set do
 
   def combine_images(date, path)
     dir = File.join(path, date)
+    return if File.exist?(File.join(dir, "#{date}#{COMBINED_SUFFIX}"))
     begin
       Syscall.execute("time montage -geometry '25%x25%+25+25<' -background '#{OPTS.background_color}' " \
         "-title '#{OPTS.image_caption}' -font '#{OPTS.font}' -fill '#{OPTS.font_color}' " \
