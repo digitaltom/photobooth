@@ -1,67 +1,29 @@
 require 'fileutils'
 
-# rubocop:disable Metrics/BlockLength
 namespace :picture_set do
-  COMBINED_SUFFIX = '_combined.jpg'.freeze
 
-  desc 'Combine all images into one'
-  task :combine_images, [:path] => [:environment] do |_task, args|
-    path = args[:path]
-    path = Rails.root.join('public', 'picture_sets') if path.blank?
-    puts "Using directory #{path}."
-    Dir.chdir(path) do
-      picture_sets = Dir.glob('*').select { |f| File.directory? f }
-      picture_sets.each do |date|
-        puts "Processing #{date}..."
-        combine_images(date, path)
+  desc 'Re-create collage images'
+  task :recreate_collage_images, [:path] => [:environment] do |_task, args|
+    PictureSet::PICTURE_PATH = args[:path] if args[:path].present?
+    PictureSet.all.each { |ps| ps.combine_images(overwrite: true) }
+  end
+
+  desc 'Re-create polaroid gifs'
+  task :recreate_polaroid_images, [:path] => [:environment] do |_task, args|
+    PictureSet::PICTURE_PATH = args[:path] if args[:path].present?
+    PictureSet.all.each { |ps| ps.create_animation(overwrite: true) }
+  end
+
+  desc 'Exports all images into a single directory (without the single polaroids)'
+  task :export, %i[output path] => [:environment] do |_task, args|
+    PictureSet::PICTURE_PATH = args[:path] if args[:path].present?
+    puts "copying from #{PictureSet::PICTURE_PATH} to #{args[:output]}."
+    PictureSet.all.each do |ps|
+      Dir.chdir(ps.dir) do
+        FileUtils.cp(ps.animation, args[:output])
+        FileUtils.cp(ps.pictures.map { |p| p[:full] }, args[:output])
       end
     end
   end
 
-  desc 'Remove combined images. Necessary before running combine_images task again.'
-  task :clean_combine_images, [:path] => [:environment] do |_task, args|
-    path = args[:path]
-    path = Rails.root.join('public', 'picture_sets') if path.blank?
-    puts "Using directory #{path}."
-    Dir.chdir(path) do
-      picture_sets = Dir.glob('*').select { |f| File.directory? f }
-      picture_sets.each do |date|
-        Dir.chdir(File.join(path, date)) do
-          FileUtils.rm("#{date}#{COMBINED_SUFFIX}", force: true)
-        end
-      end
-    end
-  end
-
-  desc 'Copies all images into one directory (without the single polaroids)'
-  task :copy, %i[path output] => [:environment] do |_task, args|
-    path = args[:path]
-    path = Rails.root.join('public', 'picture_sets') if path.blank?
-    puts "Using directory #{path}."
-    Dir.chdir(path) do
-      picture_sets = Dir.glob('*').select { |f| File.directory?(f) && f != 'all' }
-      picture_sets.each do |date|
-        begin
-          Syscall.execute("cp #{File.join(path, date, '*.jpg')} #{args[:output]}")
-          Syscall.execute("cp #{File.join(path, date, '*.gif')} #{args[:output]}")
-        rescue StandardError => e
-          puts e
-        end
-      end
-    end
-  end
-
-  def combine_images(date, path)
-    dir = File.join(path, date)
-    return if File.exist?(File.join(dir, "#{date}#{COMBINED_SUFFIX}"))
-    begin
-      Syscall.execute("time montage -geometry '25%x25%+25+25<' -background '#{OPTS.background_color}' " \
-        "-title '#{OPTS.image_caption}' -font '#{OPTS.font}' -fill '#{OPTS.font_color}' " \
-        "-pointsize #{OPTS.combined_image_fontsize} -gravity 'Center' #{date}_*.jpg #{date}#{COMBINED_SUFFIX}",
-                      dir: dir)
-    rescue StandardError => e
-      puts "Can not process #{dir}: #{e}"
-    end
-  end
 end
-# rubocop:enable Metrics/BlockLength
