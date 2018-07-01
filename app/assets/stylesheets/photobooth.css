@@ -25,13 +25,16 @@ body {
 
 .shoot_button {
     width: 430px;
-    max-width: 100%;
-    margin: 10px 20px 10px 20px;
+    max-width: 90%;
+    margin: 5px 10px;
+}
+
+.shoot_text {
+    font-size: 1.3em;
 }
 
 .shoot_img {
-    height: 200px;
-    margin: 0px 70px 0px 70px;
+    max-width: 65%;
 }
 
 .shoot_img_btn {
@@ -41,7 +44,7 @@ body {
 
 .gallery-img {
     width: 470px;
-    max-width: 100%;
+    max-width: 95%;
 }
 
 .fullscreen {
@@ -59,8 +62,11 @@ body {
     right: 0;
     bottom: 0;
     margin: auto;
-    min-width: 40%;
-    min-height: 40%;
+    max-width: 95%;
+}
+
+.shoot_button:hover {
+  background-color: #fff;
 }
 
 #button-start {
