@@ -1,5 +1,6 @@
 require 'simplecov'
-SimpleCov.start
+SimpleCov.start 'rails'
+SimpleCov.refuse_coverage_drop
 
 if ENV['TRAVIS']
   require 'coveralls'
