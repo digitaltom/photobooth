@@ -2,8 +2,8 @@
 
   %button.btn.btn-default.shoot_button{type: 'button', 'ng-click' => 'takePicture()', 'ng-hide' => 'rw'  }
     %span
-      = image_tag 'take_picture.png', {:class => 'shoot_img'}
-    %h2
+      = image_tag 'take_picture_animation.gif', {:class => 'shoot_img'}
+    .shoot_text
       Click here to take a picture
 
   %span{ 'ng-repeat' => 'picture_set in picture_sets'}
