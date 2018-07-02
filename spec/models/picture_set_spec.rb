@@ -77,7 +77,7 @@ RSpec.describe PictureSet, type: :model do
 
     it 'deletes set with given date' do
       date = '2099-01-01_01-48-33'
-      expect(Syscall).to receive(:execute).with("rm -r #{date}", dir: PictureSet::PICTURE_PATH).and_return(true)
+      expect(FileUtils).to receive(:rm_r).with(PictureSet.find(date).dir)
       PictureSet.find(date).destroy
     end
 

@@ -83,7 +83,7 @@ class PictureSet
   end
 
   def destroy
-    Syscall.execute("rm -r #{date}", dir: PICTURE_PATH)
+    FileUtils.rm_r dir
   end
 
   def convert_to_polaroid(num, angle)
