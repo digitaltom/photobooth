@@ -10,7 +10,7 @@ AllCops:
     - vendor/**/*
 
 LineLength:
-  Max: 120
+  Max: 140
 
 Layout/EmptyLinesAroundClassBody:
   Enabled: false
@@ -20,6 +20,12 @@ Layout/EmptyLinesAroundBlockBody:
 
 Metrics/MethodLength:
   Max: 20
+
+Metrics/ClassLength:
+  Max: 120
+
+Metrics/BlockLength:
+  Max: 40
 
 Metrics/AbcSize:
   Max: 26
