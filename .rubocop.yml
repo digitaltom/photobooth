@@ -10,7 +10,7 @@ AllCops:
     - vendor/**/*
 
 LineLength:
-  Max: 120
+  Max: 140
 
 Layout/EmptyLinesAroundClassBody:
   Enabled: false
