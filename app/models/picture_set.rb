@@ -69,8 +69,8 @@ class PictureSet
         Syscall.execute("time convert -caption '#{caption}' #{date}_#{num}.jpg " \
                                      '-sample 600 ' \
                                      '-bordercolor Snow ' \
-                                     '-density 100' \
-                                     '-gravity center' \
+                                     '-density 100 ' \
+                                     '-gravity center ' \
                                      "-pointsize #{OPTS.image_fontsize} " \
                                      "-polaroid -#{angle} " \
                                      "#{date}_#{num}#{POLAROID_SUFFIX}", dir: dir)
@@ -95,12 +95,13 @@ class PictureSet
   end
 
   # Merge all polaroid previews to an animated gif
+  # TODO: Imagemagick >= 7 creates an empty gif from the polaroid pngs...
   def create_animation(overwrite: false)
     if File.exist?(File.join(dir, animation)) && !overwrite
       Rails.logger.info "Skipping for existing animation #{dir}"
     else
       Rails.logger.info "Creating animation for #{dir}"
-      Syscall.execute("time convert -delay 60 #{date}_*#{POLAROID_SUFFIX} #{animation}", dir: dir)
+      Syscall.execute("time convert -delay 60 #{date}_{1..4}#{POLAROID_SUFFIX} #{animation}", dir: dir)
     end
   end
 
