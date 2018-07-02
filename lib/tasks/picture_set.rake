@@ -8,8 +8,17 @@ namespace :picture_set do
     PictureSet.all.each { |ps| ps.combine_images(overwrite: true) }
   end
 
-  desc 'Re-create polaroid gifs'
+  desc 'Re-create single polaroid images'
   task :recreate_polaroid_images, [:path] => [:environment] do |_task, args|
+    PictureSet::PICTURE_PATH = args[:path] if args[:path].present?
+    PictureSet.all.each do |ps|
+      angle = Random.rand(355..365)
+      (1..4).each { |num| ps.convert_to_polaroid(num, angle) }
+    end
+  end
+
+  desc 'Re-create animated gifs'
+  task :recreate_animations, [:path] => [:environment] do |_task, args|
     PictureSet::PICTURE_PATH = args[:path] if args[:path].present?
     PictureSet.all.each { |ps| ps.create_animation(overwrite: true) }
   end

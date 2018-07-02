@@ -15,7 +15,7 @@ class PictureSet
         File.basename(File.dirname(animation))
       end
       Rails.logger.warn "No picture sets found at: #{PICTURE_PATH}" if dirs.empty?
-      dirs.sort.reverse.map { |dir| PictureSet.new(date: dir) }
+      dirs.sort.reverse.map { |dir| new(date: dir) }
     end
 
     def find(date)
@@ -31,7 +31,7 @@ class PictureSet
       picture_set = PictureSet.new(date: date)
       FileUtils.mkdir(picture_set.dir)
       angle = Random.rand(353..366)
-      jobs = (1..4).collect { |i| capture_job(i, date, picture_set.dir, angle) }
+      jobs = (1..4).collect { |i| capture_job(i, picture_set, angle) }
       GpioPort.on(GpioPort::GPIO_PORTS['PROCESSING'])
       # wait until convert jobs are finished
       until jobs.none?(&:status) do end
@@ -44,12 +44,12 @@ class PictureSet
 
     private
 
-    def capture_job(num, date, dir, angle)
+    def capture_job(num, picture_set, angle)
       GpioPort.on(GpioPort::GPIO_PORTS["PICTURE#{num}"])
       begin
         retries ||= 0
-        Syscall.execute("gphoto2 --capture-image-and-download --filename #{date}_#{num}.jpg", dir: dir)
-        raise 'Image capture failed' unless File.exist?(File.join(dir, "#{date}_#{num}.jpg"))
+        Syscall.execute("gphoto2 --capture-image-and-download --filename #{picture_set.date}_#{num}.jpg", dir: picture_set.dir)
+        raise 'Image capture failed' unless File.exist?(File.join(picture_set.dir, "#{picture_set.date}_#{num}.jpg"))
       rescue StandardError => e
         # rubocop:disable GuardClause
         if (retries += 1) < 3
@@ -60,20 +60,12 @@ class PictureSet
         end
         # rubocop:enable GuardClause
       end
-      convert_thread(num, date, dir, angle)
+      convert_thread(num, picture_set, angle)
     end
 
-    def convert_thread(num, date, dir, angle)
-      caption = OPTS.image_caption || date
+    def convert_thread(num, picture_set, angle)
       t = Thread.new do
-        Syscall.execute("time convert -caption '#{caption}' #{date}_#{num}.jpg " \
-                                     '-sample 600 ' \
-                                     '-bordercolor Snow ' \
-                                     '-density 100 ' \
-                                     '-gravity center ' \
-                                     "-pointsize #{OPTS.image_fontsize} " \
-                                     "-polaroid -#{angle} " \
-                                     "#{date}_#{num}#{POLAROID_SUFFIX}", dir: dir)
+        picture_set.convert_to_polaroid(num, angle)
       end
       t.abort_on_exception = true
       t
@@ -94,8 +86,20 @@ class PictureSet
     Syscall.execute("rm -r #{date}", dir: PICTURE_PATH)
   end
 
+  def convert_to_polaroid(num, angle)
+    caption = OPTS.image_caption || date
+    Syscall.execute("time convert -caption '#{caption}' #{date}_#{num}.jpg " \
+                                 '-sample 600 ' \
+                                 '-bordercolor Snow ' \
+                                 '-density 100 ' \
+                                 '-gravity center ' \
+                                 "-pointsize #{OPTS.image_fontsize} " \
+                                 "-polaroid -#{angle} " \
+                                 '-trim +repage ' \
+                                 "#{date}_#{num}#{POLAROID_SUFFIX}", dir: dir)
+  end
+
   # Merge all polaroid previews to an animated gif
-  # TODO: Imagemagick >= 7 creates an empty gif from the polaroid pngs...
   def create_animation(overwrite: false)
     if File.exist?(File.join(dir, animation)) && !overwrite
       Rails.logger.info "Skipping for existing animation #{dir}"
