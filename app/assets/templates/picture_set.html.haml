@@ -16,9 +16,8 @@
     %b Last <
 
 #button-all
-  %a.btn.btn-default.btn-lg{ 'ng-href' => "#/picture_set/{{picture_set.date}}/email" }
-    %b Send per email
-  %br
+  %a.btn.btn-default.btn-lg{ 'ng-show' => 'send_by_email', 'ng-href' => "#/picture_set/{{picture_set.date}}/email" }
+    %b Send by email
   %a.btn.btn-default.btn-lg{ 'ng-href' => "#/picture_set/{{picture_set.date}}/gallery" }
     %b Single pictures
 
