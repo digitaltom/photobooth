@@ -36,7 +36,7 @@ class PictureSet
       # wait until convert jobs are finished
       until jobs.none?(&:status) do end
       picture_set.create_animation
-      picture_set.combine_images
+      picture_set.combine_images if OPTS.render_collage
       (1..4).each { |i| GpioPort.off(GpioPort::GPIO_PORTS["PICTURE#{i}"]) }
       GpioPort.off(GpioPort::GPIO_PORTS['PROCESSING'])
       picture_set
@@ -112,7 +112,7 @@ class PictureSet
   # Create collage of all images
   def combine_images(overwrite: false)
     if File.exist?(File.join(dir, combined)) && !overwrite
-      Rails.logger.info "Skipping for existing collage #{dir}"
+      Rails.logger.info "Skipping for collage creation for #{dir}"
     else
       Rails.logger.info "Creating collage for #{dir} in background thread"
       Syscall.execute("time montage -geometry '25%x25%+25+25<' " \

@@ -5,7 +5,12 @@ default:
   font_color: '#1995AD'
   background_color: '#f1f1f2'
   combined_image_fontsize: 48
-  locale: :de # available :en, :de
+
+  locale: :en # available :en, :de
+
+  # running on a raspi, live collage creation can slow things down
+  # you can create them also in a batch: `rake picture_set:recreate_collage_images`
+  render_collage: true
 
   mail_settings:
     from: ''
@@ -15,8 +20,3 @@ default:
     password: ''
     authentication: 'plain'
     enable_starttls_auto: true
-
-  dropbox:
-    # raspi photobooth dropbox app:
-    app_key: 123
-    app_secret: 123
