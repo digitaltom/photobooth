@@ -12,6 +12,9 @@ default:
   # you can create them also in a batch: `rake picture_set:recreate_collage_images`
   render_collage: true
 
+  # Turn this on if you have an email server available
+  send_by_email: false
+
   mail_settings:
     from: ''
     address: ''
@@ -20,3 +23,8 @@ default:
     password: ''
     authentication: 'plain'
     enable_starttls_auto: true
+
+
+test:
+
+  send_by_email: true

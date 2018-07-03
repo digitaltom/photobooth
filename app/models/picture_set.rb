@@ -89,7 +89,7 @@ class PictureSet
   def convert_to_polaroid(num, angle)
     caption = OPTS.image_caption || date
     Syscall.execute("time convert -caption '#{caption}' #{date}_#{num}.jpg " \
-                                 '-sample 600 ' \
+                                 '-scale 600 ' \
                                  '-bordercolor Snow ' \
                                  '-density 100 ' \
                                  '-gravity center ' \

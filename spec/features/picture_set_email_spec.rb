@@ -6,7 +6,7 @@ feature 'Photobox send picture set by email', js: true do
     before do
       visit '/'
       find(:css, 'img.gallery-img', match: :first).click
-      click_link('Send per email')
+      click_link('Send by email')
     end
 
     it 'shows the email send form' do

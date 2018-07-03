@@ -51,5 +51,6 @@ photoBoothApp.controller('PictureSetCtrl', [
     $scope.loadPictureSet()
 
     $scope.rw = (location.search != '?rw/');
+    $scope.send_by_email = window.send_by_email;
 
   }]);
