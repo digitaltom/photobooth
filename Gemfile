@@ -48,5 +48,6 @@ group :test do
   gem 'chromedriver-helper'
   gem 'coveralls', require: false
   gem 'rspec-rails'
-  gem 'simplecov'
+  gem 'simplecov', require: false
+  gem 'simplecov-console', require: false
 end

@@ -9,3 +9,6 @@ script:
  - 'bundle exec rubocop -S'
 
 bundler_args: --without production
+
+after_script:
+  - bundle exec rake coveralls:push
