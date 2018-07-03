@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # rubocop:disable Output
 # rubocop:disable Lint/RescueException
 begin

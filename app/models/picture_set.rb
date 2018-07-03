@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 class PictureSet
 
-  DATE_FORMAT = '%Y-%m-%d_%H-%M-%S'.freeze
-  POLAROID_SUFFIX = '_polaroid.png'.freeze
-  ANIMATION_SUFFIX = '_animation.gif'.freeze
-  COMBINED_SUFFIX = '_combined.jpg'.freeze
+  DATE_FORMAT = '%Y-%m-%d_%H-%M-%S'
+  POLAROID_SUFFIX = '_polaroid.png'
+  ANIMATION_SUFFIX = '_animation.gif'
+  COMBINED_SUFFIX = '_combined.jpg'
   PICTURE_PATH = Rails.root.join('public', 'picture_sets').to_s
 
   attr_accessor :date, :dir, :animation, :combined, :pictures, :next, :last
@@ -22,7 +24,7 @@ class PictureSet
       all_sets = PictureSet.all
       ps = all_sets.detect { |set| set.date == date }
       raise 'PictureSet not found' unless ps
-      ps.next = all_sets[all_sets.index(ps) - 1] if all_sets.index(ps) > 0
+      ps.next = all_sets[all_sets.index(ps) - 1] if all_sets.index(ps).positive?
       ps.last = all_sets[all_sets.index(ps) + 1] if all_sets.index(ps) < all_sets.size
       ps
     end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PictureSetMailer < ApplicationMailer
 
   def image_email(email, picture_set)

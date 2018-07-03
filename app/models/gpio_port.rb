@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # We need to unexport the pins manually here, waiting for merge of:
 # https://github.com/jwhitehorn/pi_piper/pull/32
 
