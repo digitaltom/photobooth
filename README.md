@@ -65,7 +65,7 @@ General instructions on how to install Rasbian on the Raspberry can be found in 
   - `gem install bundler`
   - `cd photobooth; bundle install`
 - Precompile the assets: `RAILS_ENV=production rake assets:precompile`
-- Autostart the app on boot:
+- Autostart the app on boot time:
   - `cp photobooth.service /etc/systemd/system/photobooth.service`
   - `systemctl enable /etc/systemd/system/photobooth.service`
 - `cp config/options.yml config/options-local.yml` and set your config options in config/options-local.yml
@@ -77,8 +77,13 @@ Useful commands to run the photobooth
 - Control the app with systemd:
   `systemctl <start|stop|restart|status> photobooth`
 - See the logfile: `tail -f log/production.log`
+- Rake tasks
+  - `rake picture_set:record`: Trigger a new picture from console
+  - `rake picture_set:recreate_polaroid_images[path]`: Re-create all polaroid images in a batch
+  - `rake picture_set:recreate_animations[path]`: Re-create all animations in a batch
+  - `rake picture_set:export[output,path]`: Export all images into one output directory
 
-Anything is not working when following this manual? Please open an issue in the github project!
+Anything is not working when following this manual? Please open an [issue](https://github.com/digitaltom/photobooth/issues) in the github project!
 
 
 ## My Photobooth:

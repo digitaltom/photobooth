@@ -4,6 +4,11 @@ require 'fileutils'
 
 namespace :picture_set do
 
+  desc 'Record a new picture set'
+  task record: [:environment] do |_task, _args|
+    PictureSet.create
+  end
+
   desc 'Re-create collage images'
   task :recreate_collage_images, [:path] => [:environment] do |_task, args|
     PictureSet::PICTURE_PATH = args[:path] if args[:path].present?
