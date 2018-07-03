@@ -105,7 +105,7 @@ class PictureSet
       Rails.logger.info "Skipping for existing animation #{dir}"
     else
       Rails.logger.info "Creating animation for #{dir}"
-      Syscall.execute("time convert -delay 60 #{date}_{1..4}#{POLAROID_SUFFIX} #{animation}", dir: dir)
+      Syscall.execute("time convert -delay 60 #{date}_[1-4]#{POLAROID_SUFFIX} #{animation}", dir: dir)
     end
   end
 
@@ -114,14 +114,14 @@ class PictureSet
     if File.exist?(File.join(dir, combined)) && !overwrite
       Rails.logger.info "Skipping for collage creation for #{dir}"
     else
-      Rails.logger.info "Creating collage for #{dir} in background thread"
+      Rails.logger.info "Creating collage for #{dir}"
       Syscall.execute("time montage -geometry '25%x25%+25+25<' " \
                                    "-background '#{OPTS.background_color}' " \
                                    "-title '#{OPTS.image_caption}' " \
                                    "-font '#{OPTS.font}' " \
                                    "-fill '#{OPTS.font_color}' " \
                                    "-pointsize #{OPTS.combined_image_fontsize} " \
-                                   "-gravity 'Center' #{date}_{1..4}.jpg " \
+                                   "-gravity 'Center' #{date}_[1-4].jpg " \
                                    "#{date}#{COMBINED_SUFFIX}", dir: dir)
     end
   end
