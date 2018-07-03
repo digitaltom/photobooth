@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe GpioPort, type: :model do
 
   before(:each) do
-    PiPiper = Class.new
+    stub_const('PiPiper', Class.new)
     PiPiper::Pin = double('PiPiper::Pin')
   end
 
