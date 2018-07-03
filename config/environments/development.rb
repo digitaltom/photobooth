@@ -8,6 +8,7 @@ Rails.application.configure do
 
   # logging to stdout in development
   config.logger = Logger.new(STDOUT)
+  config.log_level = :debug
 
   # Do not eager load code on boot.
   config.eager_load = false
