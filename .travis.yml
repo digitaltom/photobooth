@@ -1,6 +1,6 @@
 language: ruby
 rvm:
- - 2.1.5
+ - 2.3.3
 sudo: required
 addons:
   chrome: stable
