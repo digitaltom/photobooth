@@ -1,6 +1,7 @@
 language: ruby
+cache: bundler
 rvm:
- - 2.1.5
+ - 2.3.3
 sudo: required
 addons:
   chrome: stable
@@ -9,3 +10,6 @@ script:
  - 'bundle exec rubocop -S'
 
 bundler_args: --without production
+
+after_script:
+  - bundle exec rake coveralls:push

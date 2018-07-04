@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 source 'https://rubygems.org'
 
 gem 'rails', '~> 4.2'
@@ -46,5 +48,6 @@ group :test do
   gem 'chromedriver-helper'
   gem 'coveralls', require: false
   gem 'rspec-rails'
-  gem 'simplecov'
+  gem 'simplecov', require: false
+  gem 'simplecov-console', require: false
 end

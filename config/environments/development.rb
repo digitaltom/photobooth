@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
@@ -8,6 +10,7 @@ Rails.application.configure do
 
   # logging to stdout in development
   config.logger = Logger.new(STDOUT)
+  config.log_level = :debug
 
   # Do not eager load code on boot.
   config.eager_load = false

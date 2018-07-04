@@ -1,14 +1,23 @@
 default:
   image_caption: 'Photobooth'
   image_fontsize: 11
-  font: 'LMMonoCaps10-Regular'
+  font: 'Helvetica'
   font_color: '#1995AD'
   background_color: '#f1f1f2'
   combined_image_fontsize: 48
-  locale: :de # available :en, :de
+
+  # only implemented for emails currently
+  locale: :en # available :en, :de
+
+  # running on a raspi, live collage creation can slow things down
+  # you can create them also in a batch: `rake picture_set:recreate_collage_images`
+  render_collage: true
+
+  # Turn this on if you have an email server available
+  send_by_email: false
 
   mail_settings:
-    from: ''
+    from: 'no_reply@photobooth.com'
     address: ''
     port: 587
     user_name: ''
@@ -16,7 +25,7 @@ default:
     authentication: 'plain'
     enable_starttls_auto: true
 
-  dropbox:
-    # raspi photobooth dropbox app:
-    app_key: 123
-    app_secret: 123
+
+test:
+
+  send_by_email: true

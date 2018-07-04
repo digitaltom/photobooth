@@ -10,6 +10,9 @@
     = javascript_include_tag 'application'
     = csrf_meta_tags
 
+    :javascript
+      window.send_by_email = #{OPTS.send_by_email};
+
     = yield(:head)
 
   %body

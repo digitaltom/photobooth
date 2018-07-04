@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 class PictureSet
 
-  DATE_FORMAT = '%Y-%m-%d_%H-%M-%S'.freeze
-  POLAROID_SUFFIX = '_polaroid.png'.freeze
-  ANIMATION_SUFFIX = '_animation.gif'.freeze
-  COMBINED_SUFFIX = '_combined.jpg'.freeze
+  DATE_FORMAT = '%Y-%m-%d_%H-%M-%S'
+  POLAROID_SUFFIX = '_polaroid.png'
+  ANIMATION_SUFFIX = '_animation.gif'
+  COMBINED_SUFFIX = '_combined.jpg'
   PICTURE_PATH = Rails.root.join('public', 'picture_sets').to_s
 
   attr_accessor :date, :dir, :animation, :combined, :pictures, :next, :last
@@ -22,7 +24,7 @@ class PictureSet
       all_sets = PictureSet.all
       ps = all_sets.detect { |set| set.date == date }
       raise 'PictureSet not found' unless ps
-      ps.next = all_sets[all_sets.index(ps) - 1] if all_sets.index(ps) > 0
+      ps.next = all_sets[all_sets.index(ps) - 1] if all_sets.index(ps).positive?
       ps.last = all_sets[all_sets.index(ps) + 1] if all_sets.index(ps) < all_sets.size
       ps
     end
@@ -36,7 +38,7 @@ class PictureSet
       # wait until convert jobs are finished
       until jobs.none?(&:status) do end
       picture_set.create_animation
-      picture_set.combine_images
+      picture_set.combine_images if OPTS.render_collage
       (1..4).each { |i| GpioPort.off(GpioPort::GPIO_PORTS["PICTURE#{i}"]) }
       GpioPort.off(GpioPort::GPIO_PORTS['PROCESSING'])
       picture_set
@@ -89,7 +91,7 @@ class PictureSet
   def convert_to_polaroid(num, angle)
     caption = OPTS.image_caption || date
     Syscall.execute("time convert -caption '#{caption}' #{date}_#{num}.jpg " \
-                                 '-sample 600 ' \
+                                 '-scale 600 ' \
                                  '-bordercolor Snow ' \
                                  '-density 100 ' \
                                  '-gravity center ' \
@@ -105,23 +107,23 @@ class PictureSet
       Rails.logger.info "Skipping for existing animation #{dir}"
     else
       Rails.logger.info "Creating animation for #{dir}"
-      Syscall.execute("time convert -delay 60 #{date}_{1..4}#{POLAROID_SUFFIX} #{animation}", dir: dir)
+      Syscall.execute("time convert -delay 60 #{date}_[1-4]#{POLAROID_SUFFIX} #{animation}", dir: dir)
     end
   end
 
   # Create collage of all images
   def combine_images(overwrite: false)
     if File.exist?(File.join(dir, combined)) && !overwrite
-      Rails.logger.info "Skipping for existing collage #{dir}"
+      Rails.logger.info "Skipping for collage creation for #{dir}"
     else
-      Rails.logger.info "Creating collage for #{dir} in background thread"
+      Rails.logger.info "Creating collage for #{dir}"
       Syscall.execute("time montage -geometry '25%x25%+25+25<' " \
                                    "-background '#{OPTS.background_color}' " \
                                    "-title '#{OPTS.image_caption}' " \
                                    "-font '#{OPTS.font}' " \
                                    "-fill '#{OPTS.font_color}' " \
                                    "-pointsize #{OPTS.combined_image_fontsize} " \
-                                   "-gravity 'Center' #{date}_{1..4}.jpg " \
+                                   "-gravity 'Center' #{date}_[1-4].jpg " \
                                    "#{date}#{COMBINED_SUFFIX}", dir: dir)
     end
   end
