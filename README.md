@@ -4,49 +4,48 @@
 
 # Photobooth
 
-This application is supposed to run on a linux machine which is connected to a (gphoto)[http://www.gphoto.org/] supported camera ([list](http://www.gphoto.org/proj/libgphoto2/support.php)).
+This application is supposed to run on a linux machine which is connected to a [gphoto](http://www.gphoto.org/) supported camera ([list](http://www.gphoto.org/proj/libgphoto2/support.php)).
 
-I've build it to run on a Raspberry Pi with openSUSE/Raspbian, connected to a Nikon D60 camera. See below for install instructions.
+I've build it to run on a Raspberry Pi with [openSUSE](https://en.opensuse.org/HCL:Raspberry_Pi3)/[Raspbian (Debian)](https://www.raspberrypi.org/downloads/raspbian/), connected to a Nikon D60 camera. See below for install instructions.
 
-The *Angular.js* frontend uses a *Ruby on Rails* server on the backend to trigger and process the pictures.
-Any tablet or notebook with a web-browser connected to the same wifi as the raspi
-will work as a screen.
+The *[Angular.js](https://angularjs.org/)* frontend uses a *[Ruby on Rails](https://rubyonrails.org/)* server on the backend to trigger and process the pictures.
+Any tablet or notebook with a web-browser connected to the same wifi as the raspi will work as a screen.
 
-LEDs can get connected to the Raspberry Pi's gpio ports.
+LEDs can get connected to the Raspberry Pi's [gpio ports](https://www.raspberrypi.org/documentation/usage/gpio/).
 It uses port 23 for 'ready', the ports 4,5,6,17  for picture 1-4 and port 24 for 'image processing'.
 
-By default, the UI runs in read-only mode (no '*take a picture*' and '*delete*' buttons), so that you can share the url with the users,
-that are connected to the same wifi. So they can directly download and share the pictures
+By default, the UI runs in read-only mode (no '*take a picture*' and '*delete*' buttons), so that you can share the url with the users that are connected to the same wifi. So they can directly download and share the pictures
 with their mobile phones.
 
-To load the UI in record mode, open it like this: http://&lt;ip&gt;/?rw/
+To load the UI in record (photobooth) mode, open it like this: http://&lt;ip&gt;/?rw/
 
 ## Hardware Setup
 
 The general hardware setup looks like this:
 
 ```
-                               +--------------+
-                               |              |
-                               |   Camera     |
-                               |              |
-                               +------^-------+
-                                      |
-                            USB Cable |
-                                      | gphoto lib
-+--------------+               +------v------------+
-|    Tablet    |    Wifi       | Photobooth server |
-|   /Notebook  +-------------> | (eg. Raspberry Pi)|
-| with Browser |               |                   |
-+--------------+               +------+------------+
-                                      | gpio ports
-                                Wires |
-                                      |
-                               +------v-------+
-                               |              |
-                               |  Status LEDS |
-                               |              |
-                               +--------------+
+                                      +--------------+
+                                      |              |
+                                      |    Camera    |
+                                      |              |
+                                      +------^-------+
+                                             |
+                                   USB Cable |
+                                             | gphoto library                                   
++--------------------+               +-------v------------+                               
+|                    |               |                    |
+|  Tablet /Notebook  |     Wifi      | Photobooth server  |
+|    with Browser    +-------------> | (eg. Raspberry Pi) |
+|                    |               |                    |
++--------------------+               +-------+------------+
+                                             | gpio ports
+                                       Wires |
+                                             |
+                                      +------v--------+
+                                      |  o o o o o o  |
+                                      |  Status LEDs  |
+                                      |               |
+                                      +---------------+
 ```
 
 ## Server Setup
@@ -88,8 +87,7 @@ Anything is not working when following this manual? Please open an [issue](https
 
 ## My Photobooth:
 
-My current photobox setup is a Raspberry Pi 3, a Nikon D60 with a Nikkor 35mm lens and a Nexus 7 tablet. All build into an old wooden suitcase.
-It can run completely from battery for 2-3 hours.  
+My current photobox setup is a Raspberry Pi 3, a Nikon D60 with a Nikkor 35mm lens and a Nexus 7 tablet. All build into an old wooden suitcase. It can run completely from battery for 2-3 hours.  
 
 It was already used at multiple parties and weddings.
 
