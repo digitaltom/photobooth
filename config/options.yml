@@ -6,6 +6,7 @@ default:
   background_color: '#f1f1f2'
   combined_image_fontsize: 48
 
+  # only implemented for emails currently
   locale: :en # available :en, :de
 
   # running on a raspi, live collage creation can slow things down
