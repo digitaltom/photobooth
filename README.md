@@ -4,11 +4,11 @@
 
 # Photobooth
 
-This application is supposed to run on a linux machine which is connected to a (gphoto)[http://www.gphoto.org/] supported camera ([list](http://www.gphoto.org/proj/libgphoto2/support.php)).
+This application is supposed to run on a linux machine which is connected to a [gphoto](http://www.gphoto.org/) supported camera ([list](http://www.gphoto.org/proj/libgphoto2/support.php)).
 
-I've build it to run on a Raspberry Pi with openSUSE/Raspbian, connected to a Nikon D60 camera. See below for install instructions.
+I've build it to run on a Raspberry Pi with [openSUSE](https://en.opensuse.org/HCL:Raspberry_Pi3)/[Raspbian (Debian)](https://www.raspberrypi.org/downloads/raspbian/), connected to a Nikon D60 camera. See below for install instructions.
 
-The *Angular.js* frontend uses a *Ruby on Rails* server on the backend to trigger and process the pictures.
+The *[Angular.js](https://angularjs.org/)* frontend uses a *[Ruby on Rails](https://rubyonrails.org/)* server on the backend to trigger and process the pictures.
 Any tablet or notebook with a web-browser connected to the same wifi as the raspi
 will work as a screen.
 
