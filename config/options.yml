@@ -16,7 +16,7 @@ default:
   send_by_email: false
 
   mail_settings:
-    from: ''
+    from: 'no_reply@photobooth.com'
     address: ''
     port: 587
     user_name: ''
