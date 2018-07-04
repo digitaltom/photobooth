@@ -33,5 +33,4 @@ feature 'Photobox send picture set by email', js: true do
     end
   end
 
-
 end
