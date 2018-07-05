@@ -52,14 +52,15 @@ RSpec.describe PictureSet, type: :model do
   describe '#create' do
 
     before do
-      allow(FileUtils).to receive(:mkdir).and_return(true)
+      expect(FileUtils).to receive(:mkdir).with(/fixtures\/filesystem\//)
     end
 
     it 'takes new picture' do
       expect(PictureSet).to receive(:new).and_call_original
       expect(Syscall).to receive(:execute).with(/gphoto2 --capture-image-and-download/, anything).exactly(4).times
-      expect(Syscall).to receive(:execute).with(/convert/, anything).exactly(4).times
-      allow(File).to receive(:exist?).and_return(true)
+      expect(Syscall).to receive(:execute).with(/convert/, anything).exactly(5).times
+      expect(File).to receive(:exist?).with(/_animation.gif/).and_return(false)
+      expect(File).to receive(:exist?).and_return(true).exactly(4).times
       allow(GpioPort).to receive(:on)
       allow(GpioPort).to receive(:off)
       PictureSet.create
