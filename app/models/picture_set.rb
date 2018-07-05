@@ -83,15 +83,15 @@ class PictureSet
 
   def convert_to_polaroid(num, angle)
     caption = OPTS.image_caption || date
-    Syscall.execute("time convert -caption '#{caption}' #{date}_#{num}.jpg " \
-                                 '-scale 600 ' \
-                                 '-bordercolor Snow ' \
-                                 '-density 100 ' \
-                                 '-gravity center ' \
-                                 "-pointsize #{OPTS.image_fontsize} " \
-                                 "-polaroid -#{angle} " \
-                                 '-trim +repage ' \
-                                 "#{date}_#{num}#{POLAROID_SUFFIX}", dir: dir)
+    Syscall.execute("convert -caption '#{caption}' #{date}_#{num}.jpg " \
+                            '-scale 600 ' \
+                            '-bordercolor Snow ' \
+                            '-density 100 ' \
+                            '-gravity center ' \
+                            "-pointsize #{OPTS.image_fontsize} " \
+                            "-polaroid -#{angle} " \
+                            '-trim +repage ' \
+                            "#{date}_#{num}#{POLAROID_SUFFIX}", dir: dir, timing: true)
   end
 
   # Merge all polaroid previews to an animated gif
@@ -100,7 +100,7 @@ class PictureSet
       Rails.logger.info "Skipping for existing animation #{dir}"
     else
       Rails.logger.info "Creating animation for #{dir}"
-      Syscall.execute("time convert -delay 60 #{date}_[1-4]#{POLAROID_SUFFIX} #{animation}", dir: dir)
+      Syscall.execute("convert -delay 60 #{date}_[1-4]#{POLAROID_SUFFIX} #{animation}", dir: dir, timing: true)
     end
   end
 
@@ -110,14 +110,14 @@ class PictureSet
       Rails.logger.info "Skipping for collage creation for #{dir}"
     else
       Rails.logger.info "Creating collage for #{dir}"
-      Syscall.execute("time montage -geometry '25%x25%+25+25<' " \
-                                   "-background '#{OPTS.background_color}' " \
-                                   "-title '#{OPTS.image_caption}' " \
-                                   "-font '#{OPTS.font}' " \
-                                   "-fill '#{OPTS.font_color}' " \
-                                   "-pointsize #{OPTS.combined_image_fontsize} " \
-                                   "-gravity 'Center' #{date}_[1-4].jpg " \
-                                   "#{date}#{COMBINED_SUFFIX}", dir: dir)
+      Syscall.execute("montage -geometry '25%x25%+25+25<' " \
+                              "-background '#{OPTS.background_color}' " \
+                              "-title '#{OPTS.image_caption}' " \
+                              "-font '#{OPTS.font}' " \
+                              "-fill '#{OPTS.font_color}' " \
+                              "-pointsize #{OPTS.combined_image_fontsize} " \
+                              "-gravity 'Center' #{date}_[1-4].jpg " \
+                              "#{date}#{COMBINED_SUFFIX}", dir: dir, timing: true)
     end
   end
 
