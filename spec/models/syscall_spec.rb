@@ -11,7 +11,7 @@ RSpec.describe Syscall, type: :model do
   describe '#execute' do
 
     it 'executes the provided command' do
-      output = Syscall.execute('uname')
+      output = Syscall.execute('uname', timing: false)
       expect(output).to_not be_empty
     end
 
