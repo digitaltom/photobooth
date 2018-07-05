@@ -8,6 +8,14 @@ photoBoothApp.controller('MainCtrl', [
   '$interval',
   function ($scope, $http, $uibModal, $log, $rootScope, $timeout, $interval) {
 
+    $scope.shoot_step = function (counter, delay) {
+      $timeout(function() {
+        $rootScope.current_shoot = counter;
+        $rootScope.shoot_progress = 25*counter;
+        $rootScope.shoot_progress_txt = counter + ' / 4';
+      }, delay);
+    }
+
     $scope.takePicture = function () {
 
       $rootScope.current_shoot = 0;
@@ -15,7 +23,10 @@ photoBoothApp.controller('MainCtrl', [
       $rootScope.shoot_progress_txt = '';
       $scope.openShootModal();
 
-      var countdown_delay = 3000;
+      // ms before shooting
+      var countdown_delay = 2000;
+      // ms for each camera picture
+      var picture_delay = 4000;
 
       $rootScope.shoot_progress = 100;
       countdown = $interval(function() {
@@ -40,34 +51,15 @@ photoBoothApp.controller('MainCtrl', [
         );
       }, countdown_delay);
 
+      $scope.shoot_step(1, picture_delay * 1 + countdown_delay);
+      $scope.shoot_step(2, picture_delay * 2 + countdown_delay);
+      $scope.shoot_step(3, picture_delay * 3 + countdown_delay);
+      $scope.shoot_step(4, picture_delay * 4 + countdown_delay);
 
-      // This fakes the progress in the modal. Change timeouts for
-      // different camera settings
-
-      $timeout(function() {
-        $rootScope.current_shoot = 1;
-        $rootScope.shoot_progress = 25;
-        $rootScope.shoot_progress_txt = '1 / 4';
-      }, 2000 + countdown_delay);
-      $timeout(function() {
-        $rootScope.current_shoot = 2;
-        $rootScope.shoot_progress = 50;
-        $rootScope.shoot_progress_txt = '2 / 4';
-      }, 4000 + countdown_delay);
-      $timeout(function() {
-        $rootScope.current_shoot = 3;
-        $rootScope.shoot_progress = 75;
-        $rootScope.shoot_progress_txt = '3 / 4';
-      }, 7000 + countdown_delay);
-      $timeout(function() {
-        $rootScope.current_shoot = 4;
-        $rootScope.shoot_progress = 100;
-        $rootScope.shoot_progress_txt = '4 / 4';
-      }, 10000 + countdown_delay);
       $timeout(function() {
         $rootScope.current_shoot = 5;
         $rootScope.shoot_txt = 'Processing animation';
-      }, 13000 + countdown_delay);
+      }, picture_delay * 5 + countdown_delay);
 
     };
 
@@ -99,4 +91,3 @@ photoBoothApp.controller('MainCtrl', [
     $scope.rw = (location.search != '?rw/');
 
   }]);
-

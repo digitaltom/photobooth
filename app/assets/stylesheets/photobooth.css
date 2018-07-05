@@ -65,7 +65,7 @@ body {
     max-width: 95%;
 }
 
-.shoot_button:hover {
+.shoot_button:hover, .shoot_button:active {
   background-color: #fff;
 }
 
