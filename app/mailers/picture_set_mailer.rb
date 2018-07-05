@@ -9,8 +9,8 @@ class PictureSetMailer < ApplicationMailer
       attachments[picture_set.combined] = File.read(File.join(picture_set.dir, picture_set.combined))
     end
     I18n.with_locale(OPTS.locale) do
-    mail(to: "#{email} <#{email}>",
-         subject: I18n.t('picture_set_mailer.image_email.subject', name: OPTS.image_caption))
+      mail(to: "#{email} <#{email}>",
+           subject: I18n.t('picture_set_mailer.image_email.subject', name: OPTS.image_caption))
     end
   end
 end
