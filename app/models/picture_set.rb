@@ -38,7 +38,7 @@ class PictureSet
       # wait until convert jobs are finished
       until jobs.none?(&:status) do end
       picture_set.create_animation
-      background_thread { picture_set.combine_images } if OPTS.render_collage
+      #background_thread { picture_set.combine_images } if OPTS.render_collage
       (1..4).each { |i| GpioPort.off(GpioPort::GPIO_PORTS["PICTURE#{i}"]) }
       GpioPort.off(GpioPort::GPIO_PORTS['PROCESSING'])
       picture_set
