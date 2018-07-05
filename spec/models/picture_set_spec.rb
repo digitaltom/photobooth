@@ -85,5 +85,45 @@ RSpec.describe PictureSet, type: :model do
 
   end
 
+  describe '.create_animation' do
+
+    context 'file exists' do
+      it 'returns' do
+        set = PictureSet.new(date: '2099-01-01_01-48-33')
+        expect(File).to receive(:exist?).with(File.join(set.dir, set.animation)).and_return(true)
+        set.create_animation(overwrite: false)
+      end
+    end
+
+    context 'file does not yet exist' do
+      it 'creates animation' do
+        set = PictureSet.new(date: '2099-01-01_01-48-33')
+        expect(Syscall).to receive(:execute).with(/convert/, anything)
+        set.create_animation(overwrite: true)
+      end
+    end
+
+  end
+
+  describe '.combine_images' do
+
+    context 'file exists' do
+      it 'returns' do
+        set = PictureSet.new(date: '2099-01-01_01-48-33')
+        expect(File).to receive(:exist?).with(File.join(set.dir, set.combined)).and_return(true)
+        set.combine_images(overwrite: false)
+      end
+    end
+
+    context 'file does not yet exist' do
+      it 'creates animation' do
+        set = PictureSet.new(date: '2099-01-01_01-48-33')
+        expect(Syscall).to receive(:execute).with(/montage/, anything)
+        set.combine_images(overwrite: true)
+      end
+    end
+
+  end
+
 end
 # rubocop:enable BlockLength

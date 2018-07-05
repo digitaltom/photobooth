@@ -96,7 +96,7 @@ class PictureSet
 
   # Merge all polaroid previews to an animated gif
   def create_animation(overwrite: false)
-    if File.exist?(File.join(dir, animation)) && !overwrite
+    if !overwrite && File.exist?(File.join(dir, animation))
       Rails.logger.info "Skipping for existing animation #{dir}"
     else
       Rails.logger.info "Creating animation for #{dir}"
@@ -106,7 +106,7 @@ class PictureSet
 
   # Create collage of all images
   def combine_images(overwrite: false)
-    if File.exist?(File.join(dir, combined)) && !overwrite
+    if !overwrite && File.exist?(File.join(dir, combined))
       Rails.logger.info "Skipping for collage creation for #{dir}"
     else
       Rails.logger.info "Creating collage for #{dir}"
