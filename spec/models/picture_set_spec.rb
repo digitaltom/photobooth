@@ -53,10 +53,10 @@ RSpec.describe PictureSet, type: :model do
 
     before do
       expect(FileUtils).to receive(:mkdir).with(/fixtures\/filesystem\//)
+      expect(PictureSet).to receive(:new).and_call_original
     end
 
     it 'takes new picture' do
-      expect(PictureSet).to receive(:new).and_call_original
       expect(Syscall).to receive(:execute).with(/gphoto2 --capture-image-and-download/, anything).exactly(4).times
       expect(Syscall).to receive(:execute).with(/convert/, anything).exactly(5).times
       expect(File).to receive(:exist?).with(/_animation.gif/).and_return(false)
@@ -67,7 +67,6 @@ RSpec.describe PictureSet, type: :model do
     end
 
     it 'raises if image capture failed' do
-      allow(PictureSet).to receive(:new).and_call_original
       allow(Syscall).to receive(:execute).with(/gphoto2 --capture-image-and-download/, anything)
       allow(GpioPort).to receive(:on)
       allow(GpioPort).to receive(:off)
