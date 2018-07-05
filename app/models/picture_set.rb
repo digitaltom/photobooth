@@ -38,7 +38,7 @@ class PictureSet
       # wait until convert jobs are finished
       until jobs.none?(&:status) do end
       picture_set.create_animation
-      picture_set.combine_images if OPTS.render_collage
+      background_thread { picture_set.combine_images } if OPTS.render_collage
       (1..4).each { |i| GpioPort.off(GpioPort::GPIO_PORTS["PICTURE#{i}"]) }
       GpioPort.off(GpioPort::GPIO_PORTS['PROCESSING'])
       picture_set
@@ -50,25 +50,18 @@ class PictureSet
       GpioPort.on(GpioPort::GPIO_PORTS["PICTURE#{num}"])
       begin
         retries ||= 0
-        Syscall.execute("gphoto2 --capture-image-and-download --filename #{picture_set.date}_#{num}.jpg", dir: picture_set.dir)
+        Syscall.execute('gphoto2 --capture-image-and-download ' \
+                                "--filename #{picture_set.date}_#{num}.jpg", dir: picture_set.dir)
         raise 'Image capture failed' unless File.exist?(File.join(picture_set.dir, "#{picture_set.date}_#{num}.jpg"))
       rescue StandardError => e
-        # rubocop:disable GuardClause
-        if (retries += 1) < 3
-          Rails.logger.warn("Retrying image ##{num} capture...")
-          retry
-        else
-          raise e
-        end
-        # rubocop:enable GuardClause
+        Rails.logger.warn("Retrying image ##{num} capture (#{retries})...") && retry if (retries += 1) < 3
+        raise e
       end
-      convert_thread(num, picture_set, angle)
+      background_thread { picture_set.convert_to_polaroid(num, angle) }
     end
 
-    def convert_thread(num, picture_set, angle)
-      t = Thread.new do
-        picture_set.convert_to_polaroid(num, angle)
-      end
+    def background_thread
+      t = Thread.new { yield }
       t.abort_on_exception = true
       t
     end
