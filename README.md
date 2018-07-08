@@ -54,6 +54,17 @@ The Photobooth can run on any Linux server, for building a portable photo booth 
 
 General instructions on how to install Rasbian on the Raspberry can be found in  [INSTALL-RASPBIAN.md](INSTALL-RASPBIAN.md)
 
+## Network Setup
+
+You basically have 3 options how to connect your Tablet to your Raspberry Pi server:
+
+- Both are connected to the same wifi network. (See [here](https://www.thepolyglotdeveloper.com/2016/08/connect-multiple-wireless-networks-raspberry-pi/) for a manual how to configure multiple wifi connections on your raspi.)
+- Your raspi acts as an access point for the tablet ([official manual](https://www.raspberrypi.org/documentation/configuration/wireless/access-point.md))
+- Your tablet acts as an access point for the raspi. (Manuals for [Iphone](https://support.apple.com/de-de/ht204023) and [Android](https://www.dasheimnetzwerk.de/einrichten/Einrichten_OS_Androidx/Kapitel_Androidx_WLAN_AP.html))
+
+It can be tricky to find out the IP address of you raspi. An [issue](https://github.com/digitaltom/photobooth/issues/21) to improve this is created.
+From your notebook you can use `sudo nmap -sP 192.168.178.1/24` to discover active devices in your network.
+
 ## Software Setup
 
 - Clone the photobooth repo:

@@ -12,3 +12,14 @@
 - Use `sudo raspi-config` to set the password and timezone
 - Setup Wifi: https://www.raspberrypi.org/documentation/configuration/wireless/wireless-cli.md
 - Install needed packages: `sudo apt-get install vim ruby ruby-dev git imagemagick time sqlite3 gphoto2 libssl-dev nodejs libsqlite3-dev`
+
+
+## Wifi Setup on Raspbian Stretch
+
+Network setup: https://www.elektronik-kompendium.de/sites/raspberry-pi/1912221.htm
+
+Reloading wpa_supplicant:
+https://raspberrypi.stackexchange.com/questions/73749/how-to-connect-to-wifi-without-reboot
+
+`ifconfig wlan0 down`
+`ifconfig wlan0 up`
