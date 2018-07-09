@@ -50,7 +50,7 @@ class PictureSet
       GpioPort.on(GpioPort::GPIO_PORTS["PICTURE#{num}"])
       begin
         retries ||= 0
-        Syscall.execute('gphoto2 --capture-image-and-download --no-keep' \
+        Syscall.execute('gphoto2 --capture-image-and-download ' \
                                 "--filename #{picture_set.date}_#{num}.jpg", dir: picture_set.dir)
         raise 'Image capture failed' unless File.exist?(File.join(picture_set.dir, "#{picture_set.date}_#{num}.jpg"))
       rescue StandardError => e
