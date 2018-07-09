@@ -18,7 +18,7 @@ feature 'Photobox index view', js: true do
     end
 
     it 'shows picture sets' do
-      expect(page).to have_css('img.gallery-img')
+      expect(page).to have_selector('img.gallery-img')
     end
   end
 

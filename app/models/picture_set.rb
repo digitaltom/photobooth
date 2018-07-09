@@ -38,7 +38,7 @@ class PictureSet
       # wait until convert jobs are finished
       until jobs.none?(&:status) do end
       picture_set.create_animation
-      picture_set.combine_images if OPTS.render_collage
+      background_thread { picture_set.combine_images(overwrite: true) } if OPTS.render_collage
       (1..4).each { |i| GpioPort.off(GpioPort::GPIO_PORTS["PICTURE#{i}"]) }
       GpioPort.off(GpioPort::GPIO_PORTS['PROCESSING'])
       picture_set
@@ -50,25 +50,18 @@ class PictureSet
       GpioPort.on(GpioPort::GPIO_PORTS["PICTURE#{num}"])
       begin
         retries ||= 0
-        Syscall.execute("gphoto2 --capture-image-and-download --filename #{picture_set.date}_#{num}.jpg", dir: picture_set.dir)
+        Syscall.execute('gphoto2 --capture-image-and-download ' \
+                                "--filename #{picture_set.date}_#{num}.jpg", dir: picture_set.dir)
         raise 'Image capture failed' unless File.exist?(File.join(picture_set.dir, "#{picture_set.date}_#{num}.jpg"))
       rescue StandardError => e
-        # rubocop:disable GuardClause
-        if (retries += 1) < 3
-          Rails.logger.warn("Retrying image ##{num} capture...")
-          retry
-        else
-          raise e
-        end
-        # rubocop:enable GuardClause
+        Rails.logger.warn("Retrying image ##{num} capture (#{retries})...") && retry if (retries += 1) < 3
+        raise e
       end
-      convert_thread(num, picture_set, angle)
+      background_thread { picture_set.convert_to_polaroid(num, angle) }
     end
 
-    def convert_thread(num, picture_set, angle)
-      t = Thread.new do
-        picture_set.convert_to_polaroid(num, angle)
-      end
+    def background_thread
+      t = Thread.new { yield }
       t.abort_on_exception = true
       t
     end
@@ -90,41 +83,41 @@ class PictureSet
 
   def convert_to_polaroid(num, angle)
     caption = OPTS.image_caption || date
-    Syscall.execute("time convert -caption '#{caption}' #{date}_#{num}.jpg " \
-                                 '-scale 600 ' \
-                                 '-bordercolor Snow ' \
-                                 '-density 100 ' \
-                                 '-gravity center ' \
-                                 "-pointsize #{OPTS.image_fontsize} " \
-                                 "-polaroid -#{angle} " \
-                                 '-trim +repage ' \
-                                 "#{date}_#{num}#{POLAROID_SUFFIX}", dir: dir)
+    Syscall.execute("convert -caption '#{caption}' #{date}_#{num}.jpg " \
+                            '-scale 600 ' \
+                            '-bordercolor Snow ' \
+                            '-density 100 ' \
+                            '-gravity center ' \
+                            "-pointsize #{OPTS.image_fontsize} " \
+                            "-polaroid -#{angle} " \
+                            '-trim +repage ' \
+                            "#{date}_#{num}#{POLAROID_SUFFIX}", dir: dir, timing: true)
   end
 
   # Merge all polaroid previews to an animated gif
   def create_animation(overwrite: false)
-    if File.exist?(File.join(dir, animation)) && !overwrite
+    if !overwrite && File.exist?(File.join(dir, animation))
       Rails.logger.info "Skipping for existing animation #{dir}"
     else
       Rails.logger.info "Creating animation for #{dir}"
-      Syscall.execute("time convert -delay 60 #{date}_[1-4]#{POLAROID_SUFFIX} #{animation}", dir: dir)
+      Syscall.execute("convert -delay 60 #{date}_[1-4]#{POLAROID_SUFFIX} #{animation}", dir: dir, timing: true)
     end
   end
 
   # Create collage of all images
   def combine_images(overwrite: false)
-    if File.exist?(File.join(dir, combined)) && !overwrite
+    if !overwrite && File.exist?(File.join(dir, combined))
       Rails.logger.info "Skipping for collage creation for #{dir}"
     else
       Rails.logger.info "Creating collage for #{dir}"
-      Syscall.execute("time montage -geometry '25%x25%+25+25<' " \
-                                   "-background '#{OPTS.background_color}' " \
-                                   "-title '#{OPTS.image_caption}' " \
-                                   "-font '#{OPTS.font}' " \
-                                   "-fill '#{OPTS.font_color}' " \
-                                   "-pointsize #{OPTS.combined_image_fontsize} " \
-                                   "-gravity 'Center' #{date}_[1-4].jpg " \
-                                   "#{date}#{COMBINED_SUFFIX}", dir: dir)
+      Syscall.execute("montage -geometry '25%x25%+25+25<' " \
+                              "-background '#{OPTS.background_color}' " \
+                              "-title '#{OPTS.image_caption}' " \
+                              "-font '#{OPTS.font}' " \
+                              "-fill '#{OPTS.font_color}' " \
+                              "-pointsize #{OPTS.combined_image_fontsize} " \
+                              "-gravity 'Center' #{date}_[1-4].jpg " \
+                              "#{date}#{COMBINED_SUFFIX}", dir: dir, timing: true)
     end
   end
 

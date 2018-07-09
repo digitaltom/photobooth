@@ -52,21 +52,21 @@ RSpec.describe PictureSet, type: :model do
   describe '#create' do
 
     before do
-      allow(FileUtils).to receive(:mkdir).and_return(true)
+      expect(FileUtils).to receive(:mkdir).with(/fixtures\/filesystem\//)
+      expect(PictureSet).to receive(:new).and_call_original
     end
 
     it 'takes new picture' do
-      expect(PictureSet).to receive(:new).and_call_original
       expect(Syscall).to receive(:execute).with(/gphoto2 --capture-image-and-download/, anything).exactly(4).times
-      expect(Syscall).to receive(:execute).with(/convert/, anything).exactly(4).times
-      allow(File).to receive(:exist?).and_return(true)
+      expect(Syscall).to receive(:execute).with(/convert/, anything).exactly(5).times
+      expect(File).to receive(:exist?).with(/_animation.gif/).and_return(false)
+      expect(File).to receive(:exist?).and_return(true).exactly(4).times
       allow(GpioPort).to receive(:on)
       allow(GpioPort).to receive(:off)
       PictureSet.create
     end
 
     it 'raises if image capture failed' do
-      allow(PictureSet).to receive(:new).and_call_original
       allow(Syscall).to receive(:execute).with(/gphoto2 --capture-image-and-download/, anything)
       allow(GpioPort).to receive(:on)
       allow(GpioPort).to receive(:off)
@@ -81,6 +81,46 @@ RSpec.describe PictureSet, type: :model do
       date = '2099-01-01_01-48-33'
       expect(FileUtils).to receive(:rm_r).with(PictureSet.find(date).dir)
       PictureSet.find(date).destroy
+    end
+
+  end
+
+  describe '.create_animation' do
+
+    context 'file exists' do
+      it 'returns' do
+        set = PictureSet.new(date: '2099-01-01_01-48-33')
+        expect(File).to receive(:exist?).with(File.join(set.dir, set.animation)).and_return(true)
+        set.create_animation(overwrite: false)
+      end
+    end
+
+    context 'file does not yet exist' do
+      it 'creates animation' do
+        set = PictureSet.new(date: '2099-01-01_01-48-33')
+        expect(Syscall).to receive(:execute).with(/convert/, anything)
+        set.create_animation(overwrite: true)
+      end
+    end
+
+  end
+
+  describe '.combine_images' do
+
+    context 'file exists' do
+      it 'returns' do
+        set = PictureSet.new(date: '2099-01-01_01-48-33')
+        expect(File).to receive(:exist?).with(File.join(set.dir, set.combined)).and_return(true)
+        set.combine_images(overwrite: false)
+      end
+    end
+
+    context 'file does not yet exist' do
+      it 'creates animation' do
+        set = PictureSet.new(date: '2099-01-01_01-48-33')
+        expect(Syscall).to receive(:execute).with(/montage/, anything)
+        set.combine_images(overwrite: true)
+      end
     end
 
   end

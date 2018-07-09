@@ -29,3 +29,4 @@ default:
 test:
 
   send_by_email: true
+  render_collage: false

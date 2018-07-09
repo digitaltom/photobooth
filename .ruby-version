@@ -1,3 +1,6 @@
 2.3.3
 # ruby version 2.3.3 from raspbian stretch
 # to compile it on a more recent linux see: https://github.com/rbenv/ruby-build/wiki#openssl-usrincludeopensslasn1_mach102-error-error-this-file-is-obsolete-please-update-your-software
+# on openSUSE:
+# sudo zypper rm libopenssl-1_1-devel
+# sudo zypper in libopenssl-1_0_0-devel

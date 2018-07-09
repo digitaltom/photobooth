@@ -3,12 +3,14 @@
 class PictureSetMailer < ApplicationMailer
 
   def image_email(email, picture_set)
-    attachments.inline['animation.gif'] = File.read(File.join(picture_set.dir, picture_set.animation))
+    @picture_set = picture_set
+    attachments[picture_set.animation] = File.read(File.join(picture_set.dir, picture_set.animation))
     if File.exist?(File.join(picture_set.dir, picture_set.combined))
-      attachments.inline['combined.jpg'] = File.read(File.join(picture_set.dir, picture_set.combined))
+      attachments[picture_set.combined] = File.read(File.join(picture_set.dir, picture_set.combined))
     end
     I18n.with_locale(OPTS.locale) do
-      mail(to: email, subject: I18n.t('picture_set_mailer.image_email.subject', name: OPTS.image_caption))
+      mail(to: "#{email} <#{email}>",
+           subject: I18n.t('picture_set_mailer.image_email.subject', name: OPTS.image_caption))
     end
   end
 end
