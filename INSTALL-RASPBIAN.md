@@ -39,4 +39,4 @@ nmcli c mod "mypreferred" conn.autoconnect-p 10
 nmcli c mod "xfinitywifi" conn.autoconnect-p -10
 ```
 
-The available connection are stored at `/etc/Networkmanager/system-connections`. Don't forget to restart Networkmanager (`systemctl restart NetworkManager`) after changging files manually.
+The available connection are stored at `/etc/NetworkManager/system-connections`. Don't forget to restart Networkmanager (`systemctl restart NetworkManager`) after changging files manually.
