@@ -6,6 +6,14 @@
     %span
       = image_tag 'take_picture.png', {:class => 'shoot_img_btn'}
     %b Start
+  %a.btn.btn-default.btn-lg{ 'ng-show' => 'send_by_email', 'ng-href' => "#/picture_set/{{picture_set.date}}/email" }
+    %b Send by email
+  %a.btn.btn-default.btn-lg{ 'ng-href' => "#/picture_set/{{picture_set.date}}/gallery" }
+    %b Single pictures
+
+
+#button-all
+
 
 #button-next
   %a.btn.btn-default.btn-lg{ 'ng-href' => "#/picture_set/{{picture_set.next.date}}" }
@@ -14,12 +22,6 @@
 #button-last
   %a.btn.btn-default.btn-lg{ 'ng-href' => "#/picture_set/{{picture_set.last.date}}" }
     %b Last <
-
-#button-all
-  %a.btn.btn-default.btn-lg{ 'ng-show' => 'send_by_email', 'ng-href' => "#/picture_set/{{picture_set.date}}/email" }
-    %b Send by email
-  %a.btn.btn-default.btn-lg{ 'ng-href' => "#/picture_set/{{picture_set.date}}/gallery" }
-    %b Single pictures
 
 #button-delete{ 'ng-hide' => 'rw' }
   %button.btn.btn-default.btn-sm{ 'ng-click' => 'destroy()'}

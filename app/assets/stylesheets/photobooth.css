@@ -38,7 +38,7 @@ body {
 }
 
 .shoot_img_btn {
-    height: 30px;
+    height: 20px;
     margin: 0px 10px 0px 0px;
 }
 
@@ -49,10 +49,9 @@ body {
 
 .fullscreen {
     position: fixed;
-    top: -40%;
-    left: -40%;
-    width: 180%;
-    height: 180%;
+    top: 50%;
+    left: -5%;
+    width: 110%;
 }
 
 .fullscreen img {
@@ -69,16 +68,8 @@ body {
   background-color: #fff;
 }
 
-#button-start {
-    position: absolute;
-    top: 3px;
-    left: 3px;
-}
-
-#button-all {
-    position: absolute;
-    top: 3px;
-    right: 3px;
+#button-start .btn {
+    margin: 5px 0px 0px 5px;
 }
 
 #button-last {
