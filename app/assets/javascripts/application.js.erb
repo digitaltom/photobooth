@@ -47,6 +47,10 @@ photoBoothApp.config(['$routeProvider',
         templateUrl: '<%= asset_path('picture_set_email.html') %>',
         controller: 'PictureSetCtrl'
     }).
+    when('/slideshow/:pictureSetId', {
+        templateUrl: '<%= asset_path('slideshow.html') %>',
+        controller: 'SlideshowCtrl'
+    }).
     otherwise({
       redirectTo: '/'
     });

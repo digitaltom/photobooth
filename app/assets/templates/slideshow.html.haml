@@ -1,0 +1,21 @@
+.fullscreen
+  %img{'ng-src'=>'/{{picture_set.path}}/{{picture_set.animation}}'}
+
+#button-start
+  %a.btn.btn-default.btn-lg{ 'ng-href' => "#/" }
+    %span
+      = image_tag 'take_picture.png', {:class => 'shoot_img_btn'}
+    %b Start
+
+  .btn.btn-default.btn-lg
+    %span
+      = image_tag 'clock_regular.png', {:class => 'shoot_img_btn'}
+    %b Slidehow
+
+#button-next
+  %a.btn.btn-default.btn-lg{ 'ng-href' => "#/slideshow/{{picture_set.next.date}}" }
+    %b > Next
+
+#button-last
+  %a.btn.btn-default.btn-lg{ 'ng-href' => "#/slideshow/{{picture_set.last.date}}" }
+    %b Last <

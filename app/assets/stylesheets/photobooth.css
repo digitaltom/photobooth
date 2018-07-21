@@ -62,14 +62,20 @@ body {
     bottom: 0;
     margin: auto;
     max-width: 95%;
+    z-index: -10;
 }
 
 .shoot_button:hover, .shoot_button:active {
   background-color: #fff;
 }
 
+#button-start {
+  position: absolute;
+}
+
 #button-start .btn {
     margin: 5px 0px 0px 5px;
+    z-index: 10;
 }
 
 #button-last {
