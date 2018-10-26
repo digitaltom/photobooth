@@ -26,6 +26,7 @@ To connect the raspi to an wifi network (either provided by an on site router, o
 > nmcli con add con-name nexus7-photobox ifname wlan0 type wifi ssid photobox
 > nmcli con modify nexus7-photobox wifi-sec.key-mgmt wpa-psk
 > nmcli con modify nexus7-photobox wifi-sec.psk '<your password>'
+> nmcli con modify nexus7-photobox ipv4.dns "8.8.8.8 8.8.4.4"
 > nmcli con up nexus7-photobox
 ```
 
