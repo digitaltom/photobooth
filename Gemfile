@@ -5,7 +5,7 @@ source 'https://rubygems.org'
 gem 'rails', '~> 4.2'
 gem 'sqlite3'
 # angular-rails-templates currently only works with sprocket-rails 2
-gem 'sprockets-rails', '~> 2.3.3'
+gem 'sprockets-rails', '~> 3.2.1'
 
 gem 'angular-rails-templates'
 gem 'angular_rails_csrf'
