@@ -130,7 +130,7 @@ GEM
     rails-assets-angular (1.4.5)
     rails-assets-angular-route (1.4.5)
       rails-assets-angular (= 1.4.5)
-    rails-assets-lazysizes (4.0.4)
+    rails-assets-lazysizes (4.1.4)
     rails-deprecated_sanitizer (1.0.3)
       activesupport (>= 4.2.0.alpha)
     rails-dom-testing (1.0.9)
@@ -233,7 +233,7 @@ DEPENDENCIES
   rails (~> 4.2)
   rails-assets-angular (= 1.4.5)!
   rails-assets-angular-route (= 1.4.5)!
-  rails-assets-lazysizes (= 4.0.4)!
+  rails-assets-lazysizes (= 4.1.4)!
   rspec-rails
   rubocop
   simplecov
