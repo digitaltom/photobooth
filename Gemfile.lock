@@ -42,8 +42,8 @@ GEM
       railties (>= 4.2, < 6)
       sprockets (>= 3.0, < 5)
       tilt
-    angular_rails_csrf (3.0.0)
-      railties (>= 3, < 5.2)
+    angular_rails_csrf (3.2.0)
+      railties (>= 3, < 6)
     ansi (1.5.0)
     archive-zip (0.11.0)
       io-like (~> 0.3.0)
