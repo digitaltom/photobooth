@@ -21,9 +21,9 @@ gem 'uglifier', '>= 1.3.0'
 # See https://github.com/rails/execjs#readme for more supported runtimes
 # gem 'therubyracer', platforms: :ruby
 
-# Use Unicorn as the app server
+# Use Puma as the app server
+gem 'puma'
 gem 'quiet_assets'
-gem 'unicorn-rails'
 
 # file upload + qrcode
 gem 'config-parser'
