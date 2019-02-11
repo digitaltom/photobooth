@@ -129,9 +129,9 @@ GEM
       bundler (>= 1.3.0, < 2.0)
       railties (= 4.2.11)
       sprockets-rails
-    rails-assets-angular (1.4.5)
-    rails-assets-angular-route (1.4.5)
-      rails-assets-angular (= 1.4.5)
+    rails-assets-angular (1.7.5)
+    rails-assets-angular-route (1.7.5)
+      rails-assets-angular (= 1.7.5)
     rails-assets-lazysizes (4.1.4)
     rails-deprecated_sanitizer (1.0.3)
       activesupport (>= 4.2.0.alpha)
@@ -229,8 +229,8 @@ DEPENDENCIES
   puma
   quiet_assets
   rails (~> 4.2)
-  rails-assets-angular (= 1.4.5)!
-  rails-assets-angular-route (= 1.4.5)!
+  rails-assets-angular (= 1.7.5)!
+  rails-assets-angular-route (= 1.7.5)!
   rails-assets-lazysizes (= 4.1.4)!
   rspec-rails
   rubocop

@@ -12,8 +12,8 @@ gem 'angular_rails_csrf'
 gem 'haml'
 
 source 'https://rails-assets.org' do
-  gem 'rails-assets-angular', '1.4.5'
-  gem 'rails-assets-angular-route', '1.4.5'
+  gem 'rails-assets-angular', '1.7.5'
+  gem 'rails-assets-angular-route', '1.7.5'
   gem 'rails-assets-lazysizes', '4.1.4'
 end
 
