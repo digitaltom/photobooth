@@ -13,7 +13,7 @@ gem 'haml'
 source 'https://rails-assets.org' do
   gem 'rails-assets-angular', '1.4.5'
   gem 'rails-assets-angular-route', '1.4.5'
-  gem 'rails-assets-lazysizes', '4.1.4'
+  gem 'rails-assets-lazysizes', '4.1.7'
 end
 
 gem 'uglifier', '>= 1.3.0'
