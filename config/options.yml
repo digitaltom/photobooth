@@ -1,7 +1,7 @@
 default:
   image_caption: 'Photobooth'
   image_fontsize: 11
-  font: 'Helvetica'
+  font: 'Helvetica' # see https://github.com/digitaltom/photobooth/blob/master/INSTALL-RASPBIAN.md#font-installation
   font_color: '#1995AD'
   background_color: '#f1f1f2'
   combined_image_fontsize: 48
