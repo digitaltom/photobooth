@@ -41,3 +41,13 @@ nmcli c mod "xfinitywifi" conn.autoconnect-p -10
 ```
 
 The available connection are stored at `/etc/NetworkManager/system-connections`. Don't forget to restart Networkmanager (`systemctl restart NetworkManager`) after changging files manually.
+
+## Font installation
+
+To add additional fonts for the polaroid caption, use these commands:
+
+* `fc-list`: List available fonts
+* `convert -list font` : List available fonts for ImageMagick
+* `fc-cache -fv`: Run after installing new fonts to `/usr/share/fonts/`
+
+A nice caption font for example is: https://www.dafont.com/simplicity-6.font
