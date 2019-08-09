@@ -2,18 +2,18 @@
 
 source 'https://rubygems.org'
 
-gem 'rails', '~> 4.2'
+gem 'rails', '~> 5.2'
 # angular-rails-templates currently only works with sprocket-rails 2
-gem 'sprockets-rails', '~> 3.2.1'
+gem 'sprockets-rails'
 
 gem 'angular-rails-templates'
 gem 'angular_rails_csrf'
 gem 'haml'
 
 source 'https://rails-assets.org' do
-  gem 'rails-assets-angular', '1.4.5'
-  gem 'rails-assets-angular-route', '1.4.5'
-  gem 'rails-assets-lazysizes', '4.1.8'
+  gem 'rails-assets-angular'
+  gem 'rails-assets-angular-route'
+  gem 'rails-assets-lazysizes'
 end
 
 gem 'uglifier', '>= 1.3.0'
@@ -22,7 +22,6 @@ gem 'uglifier', '>= 1.3.0'
 
 # Use Puma as the app server
 gem 'puma'
-gem 'quiet_assets'
 
 # file upload + qrcode
 gem 'config-parser'
