@@ -45,9 +45,9 @@ end
 group :test do
   gem 'capybara'
   gem 'capybara-selenium'
-  gem 'chromedriver-helper'
   gem 'coveralls', require: false
   gem 'rspec-rails'
   gem 'simplecov', require: false
   gem 'simplecov-console', require: false
+  gem 'webdrivers'
 end

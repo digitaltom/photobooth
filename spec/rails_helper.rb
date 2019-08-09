@@ -10,19 +10,19 @@ require 'rspec/rails'
 # Add additional requires below this line. Rails is not loaded until this point!
 
 require 'selenium/webdriver'
+require 'webdrivers/chromedriver'
 
-Capybara.register_driver :headless_chrome do |app|
-  capabilities = Selenium::WebDriver::Remote::Capabilities.chrome(
-    chromeOptions: { args: %w[no-sandbox headless disable-gpu disable-dev-shm-usage] }
-  )
-
-  Capybara::Selenium::Driver.new app,
-                                 browser: :chrome,
-                                 desired_capabilities: capabilities
+Capybara.register_driver :chrome_headless do |app|
+  options = ::Selenium::WebDriver::Chrome::Options.new
+  options.add_argument('--headless')
+  options.add_argument('--no-sandbox')
+  options.add_argument('--disable-dev-shm-usage')
+  options.add_argument('--window-size=1920,1200') # Nexus7 resolution
+  Capybara::Selenium::Driver.new(app, browser: :chrome, options: options)
 end
 
+Capybara.javascript_driver = :chrome_headless
 # capybara cheat sheet: https://gist.github.com/zhengjia/428105
-Capybara.javascript_driver = :headless_chrome
 
 RSpec.configure do |config|
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
