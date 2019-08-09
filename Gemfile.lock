@@ -171,6 +171,9 @@ GEM
       rainbow (>= 2.2.2, < 4.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 1.4.0, < 1.7)
+    rubocop-rails (2.0.1)
+      rack (>= 1.1)
+      rubocop (>= 0.70.0)
     ruby-progressbar (1.10.1)
     rubyzip (1.2.2)
     selenium-webdriver (3.12.0)
@@ -232,6 +235,7 @@ DEPENDENCIES
   rails-assets-lazysizes (= 4.1.8)!
   rspec-rails
   rubocop
+  rubocop-rails
   simplecov
   simplecov-console
   sprockets-rails (~> 3.2.1)
