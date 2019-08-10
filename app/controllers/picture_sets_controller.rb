@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class PictureSetsController < ApplicationController
-  protect_from_forgery with: :exception
 
   def index
     render json: PictureSet.all
