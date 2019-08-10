@@ -24,7 +24,7 @@ feature 'Photobox index view', js: true do
 
   context 'in rw mode' do
     before do
-      visit '/?rw/#/'
+      visit '/?rw/#!/'
     end
 
     it 'shows the button to take a picture' do

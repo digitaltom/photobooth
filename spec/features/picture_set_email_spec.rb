@@ -23,7 +23,7 @@ feature 'Photobox send picture set by email', js: true do
 
   context 'sending email' do
     before do
-      visit '/#/picture_set/00example/email'
+      visit '/#!/picture_set/00example/email'
     end
 
     it 'sends mail to entered address' do

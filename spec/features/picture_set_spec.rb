@@ -18,7 +18,7 @@ feature 'Photobox picture set view', js: true do
   context 'unavailable set' do
 
     before do
-      visit '/?rw/#/picture_set/2018-04-10_11-22-3/'
+      visit '/?rw/#!/picture_set/2018-04-10_11-22-3/'
     end
 
     it 'shows error' do
@@ -29,7 +29,7 @@ feature 'Photobox picture set view', js: true do
   context 'delete set' do
 
     before do
-      visit '/?rw/#/picture_set/00example'
+      visit '/?rw/#!/picture_set/00example'
     end
 
     it 'shows error' do
