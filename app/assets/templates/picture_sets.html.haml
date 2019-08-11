@@ -7,7 +7,7 @@
       Click here to take a picture
 
   %span{ 'ng-repeat' => 'picture_set in picture_sets'}
-    %a{href: '#/picture_set/{{picture_set.date}}'}
+    %a{href: '#!/picture_set/{{picture_set.date}}'.html_safe}
       %img.gallery-img.lazyload{'data-src' => '{{picture_set.path}}/{{picture_set.animation}}'}
 
   %h3

@@ -5,7 +5,7 @@ require 'rails_helper'
 feature 'Photobox take picture', js: true do
 
   before do
-    visit '/?rw/#/'
+    visit '/?rw/#!/'
   end
 
   it 'shows countdown modal' do
