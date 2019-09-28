@@ -42,7 +42,7 @@ group :development, :production do
 end
 
 group :test do
-  gem 'capybara', '< 3.16' #capybara >= 3.16 requires ruby 2.4
+  gem 'capybara', '< 3.16' # capybara >= 3.16 requires ruby 2.4
   gem 'capybara-selenium'
   gem 'coveralls', require: false
   gem 'rspec-rails'
