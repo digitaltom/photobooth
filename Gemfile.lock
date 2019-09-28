@@ -49,8 +49,8 @@ GEM
       railties (>= 4.2, < 6)
       sprockets (>= 3.0, < 5)
       tilt
-    angular_rails_csrf (3.2.0)
-      railties (>= 3, < 6)
+    angular_rails_csrf (4.0.0)
+      railties (>= 3, < 7)
     ansi (1.5.0)
     arel (9.0.0)
     ast (2.4.0)
