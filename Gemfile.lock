@@ -248,7 +248,7 @@ DEPENDENCIES
   angular_rails_csrf
   awesome_print
   byebug
-  capybara
+  capybara (< 3.16)
   capybara-selenium
   config-parser
   coveralls
