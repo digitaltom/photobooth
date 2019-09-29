@@ -1,17 +1,19 @@
 # frozen_string_literal: true
 
-require 'simplecov'
-require 'simplecov-console'
-SimpleCov.start 'rails'
-SimpleCov.refuse_coverage_drop
+if ENV['COVERAGE']
+  require 'simplecov'
+  require 'simplecov-console'
+  SimpleCov.start 'rails'
+  SimpleCov.refuse_coverage_drop
 
-SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new(
-  [
-    SimpleCov::Formatter::Console,
-    # Want a nice code coverage website? Uncomment this next line!
-    SimpleCov::Formatter::HTMLFormatter
-  ]
-)
+  SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new(
+    [
+      SimpleCov::Formatter::Console,
+      # Want a nice code coverage website? Uncomment this next line!
+      SimpleCov::Formatter::HTMLFormatter
+    ]
+  )
+end
 
 if ENV['TRAVIS']
   require 'coveralls'

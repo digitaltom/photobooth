@@ -8,7 +8,7 @@ addons:
   chrome: stable
 
 script:
- - 'bundle exec rspec'
+ - 'COVERAGE=true bundle exec rspec'
  - 'bundle exec rubocop -S'
 
 bundler_args: --without production
