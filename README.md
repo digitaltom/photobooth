@@ -18,7 +18,8 @@ It uses port 23 for 'ready', the ports 4,5,6,17  for picture 1-4 and port 24 for
 By default, the UI runs in read-only mode (no '*take a picture*' and '*delete*' buttons), so that you can share the url with the users that are connected to the same wifi. So they can directly download and share the pictures
 with their mobile phones.
 
-To load the UI in record (photobooth) mode, open it like this: http://&lt;ip&gt;/?rw/
+To load the UI in record (photobooth) mode, open it like this: http://&lt;ip&gt;/?rw/ \
+There is an automatically deployed instance [running on Heroku(https://photobooth-3.herokuapp.com/?rw/) (no camera connected...).
 
 ## Hardware Setup
 
