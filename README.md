@@ -19,7 +19,7 @@ By default, the UI runs in read-only mode (no '*take a picture*' and '*delete*' 
 with their mobile phones.
 
 To load the UI in record (photobooth) mode, open it like this: http://&lt;ip&gt;/?rw/ \
-There is an automatically deployed instance [running on Heroku](https://photobooth-3.herokuapp.com/?rw/) (no camera connected...).
+To show the UI, there is an automatically deployed instance [running on Heroku](https://photobooth-3.herokuapp.com/?rw/) (no camera connected...).
 
 ## Hardware Setup
 
