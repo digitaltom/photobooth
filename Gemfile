@@ -48,5 +48,5 @@ group :test do
   gem 'rspec-rails'
   gem 'simplecov', require: false
   gem 'simplecov-console', require: false
-  gem 'webdrivers'
+  gem 'webdrivers', '= 4.1.2' # webdrivers 4.1.3 require rubyzi 2.0 which requires ruby 2.4
 end
