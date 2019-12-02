@@ -2,11 +2,11 @@
 
 require 'rails_helper'
 
-# rubocop:disable BlockLength
+# rubocop:disable Metrics/BlockLength
 RSpec.describe PictureSet, type: :model do
 
   before do
-    stub_const('PictureSet::PICTURE_PATH', Rails.root.join('spec', 'fixtures', 'filesystem'))
+    stub_const('PictureSet::PICTURE_PATH', Rails.root.join('spec/fixtures/filesystem'))
   end
 
   describe '#all' do
@@ -126,4 +126,4 @@ RSpec.describe PictureSet, type: :model do
   end
 
 end
-# rubocop:enable BlockLength
+# rubocop:enable Metrics/BlockLength

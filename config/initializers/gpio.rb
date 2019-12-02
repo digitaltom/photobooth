@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# rubocop:disable Output
+# rubocop:disable Rails/Output
 # rubocop:disable Lint/RescueException
 begin
   $VERBOSE = nil
@@ -13,5 +13,5 @@ rescue Exception
 ensure
   $VERBOSE = false
 end
-# rubocop:enable Output
+# rubocop:enable Rails/Output
 # rubocop:enable Lint/RescueException
