@@ -6,7 +6,7 @@ class PictureSet
   POLAROID_SUFFIX = '_polaroid.png'
   ANIMATION_SUFFIX = '_animation.gif'
   COMBINED_SUFFIX = '_combined.jpg'
-  PICTURE_PATH = Rails.root.join('public', 'picture_sets').to_s
+  PICTURE_PATH = Rails.root.join('public/picture_sets').to_s
 
   attr_accessor :date, :dir, :animation, :combined, :pictures, :next, :last
 
