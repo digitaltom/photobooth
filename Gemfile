@@ -2,6 +2,8 @@
 
 source 'https://rubygems.org'
 
+ruby '2.3.3'
+
 gem 'rails', '~> 5.2'
 # angular-rails-templates currently only works with sprocket-rails 2
 gem 'sprockets-rails'
