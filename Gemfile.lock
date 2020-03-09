@@ -98,7 +98,7 @@ GEM
     i18n (1.7.0)
       concurrent-ruby (~> 1.0)
     jaro_winkler (1.5.4)
-    json (2.2.0)
+    json (2.3.0)
     loofah (2.4.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
@@ -204,7 +204,7 @@ GEM
       docile (~> 1.1)
       json (>= 1.8, < 3)
       simplecov-html (~> 0.10.0)
-    simplecov-console (0.6.0)
+    simplecov-console (0.7.2)
       ansi
       simplecov
       terminal-table
