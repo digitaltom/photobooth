@@ -126,7 +126,7 @@ GEM
       eventmachine (= 1.0.9)
       ffi
     public_suffix (3.1.1)
-    puma (4.3.3)
+    puma (4.3.5)
       nio4r (~> 2.0)
     rack (2.2.2)
     rack-test (1.1.0)
