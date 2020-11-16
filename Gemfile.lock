@@ -98,7 +98,7 @@ GEM
     i18n (1.8.5)
       concurrent-ruby (~> 1.0)
     jaro_winkler (1.5.4)
-    json (2.3.0)
+    json (2.3.1)
     loofah (2.7.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
@@ -205,7 +205,7 @@ GEM
       docile (~> 1.1)
       json (>= 1.8, < 3)
       simplecov-html (~> 0.10.0)
-    simplecov-console (0.7.2)
+    simplecov-console (0.8.0)
       ansi
       simplecov
       terminal-table
@@ -220,7 +220,7 @@ GEM
     temple (0.8.2)
     term-ansicolor (1.7.1)
       tins (~> 1.0)
-    terminal-table (1.8.0)
+    terminal-table (2.0.0)
       unicode-display_width (~> 1.1, >= 1.1.1)
     thor (1.0.1)
     thread_safe (0.3.6)
