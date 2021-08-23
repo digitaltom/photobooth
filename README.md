@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/digitaltom/photobooth.png?branch=master)](https://travis-ci.org/digitaltom/photobooth)
+[![Master Status](https://github.com/digitaltom/photobooth//actions/workflows/tests.yml/badge.svg?branch=master)](https://github.com/digitaltom/photobooth/actions)
 [![Code Climate](https://codeclimate.com/github/digitaltom/photobooth.png)](https://codeclimate.com/github/digitaltom/photobooth)
 [![Coverage Status](https://coveralls.io/repos/github/digitaltom/photobooth/badge.svg?branch=master&)](https://coveralls.io/github/digitaltom/photobooth?branch=master)
 [![Dependencies](https://badgen.net/dependabot/digitaltom/photobooth/?icon=dependabot)](https://badgen.net/dependabot/digitaltom/photobooth/?icon=dependabot)

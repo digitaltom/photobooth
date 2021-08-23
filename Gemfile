@@ -2,7 +2,7 @@
 
 source 'https://rubygems.org'
 
-ruby '2.3.3'
+ruby '~> 2.3.3'
 
 gem 'rails', '~> 5.2'
 # angular-rails-templates currently only works with sprocket-rails 2
@@ -46,9 +46,7 @@ end
 group :test do
   gem 'capybara', '< 3.16' # capybara >= 3.16 requires ruby 2.4
   gem 'capybara-selenium'
-  gem 'coveralls', require: false
   gem 'rspec-rails'
   gem 'simplecov', require: false
-  gem 'simplecov-console', require: false
   gem 'webdrivers', '4.2.0' # webdrivers 4.1.3 require rubyzi 2.0 which requires ruby 2.4
 end

@@ -8,14 +8,3 @@ updates:
   reviewers:
   - digitaltom
   ignore:
-  - dependency-name: rspec-rails
-    versions:
-    - 4.0.2
-  - dependency-name: puma
-    versions:
-    - 5.1.1
-    - 5.2.0
-    - 5.2.1
-  - dependency-name: simplecov-console
-    versions:
-    - 0.9.0
