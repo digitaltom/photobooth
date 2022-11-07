@@ -82,7 +82,7 @@ GEM
     ffi (1.11.1)
     globalid (0.4.2)
       activesupport (>= 4.2.0)
-    haml (6.0.4)
+    haml (6.0.8)
       temple (>= 0.8.2)
       thor
       tilt
