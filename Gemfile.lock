@@ -68,7 +68,6 @@ GEM
     capybara-selenium (0.0.6)
       capybara
       selenium-webdriver
-    childprocess (3.0.0)
     concurrent-ruby (1.1.10)
     config-parser (0.4.1)
       deep_merge
@@ -98,11 +97,12 @@ GEM
     marcel (1.0.2)
     method_source (1.0.0)
     mini_mime (1.1.2)
-    mini_portile2 (2.4.0)
+    mini_portile2 (2.8.2)
     minitest (5.15.0)
     nio4r (2.5.2)
-    nokogiri (1.10.10)
-      mini_portile2 (~> 2.4.0)
+    nokogiri (1.14.3)
+      mini_portile2 (~> 2.8.0)
+      racc (~> 1.4)
     parallel (1.19.1)
     parser (2.7.1.0)
       ast (~> 2.4.0)
@@ -112,6 +112,7 @@ GEM
     public_suffix (3.1.1)
     puma (5.6.5)
       nio4r (~> 2.0)
+    racc (1.6.2)
     rack (2.2.4)
     rack-test (2.0.2)
       rack (>= 1.3)
@@ -177,10 +178,11 @@ GEM
       rack (>= 1.1)
       rubocop (>= 0.72.0)
     ruby-progressbar (1.10.1)
-    rubyzip (1.3.0)
-    selenium-webdriver (3.142.7)
-      childprocess (>= 0.5, < 4.0)
-      rubyzip (>= 1.2.2)
+    rubyzip (2.3.2)
+    selenium-webdriver (4.9.1)
+      rexml (~> 3.2, >= 3.2.5)
+      rubyzip (>= 1.2.2, < 3.0)
+      websocket (~> 1.0)
     simplecov (0.17.1)
       docile (~> 1.1)
       json (>= 1.8, < 3)
@@ -202,10 +204,11 @@ GEM
     uglifier (4.2.0)
       execjs (>= 0.3.0, < 3)
     unicode-display_width (1.7.0)
-    webdrivers (4.2.0)
+    webdrivers (5.2.0)
       nokogiri (~> 1.6)
       rubyzip (>= 1.3.0)
-      selenium-webdriver (>= 3.0, < 4.0)
+      selenium-webdriver (~> 4.0)
+    websocket (1.2.9)
     websocket-driver (0.7.5)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
@@ -236,7 +239,7 @@ DEPENDENCIES
   simplecov
   sprockets-rails
   uglifier (>= 1.3.0)
-  webdrivers (= 4.2.0)
+  webdrivers (= 5.2.0)
 
 RUBY VERSION
    ruby 2.3.3p222

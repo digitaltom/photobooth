@@ -48,5 +48,5 @@ group :test do
   gem 'capybara-selenium'
   gem 'rspec-rails'
   gem 'simplecov', require: false
-  gem 'webdrivers', '4.2.0' # webdrivers 4.1.3 require rubyzi 2.0 which requires ruby 2.4
+  gem 'webdrivers', '5.2.0' # webdrivers 4.1.3 require rubyzi 2.0 which requires ruby 2.4
 end
