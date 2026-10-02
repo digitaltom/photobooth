@@ -1,0 +1,19 @@
+default: &default
+  dispatchers:
+    - polling_interval: 1
+      batch_size: 500
+  workers:
+    # one camera, CaptureJob runs one at a time (limits_concurrency)
+    - queues: "*"
+      threads: 1
+      # the queue database is in RAM (/run), fast polling is cheap and starts the job sooner
+      polling_interval: 0.1
+
+development:
+  <<: *default
+
+test:
+  <<: *default
+
+production:
+  <<: *default

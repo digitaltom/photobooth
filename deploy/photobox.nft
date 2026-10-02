@@ -1,0 +1,13 @@
+#!/usr/sbin/nft -f
+# Redirect port 80 to Puma on port 3000, so the app does not need to run as root.
+# Install: cp deploy/photobox.nft /etc/nftables.d/ (or include it from /etc/nftables.conf)
+
+table ip photobox
+delete table ip photobox
+
+table ip photobox {
+  chain prerouting {
+    type nat hook prerouting priority dstnat;
+    tcp dport 80 redirect to :3000
+  }
+}

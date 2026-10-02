@@ -51,3 +51,8 @@ To add additional fonts for the polaroid caption, use these commands:
 * `fc-cache -fv`: Run after installing new fonts to `/usr/share/fonts/`
 
 A nice caption font for example is: https://www.dafont.com/simplicity-6.font
+
+The default caption font is Rock Salt in `fonts/` (Apache License 2.0).
+To use another font, set `font` in `config/options-local.yml` to a `.ttf` path or an ImageMagick font name.
+Fonts that are for personal use only (for example Simplicity) must not be committed to the repo.
+Keep them outside git and set the path in `config/options-local.yml`.

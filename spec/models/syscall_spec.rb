@@ -27,6 +27,12 @@ RSpec.describe Syscall, type: :model do
       expect(output).to match(/root/)
     end
 
+    it 'yields each line while the command runs' do
+      lines = []
+      Syscall.execute('printf "a\\nb\\n"') { |line| lines << line }
+      expect(lines).to eq %W[a\n b\n]
+    end
+
     it 'raises on non-existing command' do
       expect { Syscall.execute('xyz') }.to raise_error(RuntimeError, /not found/)
     end

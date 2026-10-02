@@ -1,0 +1,5 @@
+-# locals: (picture_sets:)
+= turbo_stream_from :gallery
+- picture_sets.each do |picture_set|
+  = link_to set_path(picture_set) do
+    = image_tag file_set_path(picture_set, name: picture_set.animation), class: 'gallery-img', loading: 'lazy'

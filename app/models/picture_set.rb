@@ -8,6 +8,10 @@ class PictureSet
   POLAROID_SUFFIX = '_polaroid.png'
   ANIMATION_SUFFIX = '_animation.gif'
   IMAGEMAGICK = system('command -v magick > /dev/null') ? 'magick' : 'convert'
+  # The 4 polaroids already render in parallel on the 4 cores of the Pi 3, so one thread each.
+  # Over the memory limit ImageMagick swaps pixels to a temp file: slower, but no out-of-memory on 1 GB RAM.
+  MAGICK_ENV = "env MAGICK_THREAD_LIMIT=1 MAGICK_MEMORY_LIMIT=#{OPTS.imagemagick_memory_limit} " \
+               "MAGICK_MAP_LIMIT=#{OPTS.imagemagick_map_limit}".freeze
 
   attr_accessor :date, :dir, :animation, :pictures, :next, :last
 
@@ -37,6 +41,12 @@ class PictureSet
       ps
     end
 
+    # ImageMagick runs in the set folder, so a font file in the repo needs an absolute path
+    def font
+      path = Rails.root.join(OPTS.font)
+      path.file? ? path.to_s : OPTS.font
+    end
+
     def next_id
       Time.now.getlocal.strftime(DATE_FORMAT)
     end
@@ -61,10 +71,10 @@ class PictureSet
 
   def convert_to_polaroid(num, angle)
     caption = OPTS.image_caption || date
-    # jpeg:size lets ImageMagick decode the 24 MP photo at a reduced size, which keeps the Pi 3 fast
-    Syscall.execute("#{IMAGEMAGICK} -define jpeg:size=1200x1200 #{date}_#{num}.jpg " \
-                    "-caption '#{caption}' " \
-                    "-font '#{OPTS.font}' " \
+    # jpeg:size makes libjpeg decode the 24 MP photo (6000x4000) at 1/8 scale (750x500),
+    # enough for the 600 px polaroid. -define and -caption are read settings: both must stand before the input file.
+    Syscall.execute("#{MAGICK_ENV} #{IMAGEMAGICK} -define jpeg:size=600x400 -caption '#{caption}' #{date}_#{num}.jpg " \
+                    "-font '#{PictureSet.font}' " \
                     '-scale 600 ' \
                     '-bordercolor Snow ' \
                     '-density 100 ' \
@@ -81,7 +91,7 @@ class PictureSet
       Rails.logger.info "Skipping for existing animation #{dir}"
     else
       Rails.logger.info "Creating animation for #{dir}"
-      Syscall.execute("#{IMAGEMAGICK} -delay 60 #{date}_[1-4]#{POLAROID_SUFFIX} #{animation}", dir: dir, timing: true)
+      Syscall.execute("#{MAGICK_ENV} #{IMAGEMAGICK} -delay 60 #{date}_[1-4]#{POLAROID_SUFFIX} #{animation}", dir: dir, timing: true)
     end
   end
 

@@ -19,7 +19,7 @@ The app sets them with `gpioset` from libgpiod.
 
 The app has these pages:
 
-- `/kiosk`: The record UI for the tablet. It shows the result with a QR code for the download.
+- `/kiosk`: The record UI for the tablet, with the gallery below the button.
 - `/`: The gallery for the guests. It shows new sets without a reload.
 - `/sets/<id>`: One set with the GIF, the 4 single pictures and the downloads.
 

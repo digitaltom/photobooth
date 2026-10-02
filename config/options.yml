@@ -1,16 +1,21 @@
 default:
   image_caption: 'Photobooth'
-  image_fontsize: 11
-  font: 'Helvetica' # see https://github.com/digitaltom/photobooth/blob/master/INSTALL-RASPBIAN.md#font-installation
+  image_fontsize: 12
+  # a .ttf path (relative to the app folder) or an ImageMagick font name (`magick -list font`)
+  # Rock Salt: Apache License 2.0, see fonts/LICENSE.txt
+  font: 'fonts/RockSalt-Regular.ttf'
 
   # 'gphoto2' for a real camera, 'fake' copies the sample images in lib/fake_camera
   camera: 'gphoto2'
+  # seconds per fake photo, like focus, shutter and USB download of the real camera
+  fake_camera_delay: 2
+
+  # per ImageMagick process, 4 run in parallel (Pi 3 B: 1 GB RAM)
+  imagemagick_memory_limit: '64MiB'
+  imagemagick_map_limit: '128MiB'
 
   # libgpiod chip for the status LEDs (Pi 5 with older kernels: gpiochip4)
   gpio_chip: 'gpiochip0'
-
-  # base url in the QR codes, the Pi hotspot address (mDNS is unreliable on Android)
-  public_url: 'http://10.42.0.1'
 
   # folder for the picture sets, default: storage/sets. PHOTOBOX_STORAGE env overrides it.
   storage_path:
@@ -20,3 +25,4 @@ development:
 
 test:
   camera: 'fake'
+  fake_camera_delay: 0

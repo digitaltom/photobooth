@@ -1,0 +1,24 @@
+- content_for :head do
+  = turbo_refreshes_with method: :morph, scroll: :preserve
+  = turbo_exempts_page_from_cache
+= turbo_stream_from :kiosk
+
+.picture-sets.text-center{ data: { controller: 'countdown' } }
+  = form_with url: picture_sets_path, data: { countdown_target: 'form' } do
+    %button.btn.btn-default.shoot_button{ type: 'button', data: { action: 'countdown#start' } }
+      %span
+        = image_tag '/images/take_picture_animation.gif', class: 'shoot_img'
+      .shoot_text
+        Click here to take a picture
+
+  -# permanent: the gallery morph refresh must not close the dialog with the result
+  %dialog#shoot-dialog.text-center{ data: { countdown_target: 'dialog', turbo_permanent: true } }
+    %h3
+      %b{ data: { countdown_target: 'text' } }
+    %progress#shoot-progress{ max: 100, value: 100, data: { countdown_target: 'progress' } }
+    #kiosk-status
+    -# copied into #kiosk-status when the countdown starts: 4 black and white images
+    %template{ data: { countdown_target: 'status' } }
+      = render 'kiosk/status', step: 0
+
+  = render 'sets/gallery', picture_sets: @picture_sets

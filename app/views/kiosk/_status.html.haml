@@ -1,0 +1,14 @@
+-# locals: (step:)
+-# step: 0 = waiting for the camera, 1..4 = taking picture n, :processing = rendering the GIF
+%h3
+  %b
+    - if step == :processing
+      Processing animation
+    - elsif step.positive?
+      Action, taking picture #{step} / 4
+
+%div
+  - done = step == :processing ? 4 : step - 1
+  - (1..4).each do |i|
+    - image = if i <= done then 'shoot_still.png' elsif i == step then 'shoot_animation.gif' else 'shoot_still_sw.png' end
+    = image_tag image, class: 'countdown-img'
