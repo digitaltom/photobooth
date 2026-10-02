@@ -1,0 +1,21 @@
+.fullscreen
+  = image_tag "/#{@picture_set.path}/#{@picture_set.animation}"
+
+#button-start
+  = link_to root_path, class: 'btn btn-default btn-lg' do
+    %span
+      = image_tag '/images/take_picture.png', class: 'shoot_img_btn'
+    %b Start
+  - if OPTS.send_by_email
+    = link_to new_picture_set_email_path(@picture_set), class: 'btn btn-default btn-lg' do
+      %b Send by email
+  = link_to gallery_picture_set_path(@picture_set), class: 'btn btn-default btn-lg' do
+    %b Single pictures
+  = link_to slideshow_picture_set_path(@picture_set), class: 'btn btn-default btn-lg' do
+    %b Slideshow
+
+= render 'nav', picture_set: @picture_set, path_method: :picture_set_path
+
+- if rw_mode?
+  #button-delete
+    = button_to 'Delete this set', picture_set_path(@picture_set), method: :delete, class: 'btn btn-default btn-sm'

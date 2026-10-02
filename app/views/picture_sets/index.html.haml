@@ -1,0 +1,17 @@
+.picture-sets.text-center
+
+  - if rw_mode?
+    = form_with url: picture_sets_path, id: 'shoot-form' do
+      %button.btn.btn-default.shoot_button{ type: 'button', data: { shoot: true } }
+        %span
+          = image_tag '/images/take_picture_animation.gif', class: 'shoot_img'
+        .shoot_text
+          Click here to take a picture
+
+  - @picture_sets.each do |picture_set|
+    = link_to picture_set_path(picture_set) do
+      = image_tag "/#{picture_set.path}/#{picture_set.animation}", class: 'gallery-img', loading: 'lazy'
+
+  %h3
+    %a{ href: 'https://github.com/digitaltom/photobooth' }
+      github.com/digitaltom/photobooth

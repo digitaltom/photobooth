@@ -9,6 +9,7 @@ class PictureSet
   PICTURE_PATH = Rails.public_path.join('picture_sets').to_s
 
   attr_accessor :date, :dir, :animation, :combined, :pictures, :next, :last
+  attr_reader :path
 
   class << self
 
@@ -76,6 +77,10 @@ class PictureSet
     @animation = "#{date}#{ANIMATION_SUFFIX}"
     @combined = "#{date}#{COMBINED_SUFFIX}"
     @pictures = (1..4).map { |i| { polaroid: "#{date}_#{i}#{POLAROID_SUFFIX}", full: "#{date}_#{i}.jpg" } }
+  end
+
+  def to_param
+    date
   end
 
   def destroy

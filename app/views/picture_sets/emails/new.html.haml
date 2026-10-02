@@ -1,0 +1,19 @@
+.container.mail-container
+  .row
+    .col-sm-12
+      %h2.text-center
+        Get your picture send to you immediately:
+  = form_with url: picture_set_emails_path(@picture_set), class: 'row' do |f|
+    .col-sm-10
+      .form-group
+        = f.email_field :email, id: 'email', class: 'input-lg form-control', placeholder: 'Email', size: 20, required: true
+    .col-sm-2
+      = f.button class: 'btn btn-default btn-lg' do
+        %b Send email
+  .row
+    .col-sm-12
+      = image_tag "/#{@picture_set.path}/#{@picture_set.animation}", class: 'img-responsive center-block'
+
+  .row.text-center
+    = link_to picture_set_path(@picture_set), class: 'btn btn-default btn-lg' do
+      %b Back

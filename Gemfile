@@ -5,12 +5,11 @@ source 'https://rubygems.org'
 ruby '~> 4.0.5'
 
 gem 'rails', '~> 8.1'
-# angular-rails-templates requires sprockets
+# asset pipeline (bootstrap css, images)
 gem 'sprockets-rails'
 
-gem 'angular_rails_csrf'
-gem 'angular-rails-templates'
 gem 'haml'
+gem 'turbo-rails'
 
 # Use Puma as the app server
 gem 'puma'

@@ -1,0 +1,15 @@
+.container
+  .row
+    - @picture_set.pictures.each do |picture|
+      .col-lg-3.col-md-4.col-xs-6.thumb
+        %a.thumbnail{ href: "/#{@picture_set.path}/#{picture[:full]}" }
+          = image_tag "/#{@picture_set.path}/#{picture[:polaroid]}", class: 'img-responsive', style: 'width:400px;', loading: 'lazy'
+    .col-lg-3.col-md-4.col-xs-6.thumb
+      %a.thumbnail{ href: "/#{@picture_set.path}/#{@picture_set.combined}" }
+        = image_tag "/#{@picture_set.path}/#{@picture_set.combined}", class: 'img-responsive', style: 'width:400px;', loading: 'lazy'
+  .row.text-center
+    = link_to picture_set_path(@picture_set), class: 'btn btn-default btn-lg' do
+      %b Back
+    - if OPTS.send_by_email
+      = link_to new_picture_set_email_path(@picture_set), class: 'btn btn-default btn-lg' do
+        %b Send per email

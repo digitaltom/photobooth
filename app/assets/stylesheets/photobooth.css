@@ -10,6 +10,15 @@ body {
     height: 100%;
 }
 
+#shoot-dialog {
+    width: 95%;
+    color: #000;
+}
+
+#shoot-progress {
+    width: 100%;
+}
+
 .modal-dialog {
     color: #000;
 }

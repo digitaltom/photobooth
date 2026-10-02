@@ -1,45 +1,33 @@
 !!!
-%html{'ng-app'=>'photoBooth', 'ng-strict-di'=> true}
+%html
   %head
     %title Photobooth
     %meta{:content => 'width=device-width, initial-scale=1.0, user-scalable=no', :name => 'viewport'}
     = favicon_link_tag '/favicon.ico'
     = stylesheet_link_tag 'vendor_application', media: 'all'
     = stylesheet_link_tag 'application', media: 'all'
-    = javascript_include_tag 'vendor_application'
-    = javascript_include_tag 'application'
+    = javascript_include_tag 'turbo.min', type: 'module'
+    = javascript_include_tag 'application', defer: true
     = csrf_meta_tags
-
-    :javascript
-      window.send_by_email = #{OPTS.send_by_email};
 
     = yield(:head)
 
   %body
 
-    %script{'type'=>"text/ng-template", 'id'=>"alert.html"}
-      %div.alert{'style'=>"background-color:#fa39c3;color:white", 'role'=>"alert"}
-        %div{'ng-transclude'=>'true'}
+    - flash.each do |type, msg|
+      .alert{ class: type == 'notice' ? 'alert-success' : 'alert-danger', role: 'alert' }= msg
 
-    %script{'type'=>"text/ng-template", 'id'=>"picture_shoot.html"}
-      %div.modal-body.text-center
+    - if rw_mode?
+      %dialog#shoot-dialog.text-center
         %h3
-          %b
-            {{shoot_txt}}
+          %b#shoot-txt
+        %progress#shoot-progress{ max: 100, value: 100 }
+        %i#shoot-progress-txt
 
-        %uib-progressbar.progress-striped.active#shoot-progress{ max: '100', value: 'shoot_progress' }
-          %i
-            {{shoot_progress_txt}}
+        %div
+          - (1..4).each do |i|
+            = image_tag 'shoot_still_sw.png', class: 'countdown-img', data: { step: i, show: 'before' }
+            = image_tag 'shoot_animation.gif', class: 'countdown-img hidden', data: { step: i, show: 'during' }
+            = image_tag 'shoot_still.png', class: 'countdown-img hidden', data: { step: i, show: 'after' }
 
-        - (1..4).each_with_index do |i|
-          = image_tag 'shoot_still_sw.png', { 'class' => 'countdown-img', 'ng-class' => "{ 'hidden': current_shoot >= #{i} }" }
-          = image_tag 'shoot_animation.gif', { 'class' => 'countdown-img', 'ng-class' => "{ 'hidden': current_shoot != #{i} }" }
-          = image_tag 'shoot_still.png', { 'class' => 'countdown-img', 'ng-class' => "{ 'hidden': current_shoot <= #{i} }" }
-
-      %div.modal-footer
-
-    %uib-alert{'ng-repeat'=>"alert in alerts", 'type'=>"{{alert.type}}", 'dismiss-on-timeout'=>'10000', 'close'=>"closeAlert($index)"}
-      {{alert.msg}}
-
-
-    %div{'ng-view' => true}
+    = yield

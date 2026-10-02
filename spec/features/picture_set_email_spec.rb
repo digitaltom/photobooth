@@ -23,12 +23,12 @@ feature 'Photobox send picture set by email', js: true do
 
   context 'sending email' do
     before do
-      visit '/#!/picture_set/00example/email'
+      visit '/picture_sets/00example/emails/new'
     end
 
     it 'sends mail to entered address' do
       fill_in 'email', with: 'test@digitalflow.de'
-      find('a', text: 'Send email').click
+      click_button('Send email')
       expect(page).to have_content('Successfully sent email to test@digitalflow.de')
     end
   end
