@@ -7,7 +7,7 @@ class PictureSetsController < ApplicationController
   end
 
   def show
-    render json: PictureSet.find(params[:id])
+    render json: PictureSet.find(params.expect(:id))
   end
 
   def create
@@ -15,7 +15,7 @@ class PictureSetsController < ApplicationController
   end
 
   def destroy
-    PictureSet.find(params[:id]).destroy
+    PictureSet.find(params.expect(:id)).destroy
     render json: ''
   end
 end

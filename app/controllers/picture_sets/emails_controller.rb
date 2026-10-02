@@ -4,7 +4,7 @@ module PictureSets
   class EmailsController < ApplicationController
 
     def create
-      picture_set = PictureSet.find(params[:picture_set_id])
+      picture_set = PictureSet.find(params.expect(:picture_set_id))
       t = Thread.new do
         ::PictureSetMailer.image_email(params[:email], picture_set).deliver_now
       end

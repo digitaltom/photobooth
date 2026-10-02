@@ -12,10 +12,10 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        ruby-version: ['2.3']
+        ruby-version: ['4.0.5']
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
 
     - name: Set up Ruby
       uses: ruby/setup-ruby@v1

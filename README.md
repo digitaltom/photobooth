@@ -72,10 +72,11 @@ From your notebook you can use `sudo nmap -sP 192.168.178.1/24` to discover acti
 - Clone the photobooth repo:
   - `sudo su`
   - `cd /root; git clone https://github.com/digitaltom/photobooth.git`
+- Install Ruby 4.0.5 (for example with [rbenv](https://github.com/rbenv/rbenv)), the version is set in `.ruby-version`.
 - Install the needed gems:
   - `echo 'gem: --no-document' >> ~/.gemrc`
-  - `gem install bundler`
   - `cd photobooth; bundle install`
+- Create a secret for the session cookies: `echo "SECRET_KEY_BASE=$(openssl rand -hex 64)" > config/photobooth.env`
 - Precompile the assets: `RAILS_ENV=production rake assets:precompile`
 - Autostart the app on boot time:
   - `cp photobooth.service /etc/systemd/system/photobooth.service`

@@ -1,9 +1,16 @@
-require: rubocop-rails
+plugins: rubocop-rails
 
 Rails:
   Enabled: true
 
+# PictureSet is not ActiveRecord, it has no find_each
+Rails/FindEach:
+  Enabled: false
+
 AllCops:
+  TargetRubyVersion: 4.0
+  NewCops: enable
+  SuggestExtensions: false
   DisplayCopNames: true
   DisplayStyleGuide: true
   ExtraDetails: true
@@ -11,7 +18,7 @@ AllCops:
     - bin/**/*
     - vendor/**/*
 
-LineLength:
+Layout/LineLength:
   Max: 140
 
 Layout/EmptyLinesAroundClassBody:
@@ -38,7 +45,7 @@ Style/RegexpLiteral:
 Style/NegatedWhile:
   Enabled: false
 
-Documentation:
+Style/Documentation:
   Enabled: false
 
 Style/BlockComments:

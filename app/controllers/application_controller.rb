@@ -13,7 +13,7 @@ class ApplicationController < ActionController::Base
   def handle_exception(exception)
     logger.error "Exception: #{exception.class}: #{exception.message}"
     logger.error exception.backtrace.join("\n")
-    render json: { error: exception.message }.to_json, status: :unprocessable_entity
+    render json: { error: exception.message }.to_json, status: :unprocessable_content
   end
 
 end

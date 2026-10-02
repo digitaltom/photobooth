@@ -13,7 +13,7 @@ RSpec.describe GpioPort, type: :model do
 
     it 'turns on pin' do
       pin = double
-      expect(File).to receive(:open).with('/sys/class/gpio/unexport', 'w')
+      expect(File).to receive(:write).with('/sys/class/gpio/unexport', '5')
       expect(PiPiper::Pin).to receive(:new).with(pin: 5, direction: :out).and_return(pin)
       expect(pin).to receive(:on)
       GpioPort.on(5)
@@ -21,7 +21,7 @@ RSpec.describe GpioPort, type: :model do
 
     it 'continues if unsetting pin fails' do
       pin = double
-      expect(File).to receive(:open).with('/sys/class/gpio/unexport', 'w').and_raise(Errno::EINVAL)
+      expect(File).to receive(:write).with('/sys/class/gpio/unexport', '5').and_raise(Errno::EINVAL)
       expect(PiPiper::Pin).to receive(:new).with(pin: 5, direction: :out).and_return(pin)
       expect(pin).to receive(:on)
       GpioPort.on(5)
@@ -33,7 +33,7 @@ RSpec.describe GpioPort, type: :model do
 
     it 'turns off pin' do
       pin = double
-      expect(File).to receive(:open).with('/sys/class/gpio/unexport', 'w')
+      expect(File).to receive(:write).with('/sys/class/gpio/unexport', '5')
       expect(PiPiper::Pin).to receive(:new).with(pin: 5, direction: :out).and_return(pin)
       expect(pin).to receive(:off)
       GpioPort.off(5)
