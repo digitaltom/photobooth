@@ -2,6 +2,7 @@
 
 # This file is copied to spec/ when you run 'rails generate rspec:install'
 ENV['RAILS_ENV'] ||= 'test'
+ENV['PHOTOBOX_STORAGE'] ||= File.expand_path('fixtures/filesystem', __dir__)
 require File.expand_path('../config/environment', __dir__)
 # Prevent database truncation if the environment is production
 abort('The Rails environment is running in production mode!') if Rails.env.production?
@@ -12,7 +13,7 @@ require 'rspec/rails'
 require 'capybara/cuprite'
 
 Capybara.register_driver :cuprite do |app|
-  Capybara::Cuprite::Driver.new(app, window_size: [1920, 1200], # Nexus7 resolution
+  Capybara::Cuprite::Driver.new(app, window_size: [2360, 1640], # iPad Air 4 resolution
                                      browser_options: { 'no-sandbox' => nil })
 end
 

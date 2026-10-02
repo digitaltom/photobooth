@@ -5,16 +5,12 @@ require 'rails_helper'
 # rubocop:disable-next Metrics/BlockLength
 RSpec.describe PictureSet, type: :model do
 
-  before do
-    stub_const('PictureSet::PICTURE_PATH', Rails.root.join('spec/fixtures/filesystem'))
-  end
-
   describe '#all' do
 
     it 'finds all picture sets' do
       sets = PictureSet.all
       expect(sets).to_not be_empty
-      expect(sets.first.dir).to eq File.join(PictureSet::PICTURE_PATH, '2099-01-01_01-48-33')
+      expect(sets.first.dir).to eq File.join(PictureSet.root, '2099-01-01_01-48-33')
     end
 
     it 'skips incomplete picture sets' do
@@ -41,46 +37,10 @@ RSpec.describe PictureSet, type: :model do
     it 'returns hash with all needed values' do
       set = PictureSet.new(date: '2099-01-01_01-48-33')
       expect(set).to_not be_nil
-      expect(set.dir).to eq File.join(PictureSet::PICTURE_PATH, '2099-01-01_01-48-33')
+      expect(set.dir).to eq File.join(PictureSet.root, '2099-01-01_01-48-33')
       expect(set.date).to eq '2099-01-01_01-48-33'
       expect(set.animation).to eq '2099-01-01_01-48-33_animation.gif'
       expect(set.pictures.size).to eq 4
-    end
-
-  end
-
-  describe '#create' do
-
-    before do
-      expect(FileUtils).to receive(:mkdir).with(/fixtures\/filesystem\//)
-      expect(PictureSet).to receive(:new).and_call_original
-    end
-
-    it 'takes new picture' do
-      expect(Syscall).to receive(:execute).with(/gphoto2 --capture-image-and-download/, anything).exactly(4).times
-      expect(Syscall).to receive(:execute).with(/convert/, anything).exactly(5).times
-      expect(File).to receive(:exist?).with(/_animation.gif/).and_return(false)
-      expect(File).to receive(:exist?).and_return(true).exactly(4).times
-      allow(GpioPort).to receive(:on)
-      allow(GpioPort).to receive(:off)
-      PictureSet.create
-    end
-
-    it 'raises if image capture failed' do
-      allow(Syscall).to receive(:execute).with(/gphoto2 --capture-image-and-download/, anything)
-      allow(GpioPort).to receive(:on)
-      allow(GpioPort).to receive(:off)
-      expect { PictureSet.create }.to raise_error('Image capture failed')
-    end
-
-  end
-
-  describe '#destroy' do
-
-    it 'deletes set with given date' do
-      date = '2099-01-01_01-48-33'
-      expect(FileUtils).to receive(:rm_r).with(PictureSet.find(date).dir)
-      PictureSet.find(date).destroy
     end
 
   end
@@ -98,28 +58,8 @@ RSpec.describe PictureSet, type: :model do
     context 'file does not yet exist' do
       it 'creates animation' do
         set = PictureSet.new(date: '2099-01-01_01-48-33')
-        expect(Syscall).to receive(:execute).with(/convert/, anything)
+        expect(Syscall).to receive(:execute).with(/#{PictureSet::IMAGEMAGICK} -delay/, anything)
         set.create_animation(overwrite: true)
-      end
-    end
-
-  end
-
-  describe '.combine_images' do
-
-    context 'file exists' do
-      it 'returns' do
-        set = PictureSet.new(date: '2099-01-01_01-48-33')
-        expect(File).to receive(:exist?).with(File.join(set.dir, set.combined)).and_return(true)
-        set.combine_images(overwrite: false)
-      end
-    end
-
-    context 'file does not yet exist' do
-      it 'creates animation' do
-        set = PictureSet.new(date: '2099-01-01_01-48-33')
-        expect(Syscall).to receive(:execute).with(/montage/, anything)
-        set.combine_images(overwrite: true)
       end
     end
 

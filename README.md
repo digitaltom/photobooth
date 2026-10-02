@@ -9,17 +9,21 @@ This application is supposed to run on a linux machine which is connected to a [
 
 I've build it to run on a Raspberry Pi with [openSUSE](https://en.opensuse.org/HCL:Raspberry_Pi3)/[Raspbian (Debian)](https://www.raspberrypi.org/downloads/raspbian/), connected to a Nikon D60 camera. See below for install instructions.
 
-The *[Angular.js](https://angularjs.org/)* frontend uses a *[Ruby on Rails](https://rubyonrails.org/)* server on the backend to trigger and process the pictures.
-Any tablet or notebook with a web-browser connected to the same wifi as the raspi will work as a screen.
+The app is a *[Ruby on Rails](https://rubyonrails.org/)* server with a *[Hotwire](https://hotwired.dev/)* (Turbo and Stimulus) frontend. It needs no Node.js.
+A background job (Solid Queue) takes the pictures and renders the GIF. The job sends each step to the screen with Turbo Streams.
+Any tablet or notebook with a web browser in the same Wi-Fi as the Raspberry Pi works as a screen.
 
 LEDs can get connected to the Raspberry Pi's [gpio ports](https://www.raspberrypi.org/documentation/usage/gpio/).
 It uses port 23 for 'ready', the ports 4,5,6,17  for picture 1-4 and port 24 for 'image processing'.
+The app sets them with `gpioset` from libgpiod.
 
-By default, the UI runs in read-only mode (no '*take a picture*' and '*delete*' buttons), so that you can share the url with the users that are connected to the same wifi. So they can directly download and share the pictures
-with their mobile phones.
+The app has these pages:
 
-To load the UI in record (photobooth) mode, open it like this: http://&lt;ip&gt;/?rw/ \
-To show the UI, there is an automatically deployed instance [running on Heroku](https://photobooth-3.herokuapp.com/?rw/) (no camera connected...).
+- `/kiosk`: The record UI for the tablet. It shows the result with a QR code for the download.
+- `/`: The gallery for the guests. It shows new sets without a reload.
+- `/sets/<id>`: One set with the GIF, the 4 single pictures and the downloads.
+
+For development without a camera, the `fake` camera in `config/options.yml` copies the sample images from `lib/fake_camera`.
 
 ## Hardware Setup
 
@@ -69,27 +73,32 @@ From your notebook you can use `sudo nmap -sP 192.168.178.1/24` to discover acti
 
 ## Software Setup
 
-- Clone the photobooth repo:
-  - `sudo su`
-  - `cd /root; git clone https://github.com/digitaltom/photobooth.git`
-- Install Ruby 4.0.5 (for example with [rbenv](https://github.com/rbenv/rbenv)), the version is set in `.ruby-version`.
-- Install the needed gems:
-  - `echo 'gem: --no-document' >> ~/.gemrc`
-  - `cd photobooth; bundle install`
-- Create a secret for the session cookies: `echo "SECRET_KEY_BASE=$(openssl rand -hex 64)" > config/photobooth.env`
-- Precompile the assets: `RAILS_ENV=production rake assets:precompile`
-- Autostart the app on boot time:
-  - `cp photobooth.service /etc/systemd/system/photobooth.service`
-  - `systemctl enable /etc/systemd/system/photobooth.service`
-- `cp config/options.yml config/options-local.yml` and set your config options in config/options-local.yml
+- Create the app user: `sudo useradd --system --create-home --groups plugdev,gpio photobox`
+- Clone the repo to `/opt/photobox` and give it to the user: `sudo chown -R photobox /opt/photobox`
+- Install Ruby 4.0.5 (for example with [rbenv](https://github.com/rbenv/rbenv)). The version is set in `.ruby-version`.
+- Install the packages: `sudo apt-get install gphoto2 imagemagick gpiod libsqlite3-dev`
+- As the `photobox` user, in `/opt/photobox`:
+  - `bundle install`
+  - `echo "SECRET_KEY_BASE=$(openssl rand -hex 64)" > config/photobox.env`
+  - `RAILS_ENV=production bin/rails assets:precompile`
+- Install the service:
+  - `sudo cp deploy/photobox.service /etc/systemd/system/`
+  - `sudo systemctl enable --now photobox`
+- Redirect port 80 to Puma on port 3000:
+  - `sudo cp deploy/photobox.nft /etc/nftables.d/` (or include it from `/etc/nftables.conf`)
+  - `sudo nft -f deploy/photobox.nft`
+- Optional: `cp config/options.yml config/options-local.yml` and set your options in `config/options-local.yml`.
+
+The service runs Puma and the Solid Queue jobs in one process. The queue and cable databases are in `/run/photobox` (RAM), because they only hold volatile data.
+The picture sets are in `storage/sets`. Set `PHOTOBOX_STORAGE` or `storage_path` to use another folder.
 
 ## Operations
 
 Useful commands to run the photobooth
 
 - Control the app with systemd:
-  `systemctl <start|stop|restart|status> photobooth`
-- See the logfile: `tail -f log/production.log`
+  `systemctl <start|stop|restart|status> photobox`
+- See the log: `journalctl -u photobox -f`
 - Rake tasks
   - `rake picture_set:record`: Trigger a new picture from console
   - `rake picture_set:recreate_polaroid_images[path]`: Re-create all polaroid images in a batch

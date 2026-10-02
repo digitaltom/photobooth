@@ -1,0 +1,11 @@
+- content_for :head do
+  = turbo_refreshes_with method: :morph, scroll: :preserve
+  -# no stale snapshot on back navigation, new sets can exist
+  = turbo_exempts_page_from_cache
+
+.picture-sets.text-center
+  = render 'sets/gallery', picture_sets: @picture_sets
+
+  %h3
+    %a{ href: 'https://github.com/digitaltom/photobooth' }
+      github.com/digitaltom/photobooth

@@ -1,0 +1,14 @@
+- if @picture_set.next
+  - content_for :head do
+    %meta{ 'http-equiv' => 'refresh', content: "8;url=#{slideshow_set_path(@picture_set.next)}" }
+
+.fullscreen
+  = image_tag file_set_path(@picture_set, name: @picture_set.animation)
+
+#button-start
+  = link_to root_path, class: 'btn btn-default btn-lg' do
+    %span
+      = image_tag '/images/clock_regular.png', class: 'shoot_img_btn'
+    %b Slideshow
+
+= render 'nav', picture_set: @picture_set, path_method: :slideshow_set_path

@@ -104,3 +104,9 @@ body {
     right: 3px;
     bottom: 3px;
 }
+
+.qr-code svg {
+    background: #fff;
+    padding: 10px;
+    width: 100%;
+}

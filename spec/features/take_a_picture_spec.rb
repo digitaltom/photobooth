@@ -2,18 +2,18 @@
 
 require 'rails_helper'
 
-feature 'Photobox take picture', js: true do
+feature 'Photobox kiosk', js: true do
 
   before do
-    visit '/?rw/'
+    visit '/kiosk'
   end
 
-  it 'shows countdown modal' do
-    expect(PictureSet).to receive(:create)
+  it 'counts down and starts the capture job' do
+    expect(CaptureJob).to receive(:perform_later)
 
     click_button('take a picture')
     expect(page).to have_content 'Take pose!'
-    sleep(3)
+    expect(page).to have_css('#kiosk-status img.countdown-img', count: 4)
   end
 
 end

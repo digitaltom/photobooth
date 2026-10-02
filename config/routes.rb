@@ -2,15 +2,14 @@
 
 Rails.application.routes.draw do
 
-  root 'picture_sets#index'
+  root 'sets#index'
+  get 'kiosk' => 'kiosk#show'
+  post 'picture_sets' => 'sets#create'
 
-  resources :picture_sets, only: %i[index show create destroy] do
+  resources :sets, only: %i[show] do
     member do
-      get :gallery
       get :slideshow
-    end
-    scope module: :picture_sets do
-      resources :emails, only: %i[new create]
+      get 'files/:name', action: :file, as: :file, constraints: { name: %r{[^/]+} }
     end
   end
 end

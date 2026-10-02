@@ -4,38 +4,15 @@ require 'rails_helper'
 
 feature 'Photobox picture set view', js: true do
 
-  context 'navigating from index page' do
-    before do
-      visit '/'
-      find(:css, 'img.gallery-img', match: :first).click
-    end
-
-    it 'shows the picture set page' do
-      expect(page).to have_css('.fullscreen img')
-    end
+  before do
+    visit '/'
+    find(:css, 'img.gallery-img', match: :first).click
   end
 
-  context 'unavailable set' do
-
-    before do
-      visit '/picture_sets/2018-04-10_11-22-3?rw/'
-    end
-
-    it 'shows error' do
-      expect(page).to have_text('PictureSet not found')
-    end
-  end
-
-  context 'delete set' do
-
-    before do
-      visit '/picture_sets/00example?rw/'
-    end
-
-    it 'shows error' do
-      expect_any_instance_of(PictureSet).to receive(:destroy)
-      click_button('Delete this set')
-    end
+  it 'shows the animation and the single pictures' do
+    expect(page).to have_css('img.gallery-img')
+    expect(page).to have_css('img.img-responsive', count: 4)
+    expect(page).to have_link('Download GIF')
   end
 
 end

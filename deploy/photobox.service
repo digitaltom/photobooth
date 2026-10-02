@@ -1,0 +1,21 @@
+[Unit]
+Description=Photobox rails app (web and jobs)
+After=network.target
+
+[Service]
+User=photobox
+WorkingDirectory=/opt/photobox
+# creates /run/photobox owned by User: queue and cable SQLite databases only hold volatile data
+RuntimeDirectory=photobox
+Environment=RAILS_ENV=production
+Environment=RAILS_LOG_TO_STDOUT=true
+Environment=SOLID_QUEUE_IN_PUMA=1
+Environment=PHOTOBOX_DB_DIR=/run/photobox
+# must contain SECRET_KEY_BASE=<random hex>, see README
+EnvironmentFile=/opt/photobox/config/photobox.env
+ExecStartPre=/opt/photobox/bin/rails db:prepare
+ExecStart=/opt/photobox/bin/rails server
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

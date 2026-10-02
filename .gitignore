@@ -13,11 +13,12 @@ rerun.txt
 pickle-email-*.html
 .idea
 config/options-local.yml
-config/photobooth.env
+config/photobox.env
 .byebug_history
 .coveralls.yml
 
-public/picture_sets/20*
+/storage/*
+!/storage/.keep
 
 
 # Comment out these rules if you are OK with secrets being uploaded to the repo

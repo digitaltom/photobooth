@@ -4,41 +4,21 @@ require 'rails_helper'
 
 RSpec.describe GpioPort, type: :model do
 
-  before(:each) do
-    stub_const('PiPiper', Class.new)
-    PiPiper::Pin = double('PiPiper::Pin')
+  before { stub_const('GpioPort::AVAILABLE', true) }
+
+  it 'turns on pin' do
+    expect(Syscall).to receive(:execute).with('gpioset -t0 -c gpiochip0 5=1')
+    GpioPort.on(5)
   end
 
-  describe '#on' do
-
-    it 'turns on pin' do
-      pin = double
-      expect(File).to receive(:write).with('/sys/class/gpio/unexport', '5')
-      expect(PiPiper::Pin).to receive(:new).with(pin: 5, direction: :out).and_return(pin)
-      expect(pin).to receive(:on)
-      GpioPort.on(5)
-    end
-
-    it 'continues if unsetting pin fails' do
-      pin = double
-      expect(File).to receive(:write).with('/sys/class/gpio/unexport', '5').and_raise(Errno::EINVAL)
-      expect(PiPiper::Pin).to receive(:new).with(pin: 5, direction: :out).and_return(pin)
-      expect(pin).to receive(:on)
-      GpioPort.on(5)
-    end
-
+  it 'turns off pin' do
+    expect(Syscall).to receive(:execute).with('gpioset -t0 -c gpiochip0 5=0')
+    GpioPort.off(5)
   end
 
-  describe '#off' do
-
-    it 'turns off pin' do
-      pin = double
-      expect(File).to receive(:write).with('/sys/class/gpio/unexport', '5')
-      expect(PiPiper::Pin).to receive(:new).with(pin: 5, direction: :out).and_return(pin)
-      expect(pin).to receive(:off)
-      GpioPort.off(5)
-    end
-
+  it 'continues if gpioset fails' do
+    expect(Syscall).to receive(:execute).and_raise('busy')
+    expect { GpioPort.on(5) }.not_to raise_error
   end
 
 end

@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
-# Specifies the `port` that Puma will listen on to receive requests; default is 3000.
-# port ENV.fetch('PORT') { 3000 }
-# bind 'tcp://0.0.0.0:3000'
+# Port 80 is redirected to 3000 by nftables (deploy/photobox.nft), so the app does not need root.
+port ENV.fetch('PORT', 3000)
+
+# Run the Solid Queue supervisor inside Puma: one systemd service for web and jobs.
+plugin :solid_queue if ENV['SOLID_QUEUE_IN_PUMA']

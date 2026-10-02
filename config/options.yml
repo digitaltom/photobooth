@@ -2,31 +2,21 @@ default:
   image_caption: 'Photobooth'
   image_fontsize: 11
   font: 'Helvetica' # see https://github.com/digitaltom/photobooth/blob/master/INSTALL-RASPBIAN.md#font-installation
-  font_color: '#1995AD'
-  background_color: '#f1f1f2'
-  combined_image_fontsize: 48
 
-  # only implemented for emails currently
-  locale: :en # available :en, :de
+  # 'gphoto2' for a real camera, 'fake' copies the sample images in lib/fake_camera
+  camera: 'gphoto2'
 
-  # running on a raspi, live collage creation can slow things down
-  # you can create them also in a batch: `rake picture_set:recreate_collage_images`
-  render_collage: true
+  # libgpiod chip for the status LEDs (Pi 5 with older kernels: gpiochip4)
+  gpio_chip: 'gpiochip0'
 
-  # Turn this on if you have an email server available
-  send_by_email: false
+  # base url in the QR codes, the Pi hotspot address (mDNS is unreliable on Android)
+  public_url: 'http://10.42.0.1'
 
-  mail_settings:
-    from: 'no_reply@photobooth.com'
-    address: ''
-    port: 587
-    user_name: ''
-    password: ''
-    authentication: 'plain'
-    enable_starttls_auto: true
+  # folder for the picture sets, default: storage/sets. PHOTOBOX_STORAGE env overrides it.
+  storage_path:
 
+development:
+  camera: 'fake'
 
 test:
-
-  send_by_email: true
-  render_collage: false
+  camera: 'fake'

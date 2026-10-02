@@ -4,15 +4,18 @@ source 'https://rubygems.org'
 
 ruby '~> 4.0.5'
 
-gem 'rails', '~> 8.1'
-# asset pipeline (bootstrap css, images)
-gem 'sprockets-rails'
+gem 'rails', '~> 8.1', '>= 8.1.3.1'
 
 gem 'haml'
-gem 'turbo-rails'
-
-# Use Puma as the app server
+gem 'importmap-rails'
+gem 'propshaft'
 gem 'puma'
+gem 'rqrcode'
+gem 'solid_cable'
+gem 'solid_queue'
+gem 'sqlite3'
+gem 'stimulus-rails'
+gem 'turbo-rails'
 
 group :development do
   gem 'awesome_print'
@@ -22,11 +25,6 @@ group :development, :test do
   gem 'debug'
   gem 'rubocop', require: false
   gem 'rubocop-rails', require: false
-end
-
-group :development, :production do
-  # gpio, architecture + root dependant -> do not include in test
-  gem 'pi_piper', require: false
 end
 
 group :test do

@@ -2,12 +2,14 @@
 
 require_relative 'boot'
 
-# Run without a database dependency
 require 'rails'
-require 'action_controller/railtie'
-require 'action_mailer/railtie'
 require 'active_model/railtie'
-require 'sprockets/railtie'
+# ActiveRecord only backs Solid Queue and Solid Cable, picture sets live on the filesystem
+require 'active_record/railtie'
+require 'active_job/railtie'
+require 'action_controller/railtie'
+require 'action_view/railtie'
+require 'action_cable/engine'
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
@@ -20,8 +22,6 @@ module RailsPhotobooth
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
-
-    I18n.config.available_locales = %i[en de]
   end
 end
 

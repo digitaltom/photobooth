@@ -2,32 +2,15 @@
 %html
   %head
     %title Photobooth
-    %meta{:content => 'width=device-width, initial-scale=1.0, user-scalable=no', :name => 'viewport'}
+    %meta{ content: 'width=device-width, initial-scale=1.0, user-scalable=no', name: 'viewport' }
     = favicon_link_tag '/favicon.ico'
-    = stylesheet_link_tag 'vendor_application', media: 'all'
-    = stylesheet_link_tag 'application', media: 'all'
-    = javascript_include_tag 'turbo.min', type: 'module'
-    = javascript_include_tag 'application', defer: true
+    = stylesheet_link_tag 'bootstrap-3.3.6/bootstrap.min', 'photobooth'
+    = javascript_importmap_tags
     = csrf_meta_tags
-
     = yield(:head)
 
   %body
-
     - flash.each do |type, msg|
       .alert{ class: type == 'notice' ? 'alert-success' : 'alert-danger', role: 'alert' }= msg
-
-    - if rw_mode?
-      %dialog#shoot-dialog.text-center
-        %h3
-          %b#shoot-txt
-        %progress#shoot-progress{ max: 100, value: 100 }
-        %i#shoot-progress-txt
-
-        %div
-          - (1..4).each do |i|
-            = image_tag 'shoot_still_sw.png', class: 'countdown-img', data: { step: i, show: 'before' }
-            = image_tag 'shoot_animation.gif', class: 'countdown-img hidden', data: { step: i, show: 'during' }
-            = image_tag 'shoot_still.png', class: 'countdown-img hidden', data: { step: i, show: 'after' }
 
     = yield
