@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-# rubocop:disable Metrics/BlockLength
+# rubocop:disable-next Metrics/BlockLength
 RSpec.describe PictureSet, type: :model do
 
   before do
@@ -126,4 +126,3 @@ RSpec.describe PictureSet, type: :model do
   end
 
 end
-# rubocop:enable Metrics/BlockLength

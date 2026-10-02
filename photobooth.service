@@ -1,9 +1,10 @@
 [Unit]
 Description=Starting photobooth rails app
 
-Environment=RAILS_LOG_TO_STDOUT=true
-
 [Service]
+Environment=RAILS_LOG_TO_STDOUT=true
+# must contain SECRET_KEY_BASE=<random hex>, see README
+EnvironmentFile=/root/photobooth/config/photobooth.env
 ExecStartPre=/bin/rm -f /root/photobooth/tmp/pids/server.pid
 ExecStart=/root/photobooth/bin/rails s -b 0.0.0.0 -e production -p 80
 

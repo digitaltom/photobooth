@@ -1,15 +1,13 @@
 # frozen_string_literal: true
 
-require File.expand_path('boot', __dir__)
+require_relative 'boot'
 
 # Run without a database dependency
-# require 'rails/all'
-
+require 'rails'
 require 'action_controller/railtie'
 require 'action_mailer/railtie'
 require 'active_model/railtie'
 require 'sprockets/railtie'
-require 'rails/test_unit/railtie'
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
@@ -17,22 +15,24 @@ Bundler.require(*Rails.groups)
 
 module RailsPhotobooth
   class Application < Rails::Application
+    config.load_defaults 8.1
+
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
 
-    # Set Time.zone default to the specified zone and make Active Record auto-convert to this zone.
-    # Run "rake -D time" for a list of tasks for finding time zone names. Default is UTC.
-    # config.time_zone = 'Central Time (US & Canada)'
-
-    # The default locale is :en and all translations from config/locales/*.rb,yml are auto loaded.
-    # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
-    # config.i18n.default_locale = :de
-
-    # Do not swallow errors in after_commit/after_rollback callbacks.
-    # config.active_record.raise_in_transactional_callbacks = true
     I18n.config.available_locales = %i[en de]
   end
 end
 
-OPTS = Common::Options.new
+# config/options.yml ('default' merged with the current environment), overridden by config/options-local.yml
+OPTS = begin
+  load_options = lambda do |file|
+    path = Rails.root.join(file)
+    options = path.exist? ? YAML.unsafe_load(ERB.new(path.read).result) || {} : {}
+    (options['default'] || {}).deep_merge(options[Rails.env] || {})
+  end
+  ActiveSupport::OrderedOptions.new.merge!(
+    load_options.call('config/options.yml').deep_merge(load_options.call('config/options-local.yml')).symbolize_keys
+  )
+end

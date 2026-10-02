@@ -6,7 +6,7 @@ class PictureSet
   POLAROID_SUFFIX = '_polaroid.png'
   ANIMATION_SUFFIX = '_animation.gif'
   COMBINED_SUFFIX = '_combined.jpg'
-  PICTURE_PATH = Rails.root.join('public/picture_sets').to_s
+  PICTURE_PATH = Rails.public_path.join('picture_sets').to_s
 
   attr_accessor :date, :dir, :animation, :combined, :pictures, :next, :last
 
@@ -52,7 +52,7 @@ class PictureSet
       begin
         retries ||= 0
         Syscall.execute('gphoto2 --capture-image-and-download ' \
-                                "--filename #{picture_set.date}_#{num}.jpg", dir: picture_set.dir)
+                        "--filename #{picture_set.date}_#{num}.jpg", dir: picture_set.dir)
         raise 'Image capture failed' unless File.exist?(File.join(picture_set.dir, "#{picture_set.date}_#{num}.jpg"))
       rescue StandardError => e
         Rails.logger.warn("Retrying image ##{num} capture (#{retries})...") && retry if (retries += 1) < 3
@@ -61,8 +61,8 @@ class PictureSet
       background_thread { picture_set.convert_to_polaroid(num, angle) }
     end
 
-    def background_thread
-      t = Thread.new { yield }
+    def background_thread(&)
+      t = Thread.new(&)
       t.abort_on_exception = true
       t
     end
@@ -85,15 +85,15 @@ class PictureSet
   def convert_to_polaroid(num, angle)
     caption = OPTS.image_caption || date
     Syscall.execute("convert -caption '#{caption}' #{date}_#{num}.jpg " \
-                            "-font '#{OPTS.font}' " \
-                            '-scale 600 ' \
-                            '-bordercolor Snow ' \
-                            '-density 100 ' \
-                            '-gravity center ' \
-                            "-pointsize #{OPTS.image_fontsize} " \
-                            "-polaroid -#{angle} " \
-                            '-trim +repage ' \
-                            "#{date}_#{num}#{POLAROID_SUFFIX}", dir: dir, timing: true)
+                    "-font '#{OPTS.font}' " \
+                    '-scale 600 ' \
+                    '-bordercolor Snow ' \
+                    '-density 100 ' \
+                    '-gravity center ' \
+                    "-pointsize #{OPTS.image_fontsize} " \
+                    "-polaroid -#{angle} " \
+                    '-trim +repage ' \
+                    "#{date}_#{num}#{POLAROID_SUFFIX}", dir: dir, timing: true)
   end
 
   # Merge all polaroid previews to an animated gif
@@ -113,13 +113,13 @@ class PictureSet
     else
       Rails.logger.info "Creating collage for #{dir}"
       Syscall.execute("montage -geometry '25%x25%+25+25<' " \
-                              "-background '#{OPTS.background_color}' " \
-                              "-title '#{OPTS.image_caption}' " \
-                              "-font '#{OPTS.font}' " \
-                              "-fill '#{OPTS.font_color}' " \
-                              "-pointsize #{OPTS.combined_image_fontsize} " \
-                              "-gravity 'Center' #{date}_[1-4].jpg " \
-                              "#{date}#{COMBINED_SUFFIX}", dir: dir, timing: true)
+                      "-background '#{OPTS.background_color}' " \
+                      "-title '#{OPTS.image_caption}' " \
+                      "-font '#{OPTS.font}' " \
+                      "-fill '#{OPTS.font_color}' " \
+                      "-pointsize #{OPTS.combined_image_fontsize} " \
+                      "-gravity 'Center' #{date}_[1-4].jpg " \
+                      "#{date}#{COMBINED_SUFFIX}", dir: dir, timing: true)
     end
   end
 

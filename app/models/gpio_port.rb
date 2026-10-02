@@ -33,9 +33,9 @@ class GpioPort
     private
 
     def unexport(num)
-      File.open('/sys/class/gpio/unexport', 'w') { |f| f.write(num.to_s) }
+      File.write('/sys/class/gpio/unexport', num.to_s)
     rescue Errno::EINVAL
-      Rails.logger.debug "Cannot unset gpio pin ##{num}"
+      Rails.logger.debug { "Cannot unset gpio pin ##{num}" }
     end
 
   end
