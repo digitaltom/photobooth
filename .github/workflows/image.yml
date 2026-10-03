@@ -18,11 +18,11 @@ jobs:
       contents: write
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v7
       with:
         fetch-depth: 0 # tags for git describe
 
-    - uses: actions/cache@v4
+    - uses: actions/cache@v6
       with:
         path: |
           tmp/image/cache
@@ -31,6 +31,8 @@ jobs:
         restore-keys: image-
 
     - name: Build image
+      env:
+        XZ: 1
       run: bin/build-image
 
     - name: Create release
@@ -41,7 +43,7 @@ jobs:
 
     - name: Upload artifact
       if: ${{ !startsWith(github.ref, 'refs/tags/') }}
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: photobox-image
         path: |

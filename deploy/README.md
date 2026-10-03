@@ -9,7 +9,7 @@ Each release `v*` has a ready SD card image for the Raspberry Pi 3 or newer (Ras
 
 1. Download `photobox-<version>.img.xz` from the [releases](https://github.com/digitaltom/photobooth/releases).
 2. Write it to the SD card with [Raspberry Pi Imager](https://www.raspberrypi.com/software/) ("Use custom"). Do not use the OS customization of the Imager.
-   Alternative: `xzcat photobox-<version>.img.xz | sudo dd of=/dev/sdX bs=4M conv=fsync`
+   Alternative: `xzcat photobox-<version>.img.xz | sudo dd of=/dev/sdX bs=4M conv=fsync status=progress`
 3. Optional: edit `photobox.yml` on the boot partition of the SD card (WLAN name, passwords, SSH key).
 4. Boot the Pi. The first boot reboots once.
 5. Connect to the WLAN `Photobox` (password `photobox`). Open `http://10.42.0.1/kiosk`, or log in with `ssh root@10.42.0.1` (password `photobox`).
@@ -39,33 +39,33 @@ The root file system is read-only, so a power loss cannot damage it. To update t
 ```sh
 bin/build-image            # version from git describe
 bin/build-image v1.2       # explicit version
-NO_XZ=1 bin/build-image    # faster: raw .img, no xz and no photobox-os-list.json
+XZ=1 bin/build-image       # release build: .img.xz and photobox-os-list.json
 ```
 
-Flash a raw image with `sudo dd if=tmp/image/photobox-<version>.img of=/dev/sdX bs=4M conv=fsync`.
+Flash a raw image with `sudo dd if=tmp/image/photobox-<version>.img of=/dev/sdX bs=4M conv=fsync status=progress`.
 
 `tmp/image/cache/` keeps Ruby, the gems and the apt packages for the next build. To do a clean build, delete this directory.
 
 The output is in `tmp/image/`:
 
-- `photobox-<version>.img.xz`: the SD card image
+- `photobox-<version>.img`: the SD card image. With `XZ=1`, it is `photobox-<version>.img.xz`.
 - `photobox-app.tar.zst`: the app release for `photobox-update`
-- `photobox-os-list.json`: the repository file for Raspberry Pi Imager (`rpi-imager --repo <url>`)
-- a `.sha256` file for the image and for the app release
+- `photobox-os-list.json`: the repository file for Raspberry Pi Imager (`rpi-imager --repo <url>`), with `XZ=1` only
+- a `.sha256` file for the app release, and with `XZ=1` also for the image
 
 The build does these steps:
 
 1. Download the latest Raspberry Pi OS Lite (arm64) and check its sha256. The download stays in `tmp/image/` as a cache. To use another base image, set `BASE_URL`.
-2. Make the image larger. The root partition gets 1.5 GB more. A new data partition (1 GB, ext4, label `photobox-data`) comes after it.
-3. Mount the partitions with a loop device. Copy the tracked files of the repo into `/var/lib/photobox/releases/<version>`. Uncommitted changes to tracked files are included.
+2. Make the image larger. The root partition gets 512 MB more (it is read-only after the first boot). A new data partition (1 GB, ext4, label `photobox-data`) comes after it.
+3. Mount the partitions with a loop device. Copy the tracked files of the repo (without `spec/`) into `/var/lib/photobox/releases/<version>`. Uncommitted changes to tracked files are included.
 4. Install the scripts, the services and the default `photobox.yml`. Add the data partition to `/etc/fstab`. Remove the resize step of Raspberry Pi OS from `cmdline.txt`, because it can only grow the last partition.
 5. Run `image/setup-chroot.sh` in a chroot:
-   - Install the packages.
+   - Install the security updates and the packages.
    - Compile Ruby (version from `.ruby-version`) with ruby-build into `<release>/vendor/ruby`.
    - Run `bundle install` (without development and test) and `assets:precompile`.
    - Remove the build packages again.
    - Create the user `photobox` and enable the services. Allow the SSH login for root.
-6. Pack the release as `photobox-app.tar.zst`, then compress the image with xz.
+6. Pack the release as `photobox-app.tar.zst`, zero the free blocks (`fstrim`). With `XZ=1`, compress the image with xz.
 
 ### Local build
 
@@ -87,15 +87,56 @@ Then check that `/proc/sys/fs/binfmt_misc/qemu-aarch64` exists. Ruby compiles in
 
 ### Partitions
 
-| Partition | Mount point | Content |
+The SD card has three partitions:
+
+| Partition | Size | Mount point | Writable | Content |
+| --- | --- | --- | --- | --- |
+| 1, FAT, label `bootfs` | 512 MB | `/boot/firmware` | yes | firmware, kernel, `cmdline.txt`, `photobox.yml` |
+| 2, ext4, label `rootfs` | about 2.8 GB | `/` | no, after the first boot | Raspberry Pi OS and the packages |
+| 3, ext4, label `photobox-data` | 1 GB, then the rest of the SD card | `/var/lib/photobox` | yes | app releases, settings, photos |
+
+The boot partition uses FAT, so you can edit `photobox.yml` on any computer.
+
+The root partition is read-only. `overlayroot` puts a layer in RAM (tmpfs) on top of it. Programs can write to `/`, but the changes stay in RAM only. All changes are lost at reboot. Thus, a power loss cannot damage the OS.
+
+The data partition is the only partition that keeps changes. `photobox-firstboot` grows it to the size of the SD card. The data partition is the last partition, so it can grow.
+
+### File system locations
+
+| Path | Partition | Content |
 | --- | --- | --- |
-| 1, FAT | `/boot/firmware` | firmware, `cmdline.txt`, `photobox.yml` |
-| 2, ext4 | `/` | Raspberry Pi OS, read-only with an overlay in RAM |
-| 3, ext4 | `/var/lib/photobox` | writable: `releases/`, `current` (link to the active release), `sets/`, `photobox.env` |
+| `/boot/firmware/photobox.yml` | 1 | WLAN, passwords and SSH key, read at each boot |
+| `/var/lib/photobox/releases/<version>/` | 3 | one app release: the app code, Ruby (`vendor/ruby`), the gems (`vendor/bundle`), the compiled assets |
+| `/var/lib/photobox/current` | 3 | link to the active release. `photobox-update` changes it. |
+| `/opt/photobox` | 2 | link to `/var/lib/photobox/current`. `photobox.service` uses this path, so the service file is the same for the image and for a [manual install](#manual-install). |
+| `/var/lib/photobox/photobox.env` | 3 | `SECRET_KEY_BASE` and `PHOTOBOX_STORAGE`, written by `photobox-firstboot` |
+| `/var/lib/photobox/sets/` | 3 | the photos (gallery), see below |
+| `/run/photobox/` | RAM | the SQLite databases (`PHOTOBOX_DB_DIR`). They hold only volatile data. `db:prepare` creates them again at each start. |
+| `/usr/local/sbin/photobox-*` | 2 | the scripts of the image |
+| logs | RAM | the app writes to the journal (`journalctl -u photobox`). The journal is in the RAM overlay, so it is lost at reboot. |
 
-`/opt/photobox` is a link to `/var/lib/photobox/current`. Thus, `photobox.service` works for the image and for a manual install.
+Put files that must stay on the data partition, or in `photobox.yml`.
 
-All changes to the root file system are lost at reboot. Put files that must stay on the data partition or in `photobox.yml`.
+### Gallery images
+
+The app stores each picture set in its own folder in `PHOTOBOX_STORAGE`. On the image, this is `/var/lib/photobox/sets/` on the data partition. The folder name is the date and time of the photo:
+
+```
+/var/lib/photobox/sets/2026-10-03_14-05-12/
+  2026-10-03_14-05-12_1.jpg ... _4.jpg                    the 4 photos of the camera
+  2026-10-03_14-05-12_1_polaroid.png ... _4_polaroid.png  the polaroid images
+  2026-10-03_14-05-12_animation.gif                       the animation
+```
+
+The gallery shows each folder that has an `_animation.gif` file. The app reads the folders at each request. A database is not necessary, so the photos stay after a reboot and after an app update.
+
+On a manual install, the sets are in `storage/sets` in the app folder. To use another folder, set `PHOTOBOX_STORAGE` or `storage_path` in the options.
+
+To copy the photos to the laptop, use this command:
+
+```sh
+scp -r root@10.42.0.1:/var/lib/photobox/sets .
+```
 
 ### First boot
 
@@ -130,7 +171,7 @@ photobox-update use <version>             # switch back (rollback)
 
 `photobox-update` keeps the 3 newest releases.
 
-To update the OS, flash a new image. The photos on the USB stick stay. Before you flash, copy `photobox.yml` and the sets in `/var/lib/photobox/sets` from the SD card if you need them.
+To update the OS, flash a new image. Do not flash before you copy the photos. A new image deletes all data on the SD card. If you need them, copy `photobox.yml` and the sets in `/var/lib/photobox/sets` first.
 
 ## Manual install
 

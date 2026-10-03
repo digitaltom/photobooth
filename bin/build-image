@@ -1,22 +1,23 @@
 #!/bin/bash
 # Builds the Raspberry Pi SD card image from Raspberry Pi OS Lite (arm64). Output in tmp/image/:
-#   photobox-<version>.img.xz   flash it with Raspberry Pi Imager or: xzcat ... | sudo dd of=/dev/sdX bs=4M conv=fsync
+#   photobox-<version>.img      flash it with: sudo dd if=... of=/dev/sdX bs=4M conv=fsync
+#   photobox-<version>.img.xz   with XZ=1, instead of .img: flash it with Raspberry Pi Imager
 #   photobox-app.tar.zst        app release for photobox-update on the Pi
-#   photobox-os-list.json       Raspberry Pi Imager repository (rpi-imager --repo <url>)
+#   photobox-os-list.json       Raspberry Pi Imager repository (rpi-imager --repo <url>), with XZ=1 only
 # Runs on arm64 (GitHub runner ubuntu-24.04-arm), or on x86_64 with qemu-user binfmt
 # (openSUSE: zypper in qemu-linux-user). Uncommitted changes to tracked files are included.
 # Usage: bin/build-image [version]    (asks for sudo, default version: git describe)
-# NO_XZ=1 keeps the raw .img (no xz, no os-list JSON) for a faster local build.
+# XZ=1 compresses the image to .img.xz and writes the os-list JSON (for a release). Without it, the raw .img stays.
 # tmp/image/cache keeps Ruby, gems and apt packages between builds. Delete it for a clean build.
 set -euxo pipefail
 
 root=$(cd "$(dirname "$0")/.." && pwd)
 git() { command git -C "$root" -c safe.directory="$root" "$@"; }
 # describe --dirty can write .git/index, so run it before sudo
-[ "$(id -u)" = 0 ] || exec sudo --preserve-env=BASE_URL,NO_XZ "$0" "${1:-$(git describe --tags --always --dirty)}"
+[ "$(id -u)" = 0 ] || exec sudo --preserve-env=BASE_URL,XZ "$0" "${1:-$(git describe --tags --always --dirty)}"
 ver=${1:-$(git describe --tags --always --dirty)}
 base_url=${BASE_URL:-https://downloads.raspberrypi.com/raspios_lite_arm64_latest}
-root_grow=$((1536 * 1024 * 1024))  # room for packages in the root FS
+root_grow=$((512 * 1024 * 1024))  # room for packages, root is read-only after first boot (overlayroot)
 data_size=$((1024 * 1024 * 1024))  # data partition, photobox-firstboot grows it to the SD card size
 
 if [ "$(uname -m)" != aarch64 ] && ! grep -qs '^flags:.*F' /proc/sys/fs/binfmt_misc/qemu-aarch64; then
@@ -68,7 +69,7 @@ cp /etc/resolv.conf "$mnt/etc/resolv.conf"
 
 rel=$mnt/var/lib/photobox/releases/$ver
 mkdir -p "$rel"
-(cd "$root" && git ls-files -z | tar --null -T - -cf -) | tar -x -C "$rel"
+(cd "$root" && git ls-files -z -- . ':!spec' | tar --null -T - -cf -) | tar -x -C "$rel"
 echo "$ver" > "$rel/VERSION"
 
 install -m 755 "$root"/deploy/image/photobox-{network,firstboot,update} "$mnt/usr/local/sbin/"
@@ -84,11 +85,13 @@ rm "$mnt/tmp/setup-chroot.sh"
 mv "$mnt/etc/resolv.conf.photobox" "$mnt/etc/resolv.conf"
 
 tar --zstd -C "$rel" -cf photobox-app.tar.zst .
+# zero the free blocks (holes in the image file), so xz does not compress deleted data
+fstrim -v "$mnt/var/lib/photobox" "$mnt" || true
 cleanup
 trap - EXIT
 
 sha256sum photobox-app.tar.zst > photobox-app.tar.zst.sha256
-if [ -z "${NO_XZ:-}" ]; then
+if [ -n "${XZ:-}" ]; then
 extract_size=$(stat -c %s "$img")
 extract_sha256=$(sha256sum "$img" | cut -d' ' -f1)
 xz -T0 -f "$img"
