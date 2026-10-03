@@ -53,6 +53,12 @@ RSpec.describe PictureSet, type: :model do
       set.convert_to_polaroid(1, 5)
     end
 
+    it 'writes the polaroid and the GIF frame' do
+      set = PictureSet.new(date: '2099-01-01_01-48-33')
+      expect(Syscall).to receive(:execute).with(/\+write 2099-01-01_01-48-33_1_polaroid\.png 2099-01-01_01-48-33_1_frame\.gif/, anything)
+      set.convert_to_polaroid(1, 5)
+    end
+
   end
 
   describe '.font' do

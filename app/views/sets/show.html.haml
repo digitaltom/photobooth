@@ -1,4 +1,5 @@
 .container.text-center
+  %h3.set-date= l(@picture_set.taken_at, format: :long)
   = image_tag file_set_path(@picture_set, name: @picture_set.animation), class: 'gallery-img'
 
   .row

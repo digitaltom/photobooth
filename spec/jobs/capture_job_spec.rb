@@ -21,6 +21,7 @@ RSpec.describe CaptureJob, type: :job do
 
     set = PictureSet.find(id)
     expect(set.files).to all(satisfy { |name| File.exist?(File.join(set.dir, name)) })
+    expect(Dir.glob(File.join(set.dir, "*#{PictureSet::FRAME_SUFFIX}"))).to be_empty
     expect(JSON.parse(File.read(File.join(set.dir, 'set.json')))).to include('caption' => OPTS.image_caption)
   end
 

@@ -21,7 +21,7 @@ default:
   imagemagick_memory_limit: '64MiB'
   imagemagick_map_limit: '128MiB'
 
-  # libgpiod chip for the status LEDs (Pi 5 with older kernels: gpiochip4)
+  # libgpiod chip for the status LEDs (Pi 3 B: gpiochip0, Pi 5 with older kernels: gpiochip4)
   gpio_chip: 'gpiochip0'
 
   # folder for the picture sets, default: storage/sets. PHOTOBOX_STORAGE env overrides it.

@@ -7,6 +7,7 @@ class PictureSet
   DATE_FORMAT = '%Y-%m-%d_%H-%M-%S'
   POLAROID_SUFFIX = '_polaroid.png'
   ANIMATION_SUFFIX = '_animation.gif'
+  FRAME_SUFFIX = '_frame.gif'
   IMAGEMAGICK = system('command -v magick > /dev/null') ? 'magick' : 'convert'
   # The 4 polaroids already render in parallel on the 4 cores of the Pi 3, so one thread each.
   # Over the memory limit ImageMagick swaps pixels to a temp file: slower, but no out-of-memory on 1 GB RAM.
@@ -60,6 +61,11 @@ class PictureSet
     @pictures = (1..4).map { |i| { polaroid: "#{date}_#{i}#{POLAROID_SUFFIX}", full: "#{date}_#{i}.jpg" } }
   end
 
+  # the folder name is the capture time
+  def taken_at
+    Time.strptime(date, DATE_FORMAT)
+  end
+
   def to_param
     date
   end
@@ -69,10 +75,13 @@ class PictureSet
     pictures.flat_map(&:values) << animation
   end
 
+  # Writes the polaroid PNG and its GIF frame for the animation.
   def convert_to_polaroid(num, angle)
     caption = OPTS.image_caption || date
-    # jpeg:size makes libjpeg decode the 24 MP photo (6000x4000) at 1/8 scale (750x500),
-    # enough for the 600 px polaroid. -define and -caption are read settings: both must stand before the input file.
+    # jpeg:size makes libjpeg decode the photo at the smallest 1/2, 1/4 or 1/8 scale that is still >= 600x400,
+    # for example 6000x4000 at 1/8 (750x500). -define and -caption are read settings: both must stand before the input file.
+    # png:compression-level=1: 40 % less CPU, 18 % larger files.
+    # The GIF frame gets its 256 colors here, while the camera takes the next photo, not after the last photo.
     Syscall.execute("#{MAGICK_ENV} #{IMAGEMAGICK} -define jpeg:size=600x400 -caption '#{caption}' #{date}_#{num}.jpg " \
                     "-font '#{PictureSet.font}' " \
                     '-scale 600 ' \
@@ -82,7 +91,9 @@ class PictureSet
                     "-pointsize #{OPTS.image_fontsize} " \
                     "-polaroid -#{angle} " \
                     '-trim +repage ' \
-                    "#{date}_#{num}#{POLAROID_SUFFIX}", dir: dir, timing: true)
+                    '-define png:compression-level=1 -define png:compression-filter=0 ' \
+                    "+write #{date}_#{num}#{POLAROID_SUFFIX} " \
+                    "#{date}_#{num}#{FRAME_SUFFIX}", dir: dir, timing: true)
   end
 
   # Merge all polaroid previews to an animated gif
@@ -91,7 +102,11 @@ class PictureSet
       Rails.logger.info "Skipping for existing animation #{dir}"
     else
       Rails.logger.info "Creating animation for #{dir}"
-      Syscall.execute("#{MAGICK_ENV} #{IMAGEMAGICK} -delay 60 #{date}_[1-4]#{POLAROID_SUFFIX} #{animation}", dir: dir, timing: true)
+      frames = (1..4).map { |i| File.join(dir, "#{date}_#{i}#{FRAME_SUFFIX}") }
+      # older sets have no frames: then ImageMagick reduces the colors of the polaroids here
+      suffix = frames.all? { |f| File.exist?(f) } ? FRAME_SUFFIX : POLAROID_SUFFIX
+      Syscall.execute("#{MAGICK_ENV} #{IMAGEMAGICK} -delay 60 #{date}_[1-4]#{suffix} #{animation}", dir: dir, timing: true)
+      FileUtils.rm_f(frames)
     end
   end
 
