@@ -18,6 +18,7 @@ Capybara.register_driver :cuprite do |app|
 end
 
 Capybara.javascript_driver = :cuprite
+RSpec::Matchers.define_negated_matcher :exclude, :include
 # capybara cheat sheet: https://gist.github.com/zhengjia/428105
 
 RSpec.configure do |config|
@@ -35,6 +36,7 @@ RSpec.configure do |config|
   # The different available types are documented in the features, such as in
   # https://relishapp.com/rspec/rspec-rails/docs
   config.infer_spec_type_from_file_location!
+  config.include ActiveSupport::Testing::TimeHelpers
 
   # Filter lines from Rails gems in backtraces.
   config.filter_rails_from_backtrace!

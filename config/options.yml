@@ -27,9 +27,18 @@ default:
   # folder for the picture sets, default: storage/sets. PHOTOBOX_STORAGE env overrides it.
   storage_path:
 
+  # Photobox settings on the boot partition (WLAN, admin password). PHOTOBOX_CONF env overrides it.
+  # Its keys override the keys in this file.
+  photobox_conf: '/boot/firmware/photobox.yml'
+
+  # password for /admin. An admin_password in photobox.yml overrides it, the admin menu writes a new one there.
+  admin_password: 'photobox'
+
 development:
   camera: 'fake'
+  photobox_conf: 'tmp/photobox.yml'
 
 test:
   camera: 'fake'
+  photobox_conf: 'tmp/photobox-test.yml'
   camera_delay: 0

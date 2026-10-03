@@ -104,3 +104,77 @@ body {
     right: 3px;
     bottom: 3px;
 }
+
+/* admin menu */
+@font-face {
+  font-family: "Rock Salt";
+  src: url("RockSalt-Regular.ttf");
+}
+
+.admin {
+  padding-bottom: 30px;
+}
+
+.admin .panel, .wifi-sign {
+  color: #000;
+}
+
+.admin .form-control {
+  margin-bottom: 5px;
+}
+
+.inline-form {
+  display: inline-block;
+}
+
+.disk-meter {
+  width: 100%;
+  height: 25px;
+}
+
+.polaroid-preview {
+  width: 300px;
+  max-width: 100%;
+  padding: 10px 10px 0;
+  margin-bottom: 10px;
+  background: snow;
+  box-shadow: 2px 2px 8px #888;
+  transform: rotate(-3deg);
+}
+
+.polaroid-photo {
+  height: 200px;
+  background: #999;
+}
+
+.polaroid-caption {
+  min-height: 40px;
+  padding: 8px 0;
+  font-family: "Rock Salt", cursive;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+.admin-link {
+  color: #555;
+}
+
+.wifi-sign {
+  background: #fff;
+  padding: 30px;
+}
+
+.wifi-qr svg {
+  width: 400px;
+  max-width: 90%;
+}
+
+@media print {
+  body {
+    background: #fff;
+  }
+
+  .no-print {
+    display: none;
+  }
+}

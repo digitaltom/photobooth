@@ -9,7 +9,7 @@ export DEBIAN_FRONTEND=noninteractive LC_ALL=C.UTF-8 APT_LISTCHANGES_FRONTEND=no
 rm -f /var/lib/man-db/auto-update  # no man-db index rebuild on each apt run (slow under qemu)
 
 runtime_pkgs=(gphoto2 imagemagick gpiod sqlite3 libyaml-0-2 network-manager avahi-daemon openssh-server
-              nftables overlayroot cloud-guest-utils zstd curl iw rfkill
+              nftables overlayroot cloud-guest-utils zstd curl iw rfkill polkitd
               dnsmasq-base wpasupplicant)  # NetworkManager only recommends them, the hotspot needs both
 build_pkgs=(build-essential libssl-dev libyaml-dev libffi-dev zlib1g-dev libsqlite3-dev)
 # /mnt is the build cache (tmp/image/cache), bind-mounted by bin/build-image.
@@ -48,6 +48,10 @@ ln -sfn "releases/$ver" /var/lib/photobox/current
 ln -sfn /var/lib/photobox/current /opt/photobox
 
 cp "$app/deploy/photobox.service" /etc/systemd/system/
+cp "$app/deploy/polkit-photobox.rules" /etc/polkit-1/rules.d/50-photobox.rules
+# the admin menu writes the admin password into photobox.yml on the boot partition (FAT has no owners)
+sed -i -E "s#^(\S+\s+/boot/firmware\s+vfat\s+)defaults#\1defaults,gid=$(id -g photobox),fmask=0113,dmask=0002#" /etc/fstab
+grep -q "/boot/firmware.*gid=$(id -g photobox)" /etc/fstab
 mkdir -p /etc/nftables.d
 cp "$app/deploy/photobox.nft" /etc/nftables.d/
 printf '#!/usr/sbin/nft -f\ninclude "/etc/nftables.d/*.nft"\n' > /etc/nftables.conf

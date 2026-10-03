@@ -1,0 +1,15 @@
+.wifi-sign.text-center
+  %h1 Photobox
+  %p.lead Scan to join the WLAN and see your pictures
+  .wifi-qr= @qr.html_safe
+  %p
+    WLAN:
+    %b= @ssid
+  - if @password
+    %p
+      Password:
+      %b= @password
+  %p http://10.42.0.1
+  .no-print
+    %button.btn.btn-primary{ onclick: 'window.print()' } Print
+    = link_to 'Back', admin_path, class: 'btn btn-default'

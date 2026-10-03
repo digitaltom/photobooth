@@ -11,3 +11,7 @@ wifi_country: DE
 # password for "ssh root@10.42.0.1"
 root_password: photobox
 # ssh_authorized_key: "ssh-ed25519 AAAA... you@laptop"
+
+# password for /admin, default: photobox. The admin menu writes a new password here.
+# Lost password: delete the admin_password line, then the default applies again.
+# admin_password: "my secret"

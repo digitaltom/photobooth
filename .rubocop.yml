@@ -37,6 +37,12 @@ Metrics/ClassLength:
 
 Metrics/BlockLength:
   Max: 40
+  Exclude:
+    - spec/**/*
+
+# English UI, no locale files
+Rails/I18nLocaleTexts:
+  Enabled: false
 
 Metrics/AbcSize:
   Max: 26

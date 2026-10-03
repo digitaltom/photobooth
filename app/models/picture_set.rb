@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# A picture set is a folder with 4 photos, their polaroids, the animated GIF and set.json.
+# A picture set is a folder in the active gallery with 4 photos, their polaroids, the animated GIF and set.json.
 # The gallery reads the filesystem, there is no database.
 class PictureSet
 
@@ -14,7 +14,7 @@ class PictureSet
   MAGICK_ENV = "env MAGICK_THREAD_LIMIT=1 MAGICK_MEMORY_LIMIT=#{OPTS.imagemagick_memory_limit} " \
                "MAGICK_MAP_LIMIT=#{OPTS.imagemagick_map_limit}".freeze
 
-  attr_accessor :date, :dir, :animation, :pictures, :next, :last
+  attr_accessor :date, :dir, :gallery, :animation, :pictures, :next, :last
 
   class << self
 
@@ -24,11 +24,12 @@ class PictureSet
     end
 
     def all
-      dirs = Dir.glob(File.join(root, "*/*#{ANIMATION_SUFFIX}")).map do |animation|
+      gallery = Gallery.active
+      dirs = Dir.glob(File.join(gallery.dir, "*/*#{ANIMATION_SUFFIX}")).map do |animation|
         File.basename(File.dirname(animation))
       end
-      Rails.logger.warn "No picture sets found at: #{root}" if dirs.empty?
-      dirs.sort.reverse.map { |dir| new(date: dir) }
+      Rails.logger.warn "No picture sets found at: #{gallery.dir}" if dirs.empty?
+      dirs.sort.reverse.map { |dir| new(date: dir, gallery: gallery) }
     end
 
     def find(date)
@@ -54,9 +55,10 @@ class PictureSet
 
   end
 
-  def initialize(date: nil)
+  def initialize(date: nil, gallery: Gallery.active)
     @date = date
-    @dir = File.join(PictureSet.root, date)
+    @gallery = gallery
+    @dir = File.join(gallery.dir, date)
     @animation = "#{date}#{ANIMATION_SUFFIX}"
     @pictures = (1..4).map { |i| { polaroid: "#{date}_#{i}#{POLAROID_SUFFIX}", full: "#{date}_#{i}.jpg" } }
   end
@@ -77,12 +79,13 @@ class PictureSet
 
   # Writes the polaroid PNG and its GIF frame for the animation.
   def convert_to_polaroid(num, angle)
-    caption = OPTS.image_caption || date
+    # % starts an ImageMagick escape, the gallery caption is free text from the admin menu
+    caption = (gallery.caption.presence || date).gsub('%', '%%')
     # jpeg:size makes libjpeg decode the photo at the smallest 1/2, 1/4 or 1/8 scale that is still >= 600x400,
     # for example 6000x4000 at 1/8 (750x500). -define and -caption are read settings: both must stand before the input file.
     # png:compression-level=1: 40 % less CPU, 18 % larger files.
     # The GIF frame gets its 256 colors here, while the camera takes the next photo, not after the last photo.
-    Syscall.execute("#{MAGICK_ENV} #{IMAGEMAGICK} -define jpeg:size=600x400 -caption '#{caption}' #{date}_#{num}.jpg " \
+    Syscall.execute("#{MAGICK_ENV} #{IMAGEMAGICK} -define jpeg:size=600x400 -caption #{caption.shellescape} #{date}_#{num}.jpg " \
                     "-font '#{PictureSet.font}' " \
                     '-scale 600 ' \
                     '-bordercolor Snow ' \
@@ -110,7 +113,7 @@ class PictureSet
     end
   end
 
-  def write_json(caption: OPTS.image_caption)
+  def write_json(caption: gallery.caption)
     File.write(File.join(dir, 'set.json'), JSON.pretty_generate(created_at: Time.now.getlocal.iso8601, caption: caption))
   end
 

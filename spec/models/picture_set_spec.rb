@@ -2,7 +2,6 @@
 
 require 'rails_helper'
 
-# rubocop:disable-next Metrics/BlockLength
 RSpec.describe PictureSet, type: :model do
 
   describe '#all' do
@@ -10,7 +9,7 @@ RSpec.describe PictureSet, type: :model do
     it 'finds all picture sets' do
       sets = PictureSet.all
       expect(sets).to_not be_empty
-      expect(sets.first.dir).to eq File.join(PictureSet.root, '2099-01-01_01-48-33')
+      expect(sets.first.dir).to eq File.join(Gallery.active.dir, '2099-01-01_01-48-33')
     end
 
     it 'skips incomplete picture sets' do
@@ -37,7 +36,7 @@ RSpec.describe PictureSet, type: :model do
     it 'returns hash with all needed values' do
       set = PictureSet.new(date: '2099-01-01_01-48-33')
       expect(set).to_not be_nil
-      expect(set.dir).to eq File.join(PictureSet.root, '2099-01-01_01-48-33')
+      expect(set.dir).to eq File.join(Gallery.active.dir, '2099-01-01_01-48-33')
       expect(set.date).to eq '2099-01-01_01-48-33'
       expect(set.animation).to eq '2099-01-01_01-48-33_animation.gif'
       expect(set.pictures.size).to eq 4
@@ -49,7 +48,14 @@ RSpec.describe PictureSet, type: :model do
 
     it 'sets the caption before it reads the photo' do
       set = PictureSet.new(date: '2099-01-01_01-48-33')
-      expect(Syscall).to receive(:execute).with(/-caption 'Photobooth' 2099-01-01_01-48-33_1\.jpg/, anything)
+      expect(Syscall).to receive(:execute).with(/-caption Photobooth 2099-01-01_01-48-33_1\.jpg/, anything)
+      set.convert_to_polaroid(1, 5)
+    end
+
+    it 'escapes the caption for the shell and ImageMagick' do
+      set = PictureSet.new(date: '2099-01-01_01-48-33')
+      allow(set.gallery).to receive(:caption).and_return("Tom's 100% $(reboot)")
+      expect(Syscall).to receive(:execute).with(a_string_including("-caption Tom\\'s\\ 100\\%\\%\\ \\$\\(reboot\\) "), anything)
       set.convert_to_polaroid(1, 5)
     end
 

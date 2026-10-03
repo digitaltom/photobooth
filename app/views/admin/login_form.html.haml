@@ -1,0 +1,5 @@
+.container.admin
+  %h2 Admin
+  = form_with url: admin_login_path do |f|
+    = f.password_field :password, placeholder: 'Password', required: true, autofocus: true, class: 'form-control'
+    = f.submit 'Login', class: 'btn btn-primary btn-lg'

@@ -1,0 +1,7 @@
+// The app runs as user photobox without a login session: the admin menu sets the time and shuts down or restarts.
+polkit.addRule(function (action, subject) {
+  if (subject.user == "photobox" &&
+      /^org\.freedesktop\.(timedate1\.(set-time|set-ntp)|login1\.(power-off|reboot)(-multiple-sessions|-ignore-inhibit)?)$/.test(action.id)) {
+    return polkit.Result.YES;
+  }
+});

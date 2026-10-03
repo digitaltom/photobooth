@@ -12,6 +12,20 @@ Rails.application.routes.draw do
     end
   end
 
+  get 'admin' => 'admin#show'
+  scope 'admin', controller: :admin, as: :admin do
+    get 'login', action: :login_form
+    post 'login'
+    delete 'logout'
+    patch 'password'
+    patch 'time'
+    patch 'caption'
+    get 'wifi_sign'
+    post 'power'
+    post 'galleries', action: :create_gallery
+    patch 'galleries/:id/activate', action: :activate_gallery, as: :activate_gallery
+  end
+
   # Captive portal: phone connectivity checks (/generate_204, /hotspot-detect.html) land here and open the gallery
   get '*path', to: redirect('/'), format: false
 end
