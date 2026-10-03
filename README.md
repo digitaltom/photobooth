@@ -22,8 +22,8 @@ The general hardware setup looks like this:
                                       +------^-------+
                                              |
                                    USB Cable |
-                                             | gphoto library                                   
-+--------------------+               +-------v------------+                               
+                                             | gphoto library
++--------------------+               +-------v------------+
 |                    |               |                    |
 |  Tablet /Notebook  |     Wifi      | Photobooth server  |
 |    with Browser    +-------------> | (eg. Raspberry Pi) |
@@ -46,34 +46,32 @@ The recommended setup to run a portable photo booth is a Raspberry Pi.
 From SD card to photo booth in three steps:
 
 1. Write the image of the latest [release](https://github.com/digitaltom/photobooth/releases) to an SD card:
-   `xzcat photobox-<version>.img.xz | sudo dd of=/dev/sdX bs=4M conv=fsync`
+   `xzcat photobox-<version>.img.xz | sudo dd of=/dev/sdX bs=4M conv=fsync,nocreat`
 2. Put the SD card into the Pi, connect the camera and boot.
 3. Connect the tablet to the WLAN `Photobox` (no password), then open `http://10.42.0.1`.
+
+[deploy/README.md](deploy/README.md) explains the ready SD card image for the Raspberry Pi, how the image is built, updates and network commands.
 
 ### Usage
 
 The app has these pages:
 
-- `/kiosk`: The record UI for the tablet, with the gallery below the button.
-- `/`: The gallery for the guests. It shows new sets without a reload.
+- `/`: The gallery for the guests.
+- `/?kiosk=1`: The gallery with the record button for the tablet.
 - `/sets/<id>`: One set with the GIF, the 4 single pictures and the downloads.
-
-### More details
-
-[deploy/README.md](deploy/README.md) explains the ready SD card image for the Raspberry Pi, how the image is built, updates, network commands and a manual install without the image.
 
 ## Development
 
-[DEVELOPMENT.md](DEVELOPMENT.md) explains the local setup, the options, the fake camera, the status LEDs, the tests, the fonts and the operations commands.
+[DEVELOPMENT.md](DEVELOPMENT.md) explains the local development setup.
 
 Anything is not working when following this manual? Please open an [issue](https://github.com/digitaltom/photobooth/issues) in the github project!
 
 
 ## My Photobooth:
 
-My current photobox setup is a Raspberry Pi 3, a Canon M50 with a 22mm lens and power adapter. As display I use an Ipad Air 4. 
-To power all of it without a power plug, I use a 22mAh power bank with 3 USB ports. 
-All build into an old wooden suitcase. It can run completely from battery for 2-3 hours.  
+My current photobox setup is a Raspberry Pi 3B, a Canon M50 with a 22mm lens and power adapter. As display I use an Ipad Air 4.
+To power all of it without a power plug, I use a 22mAh power bank with 3 USB ports.
+All build into an old wooden suitcase. It can run completely from battery for the whole evening.
 
 It was already used at multiple parties and weddings.
 

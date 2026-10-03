@@ -3,7 +3,6 @@
 Rails.application.routes.draw do
 
   root 'sets#index'
-  get 'kiosk' => 'kiosk#show'
   post 'picture_sets' => 'sets#create'
 
   resources :sets, only: %i[show] do

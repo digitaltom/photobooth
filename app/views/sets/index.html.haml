@@ -4,6 +4,7 @@
   = turbo_exempts_page_from_cache
 
 .picture-sets.text-center
+  = render 'kiosk/controls' if kiosk?
   = render 'sets/gallery', picture_sets: @picture_sets
 
   %h3

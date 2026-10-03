@@ -4,8 +4,21 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
   rescue_from Exception, with: :handle_exception
   rescue_from ActionController::RoutingError, with: -> { head :not_found }
+  before_action :remember_kiosk
+  helper_method :kiosk?
 
   private
+
+  # ?kiosk=1 turns the tablet into the kiosk for all following requests, ?kiosk=0 turns it off
+  def remember_kiosk
+    return unless params.key?(:kiosk)
+
+    params[:kiosk] == '1' ? cookies.permanent[:kiosk] = '1' : cookies.delete(:kiosk)
+  end
+
+  def kiosk?
+    cookies[:kiosk] == '1'
+  end
 
   def handle_exception(exception)
     logger.error "Exception: #{exception.class}: #{exception.message}"

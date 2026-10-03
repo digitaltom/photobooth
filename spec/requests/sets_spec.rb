@@ -36,8 +36,19 @@ end
 
 RSpec.describe 'Kiosk', type: :request do
   it 'shows the gallery below the button' do
-    get '/kiosk'
+    get '/?kiosk=1'
     expect(response.body).to include('2099-01-01_01-48-33_animation.gif')
     expect(response.body.scan('shoot_still_sw').size).to eq 4
+  end
+
+  it 'remembers the kiosk mode in a cookie until it is turned off' do
+    get '/?kiosk=1'
+    get '/'
+    expect(response.body).to include('shoot_button')
+
+    get '/?kiosk=0'
+    expect(response.body).not_to include('shoot_button')
+    get '/'
+    expect(response.body).not_to include('shoot_button')
   end
 end

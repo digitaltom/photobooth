@@ -5,7 +5,7 @@ require 'rails_helper'
 feature 'Photobox kiosk', js: true do
 
   before do
-    visit '/kiosk'
+    visit '/?kiosk=1'
   end
 
   it 'counts down and starts the capture job' do

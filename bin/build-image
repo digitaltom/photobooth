@@ -1,6 +1,6 @@
 #!/bin/bash
 # Builds the Raspberry Pi SD card image from Raspberry Pi OS Lite (arm64). Output in tmp/image/:
-#   photobox-<version>.img      flash it with: sudo dd if=... of=/dev/sdX bs=4M conv=fsync
+#   photobox-<version>.img      flash it with: sudo dd if=... of=/dev/sdX bs=4M conv=fsync,nocreat
 #   photobox-<version>.img.xz   with XZ=1, instead of .img: flash it with Raspberry Pi Imager
 #   photobox-app.tar.zst        app release for photobox-update on the Pi
 #   photobox-os-list.json       Raspberry Pi Imager repository (rpi-imager --repo <url>), with XZ=1 only
