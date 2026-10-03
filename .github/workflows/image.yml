@@ -1,0 +1,41 @@
+name: Image
+
+# A tag v* builds the SD card image and attaches it to a GitHub release.
+# A manual run builds it as a workflow artifact only.
+on:
+  push:
+    tags: [ 'v*' ]
+  workflow_dispatch:
+
+jobs:
+  tests:
+    uses: ./.github/workflows/tests.yml
+
+  image:
+    needs: tests
+    runs-on: ubuntu-24.04-arm
+    permissions:
+      contents: write
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0 # tags for git describe
+
+    - name: Build image
+      run: bin/build-image
+
+    - name: Create release
+      if: startsWith(github.ref, 'refs/tags/')
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: gh release create "$GITHUB_REF_NAME" --generate-notes tmp/image/photobox-*.img.xz* tmp/image/photobox-app.tar.zst* tmp/image/photobox-os-list.json
+
+    - name: Upload artifact
+      if: ${{ !startsWith(github.ref, 'refs/tags/') }}
+      uses: actions/upload-artifact@v4
+      with:
+        name: photobox-image
+        path: |
+          tmp/image/photobox-*.img.xz*
+          tmp/image/photobox-app.tar.zst*

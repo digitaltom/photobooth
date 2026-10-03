@@ -1,0 +1,61 @@
+#!/bin/sh
+# Installs or switches the app release on the data partition. The read-only root FS is not touched.
+#   photobox-update latest                 download the app of the latest GitHub release (needs internet)
+#   photobox-update <file|URL>             install photobox-app.tar.zst (from the laptop: scp it to /tmp first)
+#   photobox-update list                   list installed releases, * = current
+#   photobox-update use <version>          switch to an installed release (rollback)
+set -eu
+
+DATA=/var/lib/photobox
+LATEST=https://github.com/digitaltom/photobooth/releases/latest/download/photobox-app.tar.zst
+
+use() {
+  [ -d "$DATA/releases/$1" ] || { echo "release $1 not installed" >&2; exit 1; }
+  ln -sfn "releases/$1" "$DATA/current.new"
+  mv -T "$DATA/current.new" "$DATA/current"
+  systemctl restart photobox
+  echo "now running $1"
+}
+
+case ${1:-} in
+  list)
+    current=$(basename "$(readlink "$DATA/current")")
+    for r in $(ls -1t "$DATA/releases"); do
+      if [ "$r" = "$current" ]; then echo "* $r"; else echo "  $r"; fi
+    done
+    exit 0 ;;
+  use) use "$2"; exit 0 ;;
+  latest) src=$LATEST ;;
+  ''|-h|--help) sed -n '2,7p' "$0"; exit 1 ;;
+  *) src=$1 ;;
+esac
+
+tmp=$(mktemp -d "$DATA/update.XXXXXX")
+trap 'rm -rf "$tmp"' EXIT
+case $src in
+  http*)
+    curl -fL -o "$tmp/app.tar.zst" "$src"
+    curl -fL -o "$tmp/app.tar.zst.sha256" "$src.sha256" ;;
+  *)
+    cp "$src" "$tmp/app.tar.zst"
+    if [ -f "$src.sha256" ]; then cp "$src.sha256" "$tmp/app.tar.zst.sha256"; fi ;;
+esac
+if [ -f "$tmp/app.tar.zst.sha256" ]; then
+  (cd "$tmp" && echo "$(cut -d' ' -f1 app.tar.zst.sha256)  app.tar.zst" | sha256sum -c -)
+else
+  echo "no .sha256 file next to $src, checksum not checked" >&2
+fi
+
+mkdir "$tmp/app"
+tar --zstd -xf "$tmp/app.tar.zst" -C "$tmp/app"
+ver=$(cat "$tmp/app/VERSION")
+[ ! -e "$DATA/releases/$ver" ] || { echo "release $ver already installed, use: $0 use $ver" >&2; exit 1; }
+chown -R photobox:photobox "$tmp/app"
+mv "$tmp/app" "$DATA/releases/$ver"
+use "$ver"
+
+# ponytail: keep the 3 newest releases, a pin list if an old one must stay
+current=$(basename "$(readlink "$DATA/current")")
+ls -1t "$DATA/releases" | tail -n +4 | while read -r r; do
+  [ "$r" = "$current" ] || rm -rf "${DATA:?}/releases/$r"
+done

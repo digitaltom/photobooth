@@ -1,0 +1,106 @@
+#!/bin/bash
+# Builds the Raspberry Pi SD card image from Raspberry Pi OS Lite (arm64). Output in tmp/image/:
+#   photobox-<version>.img.xz   flash it with Raspberry Pi Imager or: xzcat ... | sudo dd of=/dev/sdX bs=4M conv=fsync
+#   photobox-app.tar.zst        app release for photobox-update on the Pi
+#   photobox-os-list.json       Raspberry Pi Imager repository (rpi-imager --repo <url>)
+# Runs on arm64 (GitHub runner ubuntu-24.04-arm), or on x86_64 with qemu-user binfmt
+# (openSUSE: zypper in qemu-linux-user). Uncommitted changes to tracked files are included.
+# Usage: bin/build-image [version]    (asks for sudo, default version: git describe)
+set -euxo pipefail
+
+root=$(cd "$(dirname "$0")/.." && pwd)
+git() { command git -C "$root" -c safe.directory="$root" "$@"; }
+# describe --dirty can write .git/index, so run it before sudo
+[ "$(id -u)" = 0 ] || exec sudo "$0" "${1:-$(git describe --tags --always --dirty)}"
+ver=${1:-$(git describe --tags --always --dirty)}
+base_url=${BASE_URL:-https://downloads.raspberrypi.com/raspios_lite_arm64_latest}
+root_grow=$((1536 * 1024 * 1024))  # room for packages in the root FS
+data_size=$((1024 * 1024 * 1024))  # data partition, photobox-firstboot grows it to the SD card size
+
+if [ "$(uname -m)" != aarch64 ] && ! grep -qs '^flags:.*F' /proc/sys/fs/binfmt_misc/qemu-aarch64; then
+  echo "No qemu-aarch64 binfmt with the F flag. Install qemu-linux-user (openSUSE) or qemu-user-static (Debian)." >&2
+  exit 1
+fi
+
+out=$root/tmp/image
+mkdir -p "$out"
+cd "$out"
+
+url=$(curl -fsSLI -o /dev/null -w '%{url_effective}' "$base_url")
+base=$(basename "$url")
+[ -f "$base" ] || { curl -fL -o "$base.part" "$url"; mv "$base.part" "$base"; }
+curl -fsSL "$url.sha256" | sha256sum -c -
+
+img=photobox-$ver.img
+xz -dc "$base" > "$img"
+truncate -s +$((root_grow + data_size)) "$img"
+read -r start size < <(sfdisk -d "$img" | sed -n 's/^.*2 : start= *\([0-9]*\), size= *\([0-9]*\).*/\1 \2/p')
+size=$((size + root_grow / 512))
+echo "$start,$size" | sfdisk -N 2 --no-reread "$img"
+echo "$((start + size)),,L" | sfdisk --append --no-reread "$img"
+
+loop=$(losetup -P --find --show "$img")
+mnt=$(mktemp -d)
+cleanup() {
+  umount -R "$mnt" || true
+  losetup -d "$loop" || true
+  rmdir "$mnt" || true
+}
+trap cleanup EXIT
+
+e2fsck -fy "${loop}p2" || [ $? -lt 4 ]
+resize2fs "${loop}p2"
+mkfs.ext4 -q -L photobox-data "${loop}p3"
+mount "${loop}p2" "$mnt"
+mount "${loop}p1" "$mnt/boot/firmware"
+mkdir -p "$mnt/var/lib/photobox"
+mount "${loop}p3" "$mnt/var/lib/photobox"
+mount -t proc proc "$mnt/proc"
+mount -t sysfs sys "$mnt/sys"
+mount --bind /dev "$mnt/dev"
+mount --bind /dev/pts "$mnt/dev/pts"
+mv "$mnt/etc/resolv.conf" "$mnt/etc/resolv.conf.photobox"
+cp /etc/resolv.conf "$mnt/etc/resolv.conf"
+
+rel=$mnt/var/lib/photobox/releases/$ver
+mkdir -p "$rel"
+(cd "$root" && git ls-files -z | tar --null -T - -cf -) | tar -x -C "$rel"
+echo "$ver" > "$rel/VERSION"
+
+install -m 755 "$root"/deploy/image/photobox-{network,firstboot,update} "$mnt/usr/local/sbin/"
+install -m 644 "$root"/deploy/image/photobox-{network,firstboot}.service "$mnt/etc/systemd/system/"
+install -m 644 "$root/deploy/image/photobox.yml" "$mnt/boot/firmware/photobox.yml"
+echo 'LABEL=photobox-data /var/lib/photobox ext4 defaults,noatime 0 2' >> "$mnt/etc/fstab"
+# Raspberry Pi OS firstboot only resizes the last partition, photobox-firstboot grows the data partition
+sed -i 's| init=/usr/lib/raspberrypi-sys-mods/firstboot||' "$mnt/boot/firmware/cmdline.txt"
+
+install -m 755 "$root/deploy/image/setup-chroot.sh" "$mnt/tmp/"
+chroot "$mnt" /tmp/setup-chroot.sh "$ver"
+rm "$mnt/tmp/setup-chroot.sh"
+mv "$mnt/etc/resolv.conf.photobox" "$mnt/etc/resolv.conf"
+
+tar --zstd -C "$rel" -cf photobox-app.tar.zst .
+cleanup
+trap - EXIT
+
+extract_size=$(stat -c %s "$img")
+extract_sha256=$(sha256sum "$img" | cut -d' ' -f1)
+xz -T0 -f "$img"
+sha256sum "$img.xz" > "$img.xz.sha256"
+sha256sum photobox-app.tar.zst > photobox-app.tar.zst.sha256
+cat > photobox-os-list.json <<EOF
+{
+  "os_list": [{
+    "name": "Photobox $ver",
+    "description": "Photobox on Raspberry Pi OS Lite (64-bit). WLAN and root password: photobox",
+    "url": "https://github.com/digitaltom/photobooth/releases/download/$ver/$img.xz",
+    "extract_size": $extract_size,
+    "extract_sha256": "$extract_sha256",
+    "image_download_size": $(stat -c %s "$img.xz"),
+    "image_download_sha256": "$(cut -d' ' -f1 "$img.xz.sha256")",
+    "release_date": "$(date +%F)"
+  }]
+}
+EOF
+chown -R "${SUDO_UID:-0}:${SUDO_GID:-0}" "$out"
+ls -lh "$out"

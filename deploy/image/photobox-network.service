@@ -1,0 +1,12 @@
+[Unit]
+Description=Photobox hotspot and passwords from /boot/firmware/photobox.yml
+Wants=NetworkManager.service
+After=NetworkManager.service photobox-firstboot.service
+Before=photobox.service ssh.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/photobox-network
+
+[Install]
+WantedBy=multi-user.target

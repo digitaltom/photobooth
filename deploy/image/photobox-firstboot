@@ -1,0 +1,27 @@
+#!/bin/sh
+# Runs once on the first boot of the image (see bin/build-image):
+# ssh host keys, app secret, grow the data partition to the SD card size, then enable the read-only root and reboot.
+set -eux
+
+ssh-keygen -A
+
+env=/var/lib/photobox/photobox.env
+if [ ! -f $env ]; then
+  umask 077
+  {
+    echo "SECRET_KEY_BASE=$(tr -dc a-f0-9 < /dev/urandom | head -c 128)"
+    echo "PHOTOBOX_STORAGE=/var/lib/photobox/sets"
+  } > $env
+  umask 022
+fi
+install -d -o photobox -g photobox /var/lib/photobox/sets
+
+part=$(findmnt -no SOURCE /var/lib/photobox)
+# growpart exits with 1 if the partition already fills the disk
+growpart "/dev/$(lsblk -no pkname "$part")" "${part##*[!0-9]}" || true
+resize2fs "$part"
+
+# recurse=0: the data partition (/var/lib/photobox) stays writable
+grep -q overlayroot= /boot/firmware/cmdline.txt || sed -i '1 s/^/overlayroot=tmpfs:recurse=0 /' /boot/firmware/cmdline.txt
+systemctl disable photobox-firstboot
+systemctl --no-block reboot
