@@ -5,7 +5,8 @@ set -euxo pipefail
 
 ver=$1
 app=/var/lib/photobox/releases/$ver
-export DEBIAN_FRONTEND=noninteractive
+export DEBIAN_FRONTEND=noninteractive LC_ALL=C.UTF-8 APT_LISTCHANGES_FRONTEND=none BUNDLE_SILENCE_ROOT_WARNING=1
+rm -f /var/lib/man-db/auto-update  # no man-db index rebuild on each apt run (slow under qemu)
 
 runtime_pkgs=(gphoto2 imagemagick gpiod sqlite3 libyaml-0-2 network-manager avahi-daemon openssh-server
               nftables overlayroot cloud-guest-utils zstd curl iw rfkill
