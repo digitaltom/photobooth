@@ -8,7 +8,8 @@ app=/var/lib/photobox/releases/$ver
 export DEBIAN_FRONTEND=noninteractive
 
 runtime_pkgs=(gphoto2 imagemagick gpiod sqlite3 libyaml-0-2 network-manager avahi-daemon openssh-server
-              nftables overlayroot cloud-guest-utils zstd curl iw rfkill)
+              nftables overlayroot cloud-guest-utils zstd curl iw rfkill
+              dnsmasq-base wpasupplicant)  # NetworkManager only recommends them, the hotspot needs both
 build_pkgs=(build-essential git libssl-dev libyaml-dev libffi-dev zlib1g-dev libsqlite3-dev)
 apt-get update
 apt-get install -y --no-install-recommends "${runtime_pkgs[@]}" "${build_pkgs[@]}"
