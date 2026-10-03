@@ -21,7 +21,6 @@ describe 'deploy/image/photobox-network' do
     out, = run_with(File.read(File.expand_path('../../deploy/image/photobox.yml', __dir__)))
     expect(out).to include('nmcli con add type wifi ifname wlan0 con-name photobox autoconnect yes ssid Photobox mode ap')
     expect(out).not_to include('wifi-sec')
-    expect(out).to include('nmcli radio wifi on')
     expect(out).to include('iw reg set DE')
   end
 

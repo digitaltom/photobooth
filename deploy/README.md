@@ -74,7 +74,7 @@ On an arm64 computer, the build runs natively. On x86_64, the chroot needs the q
 - openSUSE: `sudo zypper in qemu-linux-user`
 - Debian, Ubuntu: `sudo apt-get install qemu-user-static binfmt-support`
 
-Then check that `/proc/sys/fs/binfmt_misc/qemu-aarch64` exists. Ruby compiles in QEMU, so a local build takes more than one hour.
+Then check that `/proc/sys/fs/binfmt_misc/qemu-aarch64` exists. Ruby compiles in QEMU, so the first local build takes more than one hour. If `tmp/image/cache/` has Ruby, the gems and the apt packages, a local build takes about 9 minutes.
 
 To look into an image without a flash, mount it with a loop device:
 
