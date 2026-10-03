@@ -28,6 +28,7 @@ The root file system is read-only, so a power loss cannot damage it. To update t
 | `photobox.nft` | nftables rule: port 80 to Puma on port 3000 |
 | `image/setup-chroot.sh` | runs in the image chroot: packages, Ruby, gems, services |
 | `image/photobox.yml` | default settings on the boot partition |
+| `image/photobox-local.yml` | optional, not in git: your settings. `bin/build-image` copies it to the boot partition. Its keys override `photobox.yml`. |
 | `image/photobox-network` | applies `photobox.yml` at each boot: hotspot, root password, SSH key |
 | `image/photobox-firstboot` | runs once on the first boot |
 | `image/photobox-update` | installs or switches the app release |

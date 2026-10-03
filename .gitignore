@@ -13,6 +13,8 @@ rerun.txt
 pickle-email-*.html
 .idea
 config/options-local.yml
+deploy/image/photobox-local.yml
+*-local.ttf
 config/photobox.env
 .byebug_history
 .coveralls.yml

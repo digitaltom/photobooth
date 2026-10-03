@@ -1,16 +1,19 @@
 #!/bin/sh
 # Applies /boot/firmware/photobox.yml at each boot: root password, ssh key and the WLAN hotspot (10.42.0.1).
+# Keys in photobox-local.yml next to it override photobox.yml.
 # The root FS is a read-only overlay, so all of it is lost at reboot and set again from photobox.yml.
 # Test without side effects: RUN=echo PHOTOBOX_CONF=deploy/image/photobox.yml ROOT_HOME=$TMPDIR deploy/image/photobox-network
 set -eu
 
 CONF=${PHOTOBOX_CONF:-/boot/firmware/photobox.yml}
+LOCAL_CONF=${CONF%.yml}-local.yml
 ROOT_HOME=${ROOT_HOME:-/root}
 RUN=${RUN:-}
 
 # ponytail: flat "key: value" lines only, a YAML parser when photobox.yml gets nested
 get() {
-  v=$(sed -n "s/^$1:[[:space:]]*//p" "$CONF" 2>/dev/null | head -n 1)
+  # first match wins, so photobox-local.yml comes first
+  v=$(cat "$LOCAL_CONF" "$CONF" 2>/dev/null | sed -n "s/^$1:[[:space:]]*//p" | head -n 1)
   case $v in
     \"*) v=${v#\"}; v=${v%%\"*} ;;
     \'*) v=${v#\'}; v=${v%%\'*} ;;

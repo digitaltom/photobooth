@@ -1,6 +1,6 @@
 default:
   image_caption: 'Photobooth'
-  image_fontsize: 12
+  image_fontsize: 13
   # a .ttf path (relative to the app folder) or an ImageMagick font name (`magick -list font`)
   # Rock Salt: Apache License 2.0, see fonts/LICENSE.txt
   font: 'fonts/RockSalt-Regular.ttf'
@@ -28,7 +28,7 @@ default:
   storage_path:
 
 development:
-  camera: 'gphoto2'
+  camera: 'fake'
 
 test:
   camera: 'fake'

@@ -75,6 +75,9 @@ echo "$ver" > "$rel/VERSION"
 install -m 755 "$root"/deploy/image/photobox-{network,firstboot,update} "$mnt/usr/local/sbin/"
 install -m 644 "$root"/deploy/image/photobox-{network,firstboot}.service "$mnt/etc/systemd/system/"
 install -m 644 "$root/deploy/image/photobox.yml" "$mnt/boot/firmware/photobox.yml"
+if [ -f "$root/deploy/image/photobox-local.yml" ]; then
+  install -m 644 "$root/deploy/image/photobox-local.yml" "$mnt/boot/firmware/photobox-local.yml"
+fi
 echo 'LABEL=photobox-data /var/lib/photobox ext4 defaults,noatime 0 2' >> "$mnt/etc/fstab"
 # Raspberry Pi OS resizes the root partition at first boot, photobox-firstboot grows the data partition instead.
 # Bookworm: init=.../firstboot, Trixie: resize

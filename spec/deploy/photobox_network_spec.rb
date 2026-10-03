@@ -6,10 +6,11 @@ require 'tmpdir'
 describe 'deploy/image/photobox-network' do
   let(:script) { File.expand_path('../../deploy/image/photobox-network', __dir__) }
 
-  def run_with(yaml)
+  def run_with(yaml, local_yaml = nil)
     Dir.mktmpdir do |dir|
       conf = File.join(dir, 'photobox.yml')
       File.write(conf, yaml) if yaml
+      File.write(File.join(dir, 'photobox-local.yml'), local_yaml) if local_yaml
       out, status = Open3.capture2e({ 'RUN' => 'echo', 'PHOTOBOX_CONF' => conf, 'ROOT_HOME' => dir }, script)
       expect(status).to be_success, out
       key_file = File.join(dir, '.ssh/authorized_keys')
@@ -38,6 +39,10 @@ describe 'deploy/image/photobox-network' do
     YAML
     expect(out).to include('ssid Party #1').and include('wifi-sec.psk geheim123 ')
     expect(key).to eq("ssh-ed25519 AAAA me@laptop\n")
+  end
+
+  it 'overrides keys with photobox-local.yml' do
+    expect(run_with("wifi_ssid: A\nwifi_country: AT\n", "wifi_ssid: B\n").first).to include('ssid B', 'reg set AT')
   end
 
   it 'opens the WLAN with an empty password' do
