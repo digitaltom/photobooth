@@ -4,13 +4,11 @@
 
 # Photobooth
 
-This application is supposed to run on a linux machine which is connected to a [gphoto](http://www.gphoto.org/) supported camera ([list](http://www.gphoto.org/proj/libgphoto2/support.php)).
+This application is supposed to run on a Linux machine which is connected to a [gphoto](http://www.gphoto.org/) supported camera ([list](http://www.gphoto.org/proj/libgphoto2/support.php)).
 
-I've build it to run on a Raspberry Pi with [openSUSE](https://en.opensuse.org/HCL:Raspberry_Pi3)/[Raspbian (Debian)](https://www.raspberrypi.org/downloads/raspbian/), connected to a Nikon D60 camera. See below for install instructions.
+I've build it to run on a Raspberry Pi with [openSUSE](https://en.opensuse.org/HCL:Raspberry_Pi3)/[Raspbian (Debian)](https://www.raspberrypi.org/downloads/raspbian/), connected to a DSLR camera. Any tablet or notebook with a web browser in the same Wi-Fi as the Raspberry Pi works as a screen. See below for more details of my setup and how to run your own.
 
-The app is a *[Ruby on Rails](https://rubyonrails.org/)* server with a *[Hotwire](https://hotwired.dev/)* (Turbo and Stimulus) frontend. It needs no Node.js.
-A background job (Solid Queue) takes the pictures and renders the GIF. The job sends each step to the screen with Turbo Streams.
-Any tablet or notebook with a web browser in the same Wi-Fi as the Raspberry Pi works as a screen.
+The app is a *[Ruby on Rails](https://rubyonrails.org/)* server with a *[Hotwire](https://hotwired.dev/)* (Turbo and Stimulus) frontend.
 
 ## Hardware Setup
 
@@ -43,14 +41,14 @@ The general hardware setup looks like this:
 
 ## Deploy
 
-The Photobooth can run on any Linux server, for building a portable photo booth I recommend running it on a Raspberry Pi.
+The recommended setup to run a portable photo booth is a Raspberry Pi.
 
 From SD card to photo booth in three steps:
 
 1. Write the image of the latest [release](https://github.com/digitaltom/photobooth/releases) to an SD card:
    `xzcat photobox-<version>.img.xz | sudo dd of=/dev/sdX bs=4M conv=fsync`
 2. Put the SD card into the Pi, connect the camera and boot.
-3. Connect the tablet to the WLAN `Photobox` (password `photobox`), then open `http://10.42.0.1/kiosk`.
+3. Connect the tablet to the WLAN `Photobox` (no password), then open `http://10.42.0.1`.
 
 ### Usage
 
@@ -73,7 +71,9 @@ Anything is not working when following this manual? Please open an [issue](https
 
 ## My Photobooth:
 
-My current photobox setup is a Raspberry Pi 3, a Nikon D60 with a Nikkor 35mm lens and a Nexus 7 tablet. All build into an old wooden suitcase. It can run completely from battery for 2-3 hours.  
+My current photobox setup is a Raspberry Pi 3, a Canon M50 with a 22mm lens and power adapter. As display I use an Ipad Air 4. 
+To power all of it without a power plug, I use a 22mAh power bank with 3 USB ports. 
+All build into an old wooden suitcase. It can run completely from battery for 2-3 hours.  
 
 It was already used at multiple parties and weddings.
 
