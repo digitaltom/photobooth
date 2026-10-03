@@ -9,7 +9,7 @@ class Camera
   def self.capture(dir, date, &)
     if OPTS.camera == 'fake'
       (1..4).each do |num|
-        sleep OPTS.fake_camera_delay.to_f
+        sleep OPTS.camera_delay.to_f
         FileUtils.cp(FAKE_IMAGES.join("#{num}.jpg"), File.join(dir, "#{date}_#{num}.jpg"))
         yield num
       end
@@ -20,13 +20,15 @@ class Camera
 
   # One process for all photos: every gphoto2 start opens a new PTP session (1-2 s).
   # capturetarget=0 is "Internal RAM" on Canon EOS: the camera does not write to its SD card first.
+  # -I: a shot starts at least camera_delay s after the start of the previous shot, gphoto2 waits when the camera is faster.
   def self.gphoto2(dir, date)
     saved = 0
     attempt = 0
     begin
       attempt += 1
-      Syscall.execute('gphoto2 --set-config capturetarget=0 --capture-image-and-download -F 4 -I 1 ' \
-                      "--force-overwrite --filename #{date}_%n.jpg", dir: dir) do |line|
+      Syscall.execute("gphoto2 --set-config capturetarget=0 #{imageformat_option}" \
+                      "--capture-image-and-download -F 4 -I #{OPTS.camera_delay.to_i} --force-overwrite --filename #{date}_%n.jpg",
+                      dir: dir) do |line|
         num = saved_number(line, date)
         next unless num
 
@@ -39,6 +41,10 @@ class Camera
       Rails.logger.warn("Retrying capture (#{attempt}): #{e.message}") && retry if saved.zero? && attempt < RETRIES
       raise e
     end
+  end
+
+  def self.imageformat_option
+    "--set-config imageformat=#{OPTS.camera_imageformat.to_s.shellescape} " if OPTS.camera_imageformat.present?
   end
 
   # gphoto2 prints "Saving file as 2026-10-03_12-00-00_1.jpg"

@@ -7,8 +7,15 @@ default:
 
   # 'gphoto2' for a real camera, 'fake' copies the sample images in lib/fake_camera
   camera: 'gphoto2'
-  # seconds per fake photo, like focus, shutter and USB download of the real camera
-  fake_camera_delay: 2
+  # gphoto2 imageformat, a label or index from `gphoto2 --get-config imageformat`. Empty: keep the setting of the camera.
+  # Use JPEG only, no RAW. Canon EOS labels, 'c' = normal instead of fine compression (sizes for a 24 MP sensor):
+  #   'L'  / 'cL'  large,  6000x4000
+  #   'M'  / 'cM'  medium, 3984x2656
+  #   'S1' / 'cS1' small,  2976x1984
+  #   'S2'         small,  2400x1600
+  camera_imageformat: 'cS2'
+  # minimum seconds from the start of a shot to the start of the next shot (gphoto2 -I), fake camera: seconds per photo
+  camera_delay: 3
 
   # per ImageMagick process, 4 run in parallel (Pi 3 B: 1 GB RAM)
   imagemagick_memory_limit: '64MiB'
@@ -21,8 +28,8 @@ default:
   storage_path:
 
 development:
-  camera: 'fake'
+  camera: 'gphoto2'
 
 test:
   camera: 'fake'
-  fake_camera_delay: 0
+  camera_delay: 0
