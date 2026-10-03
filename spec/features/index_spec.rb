@@ -12,8 +12,8 @@ feature 'Photobox gallery', js: true do
     expect(page).to_not have_content 'take a picture'
   end
 
-  it 'shows a link to github' do
-    expect(page).to have_content 'github.com/digitaltom/photobooth'
+  it 'links the project on github' do
+    expect(page).to have_link 'Project', href: 'https://github.com/digitaltom/photobooth'
   end
 
   it 'shows picture sets' do

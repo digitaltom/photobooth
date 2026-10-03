@@ -3,29 +3,38 @@
   -# no stale snapshot on back navigation, new sets can exist
   = turbo_exempts_page_from_cache
 
-.picture-sets.text-center
-  = render 'kiosk/controls' if kiosk?
-  = render 'sets/gallery', picture_sets: @picture_sets
+.gallery-page
+  %aside.gallery-side
+    %h1.gallery-title= @gallery.caption
+    .gallery-count= pluralize(@picture_sets.size, 'picture')
+    = render 'kiosk/controls' if kiosk?
+    .gallery-actions
+      -# native popover, no JS: 'auto' closes it on a tap outside
+      %button.btn.gallery-btn{ type: 'button', popovertarget: 'wifi-qr-popover' }
+        = icon('qr')
+        Get the pictures on your phone
+    .gallery-footer
+      -# turbo: false, Turbo Drive would fetch the archive as a page
+      = link_to download_gallery_path(@gallery), data: { turbo: false }, download: true do
+        = icon('download')
+        Download pictures
+      = link_to 'https://github.com/digitaltom/photobooth' do
+        = icon('github')
+        Project
+      = link_to admin_path do
+        = icon('lock')
+        Admin
+  %main.gallery-grid
+    = render 'sets/gallery', picture_sets: @picture_sets
 
-  %h3
-    %a{ href: 'https://github.com/digitaltom/photobooth' }
-      github.com/digitaltom/photobooth
+-# permanent: the gallery morph refresh must not close it
+#wifi-qr-popover.wifi-qr-popover{ popover: 'auto', data: { turbo_permanent: true } }
+  %p.lead Scan to join the WLAN
+  .wifi-qr= wifi_qr_svg
   %p
-    -# turbo: false, Turbo Drive would fetch the archive as a page
-    = link_to 'Download all pictures (.tar.gz)', download_gallery_path(@gallery), class: 'btn btn-light',
-      data: { turbo: false }, download: true
+    WLAN:
+    %b= wifi_ssid
   %p
-    -# native popover, no JS: 'auto' closes it on a tap outside. permanent: the gallery morph refresh must not close it
-    %button.btn.btn-light{ type: 'button', popovertarget: 'wifi-qr-popover' } WLAN QR code
-  #wifi-qr-popover.wifi-qr-popover{ popover: 'auto', data: { turbo_permanent: true } }
-    %p.lead Scan to join the WLAN
-    .wifi-qr= wifi_qr_svg
-    %p
-      WLAN:
-      %b= wifi_ssid
-    %p
-      Gallery:
-      = link_to ApplicationHelper::PHOTOBOX_URL, ApplicationHelper::PHOTOBOX_URL
-    %button.btn.btn-light{ type: 'button', popovertarget: 'wifi-qr-popover', popovertargetaction: 'hide' } Close
-  %p
-    = link_to 'Admin', admin_path, class: 'admin-link'
+    Gallery:
+    = link_to ApplicationHelper::PHOTOBOX_URL, ApplicationHelper::PHOTOBOX_URL
+  %button.btn.btn-light{ type: 'button', popovertarget: 'wifi-qr-popover', popovertargetaction: 'hide' } Close

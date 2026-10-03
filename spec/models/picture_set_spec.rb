@@ -91,9 +91,9 @@ RSpec.describe PictureSet, type: :model do
     end
 
     context 'file does not yet exist' do
-      it 'creates animation' do
+      it 'creates an animation that loops forever' do
         set = PictureSet.new(date: '2099-01-01_01-48-33')
-        expect(Syscall).to receive(:execute).with(/MAGICK_THREAD_LIMIT=1 .*#{PictureSet::IMAGEMAGICK} -delay/, anything)
+        expect(Syscall).to receive(:execute).with(/MAGICK_THREAD_LIMIT=1 .*#{PictureSet::IMAGEMAGICK} -delay 60 -loop 0 /, anything)
         set.create_animation(overwrite: true)
       end
     end

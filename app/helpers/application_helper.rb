@@ -22,4 +22,9 @@ module ApplicationHelper
     # rqrcode builds the SVG from the QR modules only, no user text in it
     RQRCode::QRCode.new("#{content};").as_svg(viewbox: true, use_path: true).html_safe # rubocop:disable Rails/OutputSafety
   end
+
+  # inline, so the icon takes the text color. name comes from the views, never from a request
+  def icon(name)
+    Rails.root.join("app/assets/images/icons/#{name}.svg").read.html_safe # rubocop:disable Rails/OutputSafety
+  end
 end

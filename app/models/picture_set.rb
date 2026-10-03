@@ -108,7 +108,7 @@ class PictureSet
       frames = (1..4).map { |i| File.join(dir, "#{date}_#{i}#{FRAME_SUFFIX}") }
       # older sets have no frames: then ImageMagick reduces the colors of the polaroids here
       suffix = frames.all? { |f| File.exist?(f) } ? FRAME_SUFFIX : POLAROID_SUFFIX
-      Syscall.execute("#{MAGICK_ENV} #{IMAGEMAGICK} -delay 60 #{date}_[1-4]#{suffix} #{animation}", dir: dir, timing: true)
+      Syscall.execute("#{MAGICK_ENV} #{IMAGEMAGICK} -delay 60 -loop 0 #{date}_[1-4]#{suffix} #{animation}", dir: dir, timing: true)
       FileUtils.rm_f(frames)
     end
   end

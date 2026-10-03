@@ -1,12 +1,10 @@
 = turbo_stream_from :kiosk
 
-%div{ data: { controller: 'countdown' } }
+.shoot-area{ data: { controller: 'countdown' } }
   = form_with url: picture_sets_path, data: { countdown_target: 'form' } do
-    %button.btn.btn-light.shoot_button{ type: 'button', data: { action: 'countdown#start' } }
-      %span
-        = image_tag '/images/take_picture_animation.gif', class: 'shoot_img'
-      .shoot_text
-        Click here to take a picture
+    %button.shoot_button{ type: 'button', data: { action: 'countdown#start' } }
+      = image_tag '/images/take_picture_animation.gif', class: 'shoot_img', alt: ''
+      .shoot_text Tap to take a picture
 
   -# permanent: the gallery morph refresh must not close the dialog with the result
   %dialog#shoot-dialog.text-center{ data: { countdown_target: 'dialog', turbo_permanent: true } }

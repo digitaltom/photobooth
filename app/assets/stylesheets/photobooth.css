@@ -1,6 +1,6 @@
 body {
-    background-color: #000;
-    color: #fff;
+    background-color: #111112;
+    color: #f2efe9;
     margin:0px;
     padding:0px;
     height: 100%;
@@ -35,28 +35,9 @@ body {
     padding: 10px;
 }
 
-.shoot_button {
-    width: 430px;
-    max-width: 90%;
-    margin: 5px 10px;
-}
-
-.shoot_text {
-    font-size: 1.3em;
-}
-
-.shoot_img {
-    max-width: 65%;
-}
-
 .shoot_img_btn {
     height: 20px;
     margin: 0px 10px 0px 0px;
-}
-
-.gallery-img {
-    width: 470px;
-    max-width: 95%;
 }
 
 .fullscreen {
@@ -75,10 +56,6 @@ body {
     margin: auto;
     max-width: 95%;
     z-index: -10;
-}
-
-.shoot_button:hover, .shoot_button:active {
-  background-color: #fff;
 }
 
 #button-start {
@@ -106,6 +83,154 @@ body {
     position: absolute;
     right: 3px;
     bottom: 3px;
+}
+
+/* turbo_stream_from elements must not take a grid cell or a flex gap */
+turbo-cable-stream-source {
+  display: none;
+}
+
+/* gallery: stacked by default (phones, guests), two columns on the kiosk */
+.gallery-side {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 24px 16px;
+  text-align: center;
+}
+
+.gallery-title {
+  margin: 0;
+  font-family: "Rock Salt", cursive;
+  font-size: 2rem;
+  overflow-wrap: anywhere;
+}
+
+.gallery-count {
+  margin-top: -8px;
+  color: #8d8a85;
+}
+
+.shoot_button {
+  padding: 0;
+  border: none;
+  background: none;
+  color: inherit;
+}
+
+/* the gif has white corners, the clip keeps only the orange circle */
+.shoot_img {
+  width: min(300px, 40vh);
+  max-width: 100%;
+  clip-path: circle(37%);
+  transition: transform .12s;
+}
+
+.shoot_button:active .shoot_img {
+  transform: scale(.95);
+}
+
+.shoot_text {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.icon {
+  width: 1.1em;
+  height: 1.1em;
+  flex: none;
+}
+
+.gallery-actions {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  max-width: 400px;
+}
+
+.gallery-btn, .gallery-btn:hover {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 12px;
+  font-size: .9rem;
+  border: 1px solid #2c2b2a;
+  border-radius: 10px;
+  background: #1a1a1b;
+  color: #f2efe9;
+}
+
+.gallery-btn:hover {
+  background: #232324;
+}
+
+.gallery-footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 4px 16px;
+  width: 100%;
+  max-width: 400px;
+  font-size: .8rem;
+}
+
+.gallery-footer a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #6b6864;
+  text-decoration: none;
+}
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
+  padding: 12px;
+  background: #0d0d0e;
+}
+
+/* the set page shows the animation at a fixed size */
+.gallery-img {
+  width: 470px;
+  max-width: 95%;
+}
+
+.gallery-grid .gallery-img {
+  display: block;
+  width: 100%;
+  max-width: none;
+  border-radius: 8px;
+}
+
+@media (min-width: 768px) {
+  .kiosk .gallery-page {
+    display: flex;
+    height: 100dvh;
+  }
+
+  .kiosk .gallery-side {
+    width: 380px;
+    flex: none;
+    overflow: hidden;
+  }
+
+  /* the shoot button takes the free height between the title and the buttons */
+  .kiosk .shoot-area {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    align-items: center;
+  }
+
+  .kiosk .gallery-grid {
+    flex: 1;
+    overflow-y: auto;
+    align-content: start;
+  }
 }
 
 /* admin menu */
@@ -162,10 +287,6 @@ body {
   font-family: "Rock Salt", cursive;
   text-align: center;
   overflow-wrap: anywhere;
-}
-
-.admin-link {
-  color: #555;
 }
 
 .wifi-sign {
