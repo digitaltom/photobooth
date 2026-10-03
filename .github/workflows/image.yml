@@ -22,6 +22,14 @@ jobs:
       with:
         fetch-depth: 0 # tags for git describe
 
+    - uses: actions/cache@v4
+      with:
+        path: |
+          tmp/image/cache
+          tmp/image/*raspios*.img.xz
+        key: image-${{ hashFiles('.ruby-version', 'Gemfile.lock', 'deploy/image/setup-chroot.sh') }}
+        restore-keys: image-
+
     - name: Build image
       run: bin/build-image
 

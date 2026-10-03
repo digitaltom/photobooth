@@ -1,7 +1,6 @@
-[![Master Status](https://github.com/digitaltom/photobooth//actions/workflows/tests.yml/badge.svg?branch=master)](https://github.com/digitaltom/photobooth/actions)
-[![Code Climate](https://codeclimate.com/github/digitaltom/photobooth.png)](https://codeclimate.com/github/digitaltom/photobooth)
+[![Master Status](https://github.com/digitaltom/photobooth/actions/workflows/tests.yml/badge.svg?branch=master)](https://github.com/digitaltom/photobooth/actions)
 [![Coverage Status](https://coveralls.io/repos/github/digitaltom/photobooth/badge.svg?branch=master&)](https://coveralls.io/github/digitaltom/photobooth?branch=master)
-[![Dependencies](https://badgen.net/dependabot/digitaltom/photobooth/?icon=dependabot)](https://badgen.net/dependabot/digitaltom/photobooth/?icon=dependabot)
+[![Dependabot Updates](https://github.com/digitaltom/photobooth/actions/workflows/dependabot/dependabot-updates/badge.svg)](https://github.com/digitaltom/photobooth/network/updates)
 
 # Photobooth
 

@@ -39,7 +39,12 @@ The root file system is read-only, so a power loss cannot damage it. To update t
 ```sh
 bin/build-image            # version from git describe
 bin/build-image v1.2       # explicit version
+NO_XZ=1 bin/build-image    # faster: raw .img, no xz and no photobox-os-list.json
 ```
+
+Flash a raw image with `sudo dd if=tmp/image/photobox-<version>.img of=/dev/sdX bs=4M conv=fsync`.
+
+`tmp/image/cache/` keeps Ruby, the gems and the apt packages for the next build. To do a clean build, delete this directory.
 
 The output is in `tmp/image/`:
 

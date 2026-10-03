@@ -6,12 +6,14 @@
 # Runs on arm64 (GitHub runner ubuntu-24.04-arm), or on x86_64 with qemu-user binfmt
 # (openSUSE: zypper in qemu-linux-user). Uncommitted changes to tracked files are included.
 # Usage: bin/build-image [version]    (asks for sudo, default version: git describe)
+# NO_XZ=1 keeps the raw .img (no xz, no os-list JSON) for a faster local build.
+# tmp/image/cache keeps Ruby, gems and apt packages between builds. Delete it for a clean build.
 set -euxo pipefail
 
 root=$(cd "$(dirname "$0")/.." && pwd)
 git() { command git -C "$root" -c safe.directory="$root" "$@"; }
 # describe --dirty can write .git/index, so run it before sudo
-[ "$(id -u)" = 0 ] || exec sudo "$0" "${1:-$(git describe --tags --always --dirty)}"
+[ "$(id -u)" = 0 ] || exec sudo --preserve-env=BASE_URL,NO_XZ "$0" "${1:-$(git describe --tags --always --dirty)}"
 ver=${1:-$(git describe --tags --always --dirty)}
 base_url=${BASE_URL:-https://downloads.raspberrypi.com/raspios_lite_arm64_latest}
 root_grow=$((1536 * 1024 * 1024))  # room for packages in the root FS
@@ -59,6 +61,8 @@ mount -t proc proc "$mnt/proc"
 mount -t sysfs sys "$mnt/sys"
 mount --bind /dev "$mnt/dev"
 mount --bind /dev/pts "$mnt/dev/pts"
+mkdir -p "$out/cache"
+mount --bind "$out/cache" "$mnt/mnt"  # build cache for setup-chroot.sh
 mv "$mnt/etc/resolv.conf" "$mnt/etc/resolv.conf.photobox"
 cp /etc/resolv.conf "$mnt/etc/resolv.conf"
 
@@ -83,11 +87,12 @@ tar --zstd -C "$rel" -cf photobox-app.tar.zst .
 cleanup
 trap - EXIT
 
+sha256sum photobox-app.tar.zst > photobox-app.tar.zst.sha256
+if [ -z "${NO_XZ:-}" ]; then
 extract_size=$(stat -c %s "$img")
 extract_sha256=$(sha256sum "$img" | cut -d' ' -f1)
 xz -T0 -f "$img"
 sha256sum "$img.xz" > "$img.xz.sha256"
-sha256sum photobox-app.tar.zst > photobox-app.tar.zst.sha256
 cat > photobox-os-list.json <<EOF
 {
   "os_list": [{
@@ -102,5 +107,6 @@ cat > photobox-os-list.json <<EOF
   }]
 }
 EOF
+fi
 chown -R "${SUDO_UID:-0}:${SUDO_GID:-0}" "$out"
 ls -lh "$out"
