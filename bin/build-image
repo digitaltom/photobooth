@@ -76,8 +76,10 @@ install -m 755 "$root"/deploy/image/photobox-{network,firstboot,update} "$mnt/us
 install -m 644 "$root"/deploy/image/photobox-{network,firstboot}.service "$mnt/etc/systemd/system/"
 install -m 644 "$root/deploy/image/photobox.yml" "$mnt/boot/firmware/photobox.yml"
 echo 'LABEL=photobox-data /var/lib/photobox ext4 defaults,noatime 0 2' >> "$mnt/etc/fstab"
-# Raspberry Pi OS firstboot only resizes the last partition, photobox-firstboot grows the data partition
-sed -i 's| init=/usr/lib/raspberrypi-sys-mods/firstboot||' "$mnt/boot/firmware/cmdline.txt"
+# Raspberry Pi OS resizes the root partition at first boot, photobox-firstboot grows the data partition instead.
+# Bookworm: init=.../firstboot, Trixie: resize
+sed -i 's| init=/usr/lib/raspberrypi-sys-mods/firstboot||; s| resize\b||' "$mnt/boot/firmware/cmdline.txt"
+grep -qE 'firstboot| resize\b' "$mnt/boot/firmware/cmdline.txt" && exit 1
 
 install -m 755 "$root/deploy/image/setup-chroot.sh" "$mnt/tmp/"
 chroot "$mnt" /tmp/setup-chroot.sh "$ver"

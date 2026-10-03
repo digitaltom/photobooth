@@ -35,7 +35,6 @@ if [ -n "$key" ]; then
 fi
 
 $RUN rfkill unblock wifi || true
-$RUN nmcli radio wifi on  # Raspberry Pi OS ships NetworkManager with WLAN disabled in its state file
 $RUN iw reg set "$country" || true
 $RUN nmcli con delete photobox >/dev/null 2>&1 || true
 set -- con add type wifi ifname wlan0 con-name photobox autoconnect yes \

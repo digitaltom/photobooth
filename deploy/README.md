@@ -76,6 +76,17 @@ On an arm64 computer, the build runs natively. On x86_64, the chroot needs the q
 
 Then check that `/proc/sys/fs/binfmt_misc/qemu-aarch64` exists. Ruby compiles in QEMU, so a local build takes more than one hour.
 
+To look into an image without a flash, mount it with a loop device:
+
+```sh
+loop=$(sudo losetup -P --find --show tmp/image/photobox-<version>.img)
+sudo mount ${loop}p1 /mnt      # boot partition, for example /mnt/photobox.yml
+sudo umount /mnt
+sudo losetup -d $loop
+```
+
+Use `p2` for the root partition and `p3` for the data partition.
+
 ### CI build
 
 `.github/workflows/image.yml` runs the tests, then `bin/build-image` on the `ubuntu-24.04-arm` runner. The build takes some minutes there.

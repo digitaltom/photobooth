@@ -55,6 +55,10 @@ printf '#!/usr/sbin/nft -f\ninclude "/etc/nftables.d/*.nft"\n' > /etc/nftables.c
 # Captive portal: the hotspot DNS answers all names with the Pi, Rails redirects unknown paths to the gallery
 mkdir -p /etc/NetworkManager/dnsmasq-shared.d
 echo 'address=/#/10.42.0.1' > /etc/NetworkManager/dnsmasq-shared.d/photobox.conf
+# Raspberry Pi OS ships NetworkManager with WLAN disabled (it then soft-blocks wlan0 via rfkill).
+# "nmcli radio wifi on" at boot does not stick, so fix the state file in the image.
+sed -i 's/^WirelessEnabled=false/WirelessEnabled=true/' /var/lib/NetworkManager/NetworkManager.state
+grep -q '^WirelessEnabled=true' /var/lib/NetworkManager/NetworkManager.state
 
 echo 'PermitRootLogin yes' > /etc/ssh/sshd_config.d/photobox.conf
 rm -f /etc/ssh/ssh_host_*  # photobox-firstboot creates them, so every Pi has its own
