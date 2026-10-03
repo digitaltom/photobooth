@@ -44,10 +44,10 @@ RSpec.describe 'Kiosk', type: :request do
   it 'remembers the kiosk mode in a cookie until it is turned off' do
     get '/?kiosk=1'
     get '/'
-    expect(response.body).to include('shoot_button')
+    expect(response.body).to include('shoot_button', '<body class="kiosk">')
 
     get '/?kiosk=0'
-    expect(response.body).not_to include('shoot_button')
+    expect(response.body).not_to include('shoot_button', '<body class="kiosk">')
     get '/'
     expect(response.body).not_to include('shoot_button')
   end

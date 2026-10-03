@@ -15,6 +15,7 @@
           %th Sets
           %th Size
           %th
+          %th
         - @galleries.each do |gallery|
           %tr
             %td
@@ -22,6 +23,9 @@
               %small.text-muted= gallery.name
             %td= gallery.sets_count
             %td= number_to_human_size(gallery.size)
+            %td
+              = link_to 'Download', download_gallery_path(gallery), class: 'btn btn-light btn-sm',
+                data: { turbo: false }, download: true
             %td
               - if gallery == @gallery
                 %b active

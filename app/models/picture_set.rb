@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# A picture set is a folder in the active gallery with 4 photos, their polaroids, the animated GIF and set.json.
+# A picture set is a folder in the active gallery with 4 photos, their polaroids, the animated GIF and set.yml.
 # The gallery reads the filesystem, there is no database.
 class PictureSet
 
@@ -113,8 +113,8 @@ class PictureSet
     end
   end
 
-  def write_json(caption: gallery.caption)
-    File.write(File.join(dir, 'set.json'), JSON.pretty_generate(created_at: Time.now.getlocal.iso8601, caption: caption))
+  def write_yml(caption: gallery.caption)
+    File.write(File.join(dir, 'set.yml'), { 'created_at' => Time.now.getlocal.iso8601, 'caption' => caption }.to_yaml)
   end
 
 end

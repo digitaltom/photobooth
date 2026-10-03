@@ -67,11 +67,7 @@ class AdminController < ApplicationController
     redirect_to admin_path, notice: command == 'reboot' ? 'Restarting…' : 'Shutting down…'
   end
 
-  def wifi_sign
-    @ssid = OPTS.wifi_ssid.to_s.presence || 'Photobox'
-    @password = OPTS.wifi_password.to_s.presence
-    @qr = RQRCode::QRCode.new(wifi_qr(@ssid, @password)).as_svg(viewbox: true, use_path: true)
-  end
+  def wifi_sign; end
 
   private
 
@@ -95,11 +91,5 @@ class AdminController < ApplicationController
     gallery.activate!
     Turbo::StreamsChannel.broadcast_refresh_to(:gallery)
     redirect_to admin_path, notice: "Active gallery: #{gallery.caption.presence || gallery.name}"
-  end
-
-  # https://github.com/zxing/zxing/wiki/Barcode-Contents#wi-fi-network-config-android-ios-11
-  def wifi_qr(ssid, password)
-    escape = ->(text) { text.gsub(/([\\;,:"])/, '\\\\\1') }
-    password ? "WIFI:T:WPA;S:#{escape.call(ssid)};P:#{escape.call(password)};;" : "WIFI:T:nopass;S:#{escape.call(ssid)};;"
   end
 end

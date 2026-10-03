@@ -6,6 +6,21 @@ body {
     height: 100%;
 }
 
+/* iPad kiosk: no double-tap zoom, no text selection, no long-press menu.
+   Only on the kiosk: guests need the long-press menu to save pictures on their phones. */
+.kiosk {
+    touch-action: manipulation;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+}
+
+/* Safari does not let you type into an input without selection */
+.kiosk input, .kiosk textarea {
+    -webkit-user-select: text;
+    user-select: text;
+}
+
 #shoot-dialog {
     width: 95%;
     color: #000;
@@ -161,6 +176,19 @@ body {
 .wifi-qr svg {
   width: 400px;
   max-width: 90%;
+}
+
+/* the popover is centered in the top layer by the browser */
+.wifi-qr-popover {
+  padding: 20px;
+  border: none;
+  border-radius: 8px;
+  color: #000;
+  text-align: center;
+}
+
+.wifi-qr-popover::backdrop {
+  background: rgba(0, 0, 0, 0.6);
 }
 
 @media print {

@@ -4,12 +4,17 @@
     %title Photobooth
     %meta{ content: 'width=device-width, initial-scale=1.0, user-scalable=no', name: 'viewport' }
     = favicon_link_tag '/favicon.ico'
+    %link{ rel: 'manifest', href: pwa_manifest_path(format: :json) }
+    %link{ rel: 'apple-touch-icon', href: '/icon.png' }
+    %meta{ name: 'apple-mobile-web-app-capable', content: 'yes' }
+    %meta{ name: 'mobile-web-app-capable', content: 'yes' }
+    %meta{ name: 'apple-mobile-web-app-status-bar-style', content: 'black' }
     = stylesheet_link_tag 'bootstrap-5.3.8/bootstrap.min', 'photobooth'
     = javascript_importmap_tags
     = csrf_meta_tags
     = yield(:head)
 
-  %body
+  %body{ class: ('kiosk' if kiosk?) }
     - flash.each do |type, msg|
       .alert{ class: type == 'notice' ? 'alert-success' : 'alert-danger', role: 'alert' }= msg
 

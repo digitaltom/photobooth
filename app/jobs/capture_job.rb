@@ -15,7 +15,7 @@ class CaptureJob < ApplicationJob
     captured = now
     threads.each(&:join)
     picture_set.create_animation
-    picture_set.write_json
+    picture_set.write_yml
     logger.info format('CaptureJob %<id>s: capture %<capture>.1fs, render %<render>.1fs',
                        id: id, capture: captured - started, render: now - captured)
     broadcast_kiosk('kiosk/done')

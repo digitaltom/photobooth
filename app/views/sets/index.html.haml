@@ -11,4 +11,21 @@
     %a{ href: 'https://github.com/digitaltom/photobooth' }
       github.com/digitaltom/photobooth
   %p
+    -# turbo: false, Turbo Drive would fetch the archive as a page
+    = link_to 'Download all pictures (.tar.gz)', download_gallery_path(@gallery), class: 'btn btn-light',
+      data: { turbo: false }, download: true
+  %p
+    -# native popover, no JS: 'auto' closes it on a tap outside. permanent: the gallery morph refresh must not close it
+    %button.btn.btn-light{ type: 'button', popovertarget: 'wifi-qr-popover' } WLAN QR code
+  #wifi-qr-popover.wifi-qr-popover{ popover: 'auto', data: { turbo_permanent: true } }
+    %p.lead Scan to join the WLAN
+    .wifi-qr= wifi_qr_svg
+    %p
+      WLAN:
+      %b= wifi_ssid
+    %p
+      Gallery:
+      = link_to ApplicationHelper::PHOTOBOX_URL, ApplicationHelper::PHOTOBOX_URL
+    %button.btn.btn-light{ type: 'button', popovertarget: 'wifi-qr-popover', popovertargetaction: 'hide' } Close
+  %p
     = link_to 'Admin', admin_path, class: 'admin-link'

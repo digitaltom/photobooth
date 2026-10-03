@@ -4,6 +4,7 @@ class SetsController < ApplicationController
   before_action :set_picture_set, only: %i[show slideshow file]
 
   def index
+    @gallery = Gallery.active
     @picture_sets = PictureSet.all
   end
 
