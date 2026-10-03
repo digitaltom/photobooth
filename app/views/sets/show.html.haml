@@ -4,16 +4,16 @@
 
   .row
     - @picture_set.pictures.each do |picture|
-      .col-md-3.col-xs-6.thumb
-        = link_to file_set_path(@picture_set, name: picture[:full], download: 1), class: 'thumbnail' do
-          = image_tag file_set_path(@picture_set, name: picture[:polaroid]), class: 'img-responsive', loading: 'lazy'
+      .col-md-3.col-6.thumb
+        = link_to file_set_path(@picture_set, name: picture[:full], download: 1), class: 'd-block mb-3' do
+          = image_tag file_set_path(@picture_set, name: picture[:polaroid]), class: 'img-fluid img-thumbnail', loading: 'lazy'
 
   .row
-    = link_to file_set_path(@picture_set, name: @picture_set.animation, download: 1), class: 'btn btn-default btn-lg' do
+    = link_to file_set_path(@picture_set, name: @picture_set.animation, download: 1), class: 'btn btn-light btn-lg' do
       %b Download GIF
-    = link_to slideshow_set_path(@picture_set), class: 'btn btn-default btn-lg' do
+    = link_to slideshow_set_path(@picture_set), class: 'btn btn-light btn-lg' do
       %b Slideshow
-    = link_to root_path, class: 'btn btn-default btn-lg' do
+    = link_to root_path, class: 'btn btn-light btn-lg' do
       %b All pictures
 
 = render 'nav', picture_set: @picture_set, path_method: :set_path

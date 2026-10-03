@@ -1,7 +1,3 @@
-.nav, .pagination, .carousel, .panel-title a {
-    cursor: pointer;
-}
-
 body {
     background-color: #000;
     color: #fff;
@@ -17,14 +13,6 @@ body {
 
 #shoot-progress {
     width: 100%;
-}
-
-.modal-dialog {
-    color: #000;
-}
-
-.modal-lg {
-    width: 95%;
 }
 
 .countdown-img {
@@ -115,12 +103,18 @@ body {
   padding-bottom: 30px;
 }
 
-.admin .panel, .wifi-sign {
+.wifi-sign {
   color: #000;
 }
 
 .admin .form-control {
   margin-bottom: 5px;
+}
+
+/* Bootstrap 5 inputs fill the row, in a form row they share it with the buttons */
+.admin .d-flex > .form-control {
+  flex: 1 1 15rem;
+  width: auto;
 }
 
 .inline-form {

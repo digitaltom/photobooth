@@ -1,11 +1,11 @@
 .container.admin
   .admin-header
-    = button_to 'Logout', admin_logout_path, method: :delete, class: 'btn btn-danger btn-lg', form_class: 'pull-right'
+    = button_to 'Logout', admin_logout_path, method: :delete, class: 'btn btn-danger btn-lg', form_class: 'float-end'
     %h2 Admin
 
-  .panel.panel-default
-    .panel-heading Gallery
-    .panel-body
+  .card.mb-3
+    .card-header Gallery
+    .card-body
       %p
         Data partition: #{number_to_human_size(@disk[:used])} used, #{number_to_human_size(@disk[:avail])} free
       %meter.disk-meter{ min: 0, max: @disk[:size], value: @disk[:used], high: (@disk[:size] * 0.9).to_i }
@@ -26,29 +26,29 @@
               - if gallery == @gallery
                 %b active
               - else
-                = button_to 'Activate', admin_activate_gallery_path(gallery), method: :patch, class: 'btn btn-default btn-sm'
-      = form_with url: admin_galleries_path, class: 'form-inline' do |f|
+                = button_to 'Activate', admin_activate_gallery_path(gallery), method: :patch, class: 'btn btn-light btn-sm'
+      = form_with url: admin_galleries_path, class: 'd-flex flex-wrap gap-2' do |f|
         = f.text_field :caption, maxlength: Gallery::CAPTION_MAX_LENGTH, required: true, class: 'form-control',
           placeholder: 'Caption of the new event'
         = f.submit 'Start new gallery', class: 'btn btn-primary'
 
-  .panel.panel-default
-    .panel-heading Caption of the active gallery
-    .panel-body
+  .card.mb-3
+    .card-header Caption of the active gallery
+    .card-body
       = form_with url: admin_caption_path, method: :patch, data: { controller: 'caption-preview' } do |f|
         .polaroid-preview
           .polaroid-photo
           .polaroid-caption{ data: { caption_preview_target: 'output' } }= @gallery.caption
-        .form-inline
+        .d-flex.flex-wrap.gap-2
           = f.text_field :caption, value: @gallery.caption, maxlength: Gallery::CAPTION_MAX_LENGTH, class: 'form-control',
             data: { caption_preview_target: 'input', action: 'caption-preview#update' }
           = f.submit 'Save caption', class: 'btn btn-primary'
-        %p.help-block
+        %p.form-text
           Max. #{Gallery::CAPTION_MAX_LENGTH} characters, applies to new sets.
 
-  .panel.panel-default
-    .panel-heading Network
-    .panel-body
+  .card.mb-3
+    .card-header Network
+    .card-body
       %table.table
         %tr
           %th Name
@@ -62,31 +62,31 @@
             %td
               %code= device[:mac]
             %td= device[:state]
-      = link_to 'Printable WLAN sign', admin_wifi_sign_path, class: 'btn btn-default'
+      = link_to 'Printable WLAN sign', admin_wifi_sign_path, class: 'btn btn-light'
 
-  .panel.panel-default
-    .panel-heading Time
-    .panel-body
+  .card.mb-3
+    .card-header Time
+    .card-body
       %p
         Time on the Photobox:
         %b= l(Time.now.getlocal, format: :long)
-      = form_with url: admin_time_path, method: :patch, class: 'form-inline', data: { controller: 'device-time' } do |f|
+      = form_with url: admin_time_path, method: :patch, class: 'd-flex flex-wrap gap-2', data: { controller: 'device-time' } do |f|
         %button.btn.btn-primary{ type: 'button', data: { action: 'device-time#use' } } Use the time of this device
         = f.datetime_local_field :time, step: 1, required: true, class: 'form-control', data: { device_time_target: 'input' }
-        = f.submit 'Set time', class: 'btn btn-default'
+        = f.submit 'Set time', class: 'btn btn-light'
 
-  .panel.panel-default
-    .panel-heading Admin password
-    .panel-body
+  .card.mb-3
+    .card-header Admin password
+    .card-body
       = form_with url: admin_password_path, method: :patch do |f|
         = f.password_field :old_password, placeholder: 'Old password', required: true, class: 'form-control'
         = f.password_field :new_password, placeholder: 'New password', required: true, minlength: 8, class: 'form-control'
         = f.password_field :password_repeat, placeholder: 'Repeat new password', required: true, class: 'form-control'
         = f.submit 'Change password', class: 'btn btn-primary'
 
-  .panel.panel-default
-    .panel-heading System
-    .panel-body
+  .card.mb-3
+    .card-header System
+    .card-body
       = button_to 'Restart', admin_power_path(command: 'reboot'), class: 'btn btn-warning btn-lg',
         form_class: 'inline-form', form: { data: { turbo_confirm: 'Restart the Photobox?' } }
       = button_to 'Shut down', admin_power_path(command: 'poweroff'), class: 'btn btn-danger btn-lg',

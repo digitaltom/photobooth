@@ -1,10 +1,10 @@
 -# locals: (picture_set:, path_method:)
 #button-next
   - if picture_set.next
-    = link_to send(path_method, picture_set.next), class: 'btn btn-default btn-lg' do
+    = link_to send(path_method, picture_set.next), class: 'btn btn-light btn-lg' do
       %b > Next
 
 #button-last
   - if picture_set.last
-    = link_to send(path_method, picture_set.last), class: 'btn btn-default btn-lg' do
+    = link_to send(path_method, picture_set.last), class: 'btn btn-light btn-lg' do
       %b Last <

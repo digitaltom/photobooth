@@ -2,7 +2,7 @@
 
 %div{ data: { controller: 'countdown' } }
   = form_with url: picture_sets_path, data: { countdown_target: 'form' } do
-    %button.btn.btn-default.shoot_button{ type: 'button', data: { action: 'countdown#start' } }
+    %button.btn.btn-light.shoot_button{ type: 'button', data: { action: 'countdown#start' } }
       %span
         = image_tag '/images/take_picture_animation.gif', class: 'shoot_img'
       .shoot_text
