@@ -58,6 +58,37 @@ The general hardware setup looks like this:
 
 The Photobooth can run on any Linux server, for building a portable photo booth I recommend running it on a Raspberry Pi.
 
+### Raspberry Pi image
+
+Each release `v*` has a ready SD card image for the Raspberry Pi 3 or newer (Raspberry Pi OS Lite, 64-bit).
+
+1. Download `photobox-<version>.img.xz` from the [releases](https://github.com/digitaltom/photobooth/releases).
+2. Write it to the SD card with [Raspberry Pi Imager](https://www.raspberrypi.com/software/) ("Use custom"). Do not use the OS customization of the Imager.
+   Alternative: `xzcat photobox-<version>.img.xz | sudo dd of=/dev/sdX bs=4M conv=fsync`
+3. Optional: edit `photobox.yml` on the boot partition of the SD card (WLAN name, passwords, SSH key).
+4. Boot the Pi. The first boot reboots once.
+5. Connect to the WLAN `Photobox` (password `photobox`). Open `http://10.42.0.1/kiosk`, or log in with `ssh root@10.42.0.1` (password `photobox`).
+
+Change both passwords in `photobox.yml` before an event. The guests share the WLAN with the Pi.
+
+Emergency access: connect an Ethernet cable to the laptop, then `ssh root@photobox.local`.
+
+The image has these parts:
+
+- The root file system is read-only (overlay in RAM). A power loss cannot damage it. All changes to it are lost at reboot.
+- `photobox.yml` on the boot partition holds the settings. `photobox-network` applies it at each boot.
+- The data partition `/var/lib/photobox` is writable. It holds the app releases (with Ruby), the picture sets (`sets/`) and the app secret (`photobox.env`).
+
+Update the app over the network (the OS is updated by flashing a new image):
+
+- `photobox-update latest`: download the app of the latest release. The Pi needs internet for this.
+- From the laptop in the hotspot: `scp photobox-app.tar.zst* root@10.42.0.1:/tmp/`, then `photobox-update /tmp/photobox-app.tar.zst`.
+- `photobox-update list` and `photobox-update use <version>`: show and switch the installed releases (rollback).
+
+Build the image yourself with `bin/build-image` (asks for sudo). The output is in `tmp/image/`. On x86_64 the build needs the qemu binfmt for arm64 (openSUSE: `sudo zypper in qemu-linux-user`, Debian: `sudo apt-get install qemu-user-static binfmt-support`). Ruby compiles in QEMU, so the build takes more than one hour. On the GitHub arm64 runner it takes some minutes.
+
+### Manual setup
+
 General instructions on how to install Rasbian on the Raspberry can be found in  [INSTALL-RASPBIAN.md](INSTALL-RASPBIAN.md)
 
 ## Network Setup
@@ -71,7 +102,9 @@ You basically have 3 options how to connect your Tablet to your Raspberry Pi ser
 It can be tricky to find out the IP address of you raspi. An [task](https://github.com/digitaltom/photobooth/issues/21) to improve this is created.
 From your notebook you can use `sudo nmap -sP 192.168.178.1/24` to discover active devices in your network.
 
-## Software Setup
+## Manual Software Setup
+
+Not needed for the Raspberry Pi image.
 
 - Create the app user: `sudo useradd --system --create-home --groups plugdev,gpio photobox`
 - Clone the repo to `/opt/photobox` and give it to the user: `sudo chown -R photobox /opt/photobox`

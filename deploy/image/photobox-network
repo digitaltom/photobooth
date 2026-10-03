@@ -1,0 +1,47 @@
+#!/bin/sh
+# Applies /boot/firmware/photobox.yml at each boot: root password, ssh key and the WLAN hotspot (10.42.0.1).
+# The root FS is a read-only overlay, so all of it is lost at reboot and set again from photobox.yml.
+# Test without side effects: RUN=echo PHOTOBOX_CONF=deploy/image/photobox.yml ROOT_HOME=$TMPDIR deploy/image/photobox-network
+set -eu
+
+CONF=${PHOTOBOX_CONF:-/boot/firmware/photobox.yml}
+ROOT_HOME=${ROOT_HOME:-/root}
+RUN=${RUN:-}
+
+# ponytail: flat "key: value" lines only, a YAML parser when photobox.yml gets nested
+get() {
+  v=$(sed -n "s/^$1:[[:space:]]*//p" "$CONF" 2>/dev/null | head -n 1)
+  case $v in
+    \"*) v=${v#\"}; v=${v%%\"*} ;;
+    \'*) v=${v#\'}; v=${v%%\'*} ;;
+    *) v=$(printf '%s' "$v" | sed 's/[[:space:]]#.*$//; s/[[:space:]]*$//') ;;
+  esac
+  printf '%s' "$v"
+}
+
+if [ ! -f "$CONF" ]; then
+  echo "$CONF missing, using defaults" >&2
+fi
+if grep -q '^wifi_password:' "$CONF" 2>/dev/null; then psk=$(get wifi_password); else psk=photobox; fi
+ssid=$(get wifi_ssid); ssid=${ssid:-Photobox}
+country=$(get wifi_country); country=${country:-DE}
+root_password=$(get root_password); root_password=${root_password:-photobox}
+key=$(get ssh_authorized_key)
+
+printf 'root:%s\n' "$root_password" | $RUN chpasswd
+if [ -n "$key" ]; then
+  mkdir -p -m 700 "$ROOT_HOME/.ssh"
+  printf '%s\n' "$key" > "$ROOT_HOME/.ssh/authorized_keys"
+fi
+
+$RUN rfkill unblock wifi || true
+$RUN iw reg set "$country" || true
+$RUN nmcli con delete photobox >/dev/null 2>&1 || true
+set -- con add type wifi ifname wlan0 con-name photobox autoconnect yes \
+  ssid "$ssid" mode ap 802-11-wireless.band bg ipv4.method shared
+if [ -n "$psk" ]; then
+  # brcmfmac (Pi 3) AP mode fails with PMF, iOS wants WPA2 with CCMP only
+  set -- "$@" wifi-sec.key-mgmt wpa-psk wifi-sec.psk "$psk" \
+    wifi-sec.proto rsn wifi-sec.pairwise ccmp wifi-sec.group ccmp wifi-sec.pmf disable
+fi
+$RUN nmcli "$@"

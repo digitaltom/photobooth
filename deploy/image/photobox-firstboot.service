@@ -1,0 +1,11 @@
+[Unit]
+Description=Photobox first boot setup
+After=local-fs.target
+Before=ssh.service photobox.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/photobox-firstboot
+
+[Install]
+WantedBy=multi-user.target
