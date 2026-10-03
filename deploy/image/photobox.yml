@@ -1,11 +1,11 @@
 # Photobox settings, applied at each boot by /usr/local/sbin/photobox-network.
 # Edit this file on the boot partition (FAT) from any computer.
-# Change both passwords before an event: guests share the WLAN with the Pi.
+# Change the root password before an event: guests share the WLAN with the Pi.
 # Values with " #" in them must be quoted.
 
 wifi_ssid: Photobox
 # empty value = open WLAN, otherwise at least 8 characters (WPA2)
-wifi_password: photobox
+wifi_password:
 wifi_country: DE
 
 # password for "ssh root@10.42.0.1"

@@ -12,4 +12,7 @@ Rails.application.routes.draw do
       get 'files/:name', action: :file, as: :file, constraints: { name: %r{[^/]+} }
     end
   end
+
+  # Captive portal: phone connectivity checks (/generate_204, /hotspot-detect.html) land here and open the gallery
+  get '*path', to: redirect('/'), format: false
 end

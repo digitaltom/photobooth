@@ -23,6 +23,11 @@ RSpec.describe 'Sets', type: :request do
     expect(response).to have_http_status(:not_found)
   end
 
+  it 'redirects captive portal checks to the gallery' do
+    get '/generate_204', headers: { 'Host' => 'connectivitycheck.gstatic.com' }
+    expect(response).to redirect_to('http://connectivitycheck.gstatic.com/')
+  end
+
   it 'returns 404 for unknown sets' do
     get '/sets/2018-04-10_11-22-3'
     expect(response).to have_http_status(:not_found)

@@ -12,9 +12,9 @@ Each release `v*` has a ready SD card image for the Raspberry Pi 3 or newer (Ras
    Alternative: `xzcat photobox-<version>.img.xz | sudo dd of=/dev/sdX bs=4M conv=fsync status=progress`
 3. Optional: edit `photobox.yml` on the boot partition of the SD card (WLAN name, passwords, SSH key).
 4. Boot the Pi. The first boot reboots once.
-5. Connect to the WLAN `Photobox` (password `photobox`). Open `http://10.42.0.1/kiosk`, or log in with `ssh root@10.42.0.1` (password `photobox`).
+5. Connect to the open WLAN `Photobox`. Open `http://10.42.0.1/kiosk`, or log in with `ssh root@10.42.0.1` (password `photobox`).
 
-Change both passwords in `photobox.yml` before an event. The guests share the WLAN with the Pi.
+Change the root password in `photobox.yml` before an event. The guests share the WLAN with the Pi.
 
 Emergency access: connect an Ethernet cable to the laptop, then `ssh root@photobox.local`.
 
@@ -147,6 +147,17 @@ scp -r root@10.42.0.1:/var/lib/photobox/sets .
 3. Grow the data partition to the size of the SD card.
 4. Add `overlayroot=tmpfs:recurse=0` to `cmdline.txt`. This makes the root file system read-only from the next boot. `recurse=0` keeps the data partition writable.
 
+On a Raspberry Pi 3, the first boot takes about 1–2 minutes longer than a normal boot. These values are estimates, not measurements:
+
+| Step | Time |
+| --- | --- |
+| SSH host keys (mostly the RSA key) | 5–15 s |
+| `SECRET_KEY_BASE` and `growpart` | less than 1 s |
+| `resize2fs`, depends on the SD card size and speed | 10–60 s |
+| the extra reboot | 30–60 s |
+
+Do not remove the power during the first boot.
+
 ### Each boot
 
 `photobox-network` reads `/boot/firmware/photobox.yml` and does these steps:
@@ -154,7 +165,9 @@ scp -r root@10.42.0.1:/var/lib/photobox/sets .
 1. Set the root password.
 2. If `ssh_authorized_key` is set, write it to `/root/.ssh/authorized_keys`.
 3. Unblock the WLAN and set the WLAN country.
-4. Create the NetworkManager hotspot `photobox` (address `10.42.0.1`). An empty `wifi_password` makes an open WLAN.
+4. Create the NetworkManager hotspot `photobox` (address `10.42.0.1`). The WLAN is open by default. To use WPA2, set `wifi_password`.
+
+The hotspot is a captive portal. Its DNS answers all names with `10.42.0.1`, so phones open the gallery when they connect. Guests on the hotspot have no internet access, also when `eth0` has a connection.
 
 `photobox.yml` has flat `key: value` lines only. Put values that contain ` #` in quotes.
 

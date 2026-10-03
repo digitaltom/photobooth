@@ -17,6 +17,7 @@ AllCops:
   Exclude:
     - bin/**/*
     - vendor/**/*
+    - tmp/**/*
     - db/*_schema.rb
 
 Layout/LineLength:

@@ -20,13 +20,15 @@ describe 'deploy/image/photobox-network' do
   it 'starts the hotspot with the default photobox.yml' do
     out, = run_with(File.read(File.expand_path('../../deploy/image/photobox.yml', __dir__)))
     expect(out).to include('nmcli con add type wifi ifname wlan0 con-name photobox autoconnect yes ssid Photobox mode ap')
-    expect(out).to include('wifi-sec.psk photobox')
+    expect(out).not_to include('wifi-sec')
+    expect(out).to include('nmcli radio wifi on')
     expect(out).to include('iw reg set DE')
   end
 
   it 'uses the defaults without photobox.yml' do
     out, = run_with(nil)
-    expect(out).to include('ssid Photobox').and include('wifi-sec.psk photobox')
+    expect(out).to include('ssid Photobox')
+    expect(out).not_to include('wifi-sec')
   end
 
   it 'uses quoted values, comments and the ssh key' do

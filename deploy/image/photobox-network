@@ -22,7 +22,7 @@ get() {
 if [ ! -f "$CONF" ]; then
   echo "$CONF missing, using defaults" >&2
 fi
-if grep -q '^wifi_password:' "$CONF" 2>/dev/null; then psk=$(get wifi_password); else psk=photobox; fi
+psk=$(get wifi_password)
 ssid=$(get wifi_ssid); ssid=${ssid:-Photobox}
 country=$(get wifi_country); country=${country:-DE}
 root_password=$(get root_password); root_password=${root_password:-photobox}
@@ -35,6 +35,7 @@ if [ -n "$key" ]; then
 fi
 
 $RUN rfkill unblock wifi || true
+$RUN nmcli radio wifi on  # Raspberry Pi OS ships NetworkManager with WLAN disabled in its state file
 $RUN iw reg set "$country" || true
 $RUN nmcli con delete photobox >/dev/null 2>&1 || true
 set -- con add type wifi ifname wlan0 con-name photobox autoconnect yes \

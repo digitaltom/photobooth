@@ -51,6 +51,10 @@ mkdir -p /etc/nftables.d
 cp "$app/deploy/photobox.nft" /etc/nftables.d/
 printf '#!/usr/sbin/nft -f\ninclude "/etc/nftables.d/*.nft"\n' > /etc/nftables.conf
 
+# Captive portal: the hotspot DNS answers all names with the Pi, Rails redirects unknown paths to the gallery
+mkdir -p /etc/NetworkManager/dnsmasq-shared.d
+echo 'address=/#/10.42.0.1' > /etc/NetworkManager/dnsmasq-shared.d/photobox.conf
+
 echo 'PermitRootLogin yes' > /etc/ssh/sshd_config.d/photobox.conf
 rm -f /etc/ssh/ssh_host_*  # photobox-firstboot creates them, so every Pi has its own
 
