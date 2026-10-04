@@ -52,6 +52,8 @@ class AdminController < ApplicationController
     time = Time.zone.parse(params.expect(:time)) || raise(ArgumentError, 'Invalid time')
     Syscall.execute('timedatectl set-ntp false')
     Syscall.execute("timedatectl set-time '#{time.strftime('%Y-%m-%d %H:%M:%S')}'")
+    # admin_until was set with the old clock, a jump forward expires it
+    session[:admin_until] = SESSION_TIMEOUT.from_now.to_i
     redirect_to admin_path, notice: format(_('Time set to %{time}'), time: time.strftime('%Y-%m-%d %H:%M'))
   end
 

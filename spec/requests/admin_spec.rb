@@ -157,6 +157,15 @@ RSpec.describe 'Admin', type: :request do
     expect(response).to redirect_to('/admin')
   end
 
+  it 'keeps the admin logged in when the time jumps forward' do
+    login
+    allow(Syscall).to receive(:execute).and_call_original
+    allow(Syscall).to receive(:execute).with(/timedatectl/) { travel 2.days }
+    patch '/admin/time', params: { time: '2026-10-06T18:30:05' }
+    get '/admin'
+    expect(response).to have_http_status(:ok)
+  end
+
   it 'restarts' do
     login
     expect(Syscall).to receive(:execute).with('systemctl reboot')
