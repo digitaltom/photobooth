@@ -6,6 +6,9 @@ class GalleriesController < ApplicationController
 
   def download
     gallery = Gallery.find(params.expect(:id))
+    # guests of a later event must not get the photos of an earlier event
+    raise ActionController::RoutingError, 'Gallery not found' unless gallery == Gallery.active || admin?
+
     response.headers['Content-Type'] = 'application/gzip'
     response.headers['Content-Disposition'] =
       ActionDispatch::Http::ContentDisposition.format(disposition: 'attachment', filename: "#{gallery.name}.tar.gz")

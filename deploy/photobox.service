@@ -6,7 +6,6 @@ After=network.target
 User=photobox
 WorkingDirectory=/var/lib/photobox/current
 Environment=RAILS_ENV=production
-Environment=RAILS_LOG_TO_STDOUT=true
 # Ruby of the release (bin/build-image)
 Environment=PATH=/var/lib/photobox/current/vendor/ruby/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 # SECRET_KEY_BASE and PHOTOBOX_STORAGE, written by photobox-firstboot

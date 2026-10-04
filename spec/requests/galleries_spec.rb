@@ -23,6 +23,24 @@ RSpec.describe 'Galleries', type: :request do
     expect(response).to have_http_status(:not_found)
   end
 
+  it 'streams an inactive gallery to the admin only' do
+    Dir.mktmpdir do |dir|
+      old = ENV.fetch('PHOTOBOX_STORAGE', nil)
+      ENV['PHOTOBOX_STORAGE'] = dir
+      Gallery.create('Earlier event')
+      Gallery.create('Party').activate!
+
+      get '/galleries/earlier-event/download'
+      expect(response).to have_http_status(:not_found)
+
+      post '/admin/login', params: { password: 'photobox' }
+      get '/galleries/earlier-event/download'
+      expect(response).to have_http_status(:ok)
+    ensure
+      ENV['PHOTOBOX_STORAGE'] = old
+    end
+  end
+
   it 'shows the WLAN QR code in a dialog on the kiosk only' do
     get '/?kiosk=1'
     expect(response.body).to include('id="wifi-qr-dialog"', '<svg', 'href="http://10.42.0.1"')

@@ -46,8 +46,8 @@ Rails.application.configure do
   # Send deprecation notices to registered listeners.
   config.active_support.deprecation = :notify
 
-  # Use default logging formatter so that PID and timestamp are not suppressed.
-  config.log_formatter = Logger::Formatter.new
+  # photobox.service: stdout goes to the journal (RAM), not to log/ on the SD card
+  config.logger = ActiveSupport::TaggedLogging.logger($stdout)
 
   # One thread: one camera, a second tap waits until the current set is done.
   config.active_job.queue_adapter = ActiveJob::QueueAdapters::AsyncAdapter.new(min_threads: 1, max_threads: 1)

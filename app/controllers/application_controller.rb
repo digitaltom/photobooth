@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 class ApplicationController < ActionController::Base
-  protect_from_forgery with: :exception
-  rescue_from Exception, with: :handle_exception
+  rescue_from StandardError, with: :handle_exception
   rescue_from ActionController::RoutingError, with: -> { head :not_found }
   before_action :remember_kiosk
   around_action :switch_locale
@@ -33,6 +32,10 @@ class ApplicationController < ActionController::Base
 
   def kiosk?
     cookies[:kiosk] == '1'
+  end
+
+  def admin?
+    session[:admin_until].to_i > Time.now.to_i
   end
 
   def handle_exception(exception)

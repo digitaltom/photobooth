@@ -108,7 +108,7 @@ class AdminController < ApplicationController
   private
 
   def require_admin
-    return redirect_to admin_login_path unless session[:admin_until].to_i > Time.now.to_i
+    return redirect_to admin_login_path unless admin?
 
     session[:admin_until] = SESSION_TIMEOUT.from_now.to_i
   end

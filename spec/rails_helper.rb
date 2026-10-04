@@ -14,7 +14,8 @@ require 'capybara/cuprite'
 
 Capybara.register_driver :cuprite do |app|
   Capybara::Cuprite::Driver.new(app, window_size: [2360, 1640], # iPad Air 4 resolution
-                                     browser_options: { 'no-sandbox' => nil })
+                                     # English UI, also on a desktop with a German LANG
+                                     browser_options: { 'no-sandbox' => nil, 'accept-lang' => 'en' })
 end
 
 Capybara.javascript_driver = :cuprite
