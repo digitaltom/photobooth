@@ -8,7 +8,7 @@ class Syscall
   def self.execute(cmd, timing: false, dir: Rails.root)
     output = +''
     Rails.logger.debug { "Executing: #{cmd}" }
-    cmd = "#{'time ' if timing}#{cmd}"
+    started = Process.clock_gettime(Process::CLOCK_MONOTONIC)
     # set locale on process start, so the shell's own messages are in English too
     Open3.popen2e({ 'LC_ALL' => 'C' }, '/bin/sh', '-c', cmd, chdir: dir) do |_, stderr, wait_thr|
       stderr.each_line do |line|
@@ -19,6 +19,7 @@ class Syscall
       exit_status = wait_thr.value
       raise "Command '#{cmd}' failed (#{exit_status.to_i}): #{output}" unless exit_status.success?
     end
+    Rails.logger.info { "#{(Process.clock_gettime(Process::CLOCK_MONOTONIC) - started).round(2)}s: #{cmd}" } if timing
     output
   end
 
