@@ -67,6 +67,9 @@ echo 'address=/#/10.42.0.1' > /etc/NetworkManager/dnsmasq-shared.d/photobox.conf
 # "nmcli radio wifi on" at boot does not stick, so fix the state file in the image.
 sed -i 's/^WirelessEnabled=false/WirelessEnabled=true/' /var/lib/NetworkManager/NetworkManager.state
 grep -q '^WirelessEnabled=true' /var/lib/NetworkManager/NetworkManager.state
+# The admin page reads the device names from the dnsmasq leases in this 0700 folder, as user photobox.
+# Search permission only: no listing, the files in it keep their own modes (secret_key is 0600).
+chmod 711 /var/lib/NetworkManager
 
 echo 'PermitRootLogin yes' > /etc/ssh/sshd_config.d/photobox.conf
 rm -f /etc/ssh/ssh_host_*  # photobox-firstboot creates them, so every Pi has its own
