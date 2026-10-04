@@ -9,42 +9,42 @@
     -# turbo: false, Turbo Drive would fetch the archive as a page
     = link_to download_gallery_path(@gallery), data: { turbo: false }, download: true do
       = icon('download')
-      Download set
+      = _('Download set')
     -# starts with the newest set
     - if @picture_sets.any?
       = link_to slideshow_set_path(@picture_sets.first) do
         = icon('play')
-        Slideshow
-    = link_to 'https://github.com/digitaltom/photobooth', title: 'Project', aria: { label: 'Project' } do
+        = _('Slideshow')
+    = link_to 'https://github.com/digitaltom/photobooth', title: _('Project'), aria: { label: _('Project') } do
       = icon('github')
     = link_to admin_path do
       = icon('lock')
-      Admin
+      = _('Admin')
 
 .gallery-page
   %aside.gallery-side
     %h1.gallery-title= @gallery.caption
-    .gallery-count= pluralize(@picture_sets.size, 'picture')
+    .gallery-count= n_('%{count} picture', '%{count} pictures', @picture_sets.size) % { count: @picture_sets.size }
     - if kiosk?
       = render 'kiosk/controls'
       .gallery-actions{ data: { controller: 'modal' } }
         %button.btn.gallery-btn{ type: 'button', data: { action: 'modal#open' } }
           = icon('qr')
-          Connect your phone
+          = _('Connect your phone')
         -# permanent: the gallery morph refresh must not close it
         %dialog#wifi-qr-dialog.wifi-qr-dialog{ data: { modal_target: 'dialog', action: 'click->modal#closeOnBackdrop',
                                                       turbo_permanent: true } }
           .wifi-qr-content
             -# first in the dialog: it gets the focus when the dialog opens, not the gallery link
             %form{ method: 'dialog' }
-              %button.btn-close.dialog-quit{ aria: { label: 'Close' } }
-            %p.lead Scan to join the WLAN
+              %button.btn-close.dialog-quit{ aria: { label: _('Close') } }
+            %p.lead= _('Scan to join the WLAN')
             .wifi-qr= wifi_qr_svg
             %p
-              WLAN:
+              = _('WLAN:')
               %b= wifi_ssid
             %p
-              Gallery:
+              = _('Gallery:')
               = link_to ApplicationHelper::PHOTOBOX_URL, ApplicationHelper::PHOTOBOX_URL
     = footer if kiosk?
   %main.gallery-grid

@@ -1,0 +1,9 @@
+[Unit]
+Description=Photobox app update from the admin menu upload
+ConditionPathExists=/var/lib/photobox/upload/photobox-app.tar.zst
+
+# The app starts it (polkit-photobox.rules): own cgroup, so the restart of photobox does not stop the update
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/photobox-update /var/lib/photobox/upload/photobox-app.tar.zst
+ExecStopPost=/bin/rm -f /var/lib/photobox/upload/photobox-app.tar.zst

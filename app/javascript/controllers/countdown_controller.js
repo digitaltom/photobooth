@@ -5,13 +5,13 @@ import { Controller } from "@hotwired/stimulus"
 // The quit button only shows during the countdown: a running capture job cannot be stopped.
 export default class extends Controller {
   static targets = ["form", "dialog", "text", "progress", "status", "quit"]
-  static values = { delay: { type: Number, default: 2000 } }
+  static values = { delay: { type: Number, default: 2000 }, text: { type: String, default: "Take pose!" } }
 
   start() {
     if (this.dialogTarget.open) return
 
     document.getElementById("kiosk-status").replaceChildren(this.statusTarget.content.cloneNode(true))
-    this.textTarget.textContent = "Take pose!"
+    this.textTarget.textContent = this.textValue
     this.progressTarget.hidden = false
     this.progressTarget.value = 100
     this.quitTarget.hidden = false

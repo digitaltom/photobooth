@@ -68,3 +68,25 @@ RSpec.describe 'Kiosk', type: :request do
     expect(response.body).not_to include('shoot_button')
   end
 end
+
+RSpec.describe 'Locale', type: :request do
+  it 'shows English by default and remembers ?locale=de in a cookie' do
+    get '/'
+    expect(response.body).to include('<html lang="en">', 'Slideshow')
+
+    get '/?locale=de'
+    expect(response.body).to include('<html lang="de">', 'Diashow')
+    get '/'
+    expect(response.body).to include('Diashow')
+
+    get '/?locale=xx'
+    expect(response.body).to include('Diashow')
+    get '/?locale=en'
+    expect(response.body).to include('Slideshow')
+  end
+
+  it 'passes the locale to the capture job' do
+    get '/?locale=de'
+    expect { post '/picture_sets', as: :turbo_stream }.to have_enqueued_job(CaptureJob).with(anything, 'de')
+  end
+end

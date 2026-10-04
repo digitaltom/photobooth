@@ -41,3 +41,7 @@ bower.json
 
 # Ignore pow environment settings
 .powenv
+
+# gettext:find build files
+/locale/**/*.edit.po
+/locale/**/*.time_stamp

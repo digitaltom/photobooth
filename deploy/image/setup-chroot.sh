@@ -47,7 +47,6 @@ chown -R photobox:photobox "$app"
 # the admin menu saves an uploaded app release here, photobox-upload.service installs it
 install -d -o photobox -g photobox /var/lib/photobox/upload
 ln -sfn "releases/$ver" /var/lib/photobox/current
-ln -sfn /var/lib/photobox/current /opt/photobox
 
 cp "$app/deploy/photobox.service" /etc/systemd/system/
 cp "$app/deploy/polkit-photobox.rules" /etc/polkit-1/rules.d/50-photobox.rules

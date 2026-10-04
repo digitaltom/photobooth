@@ -3,11 +3,11 @@
   = image_tag file_set_path(@picture_set, name: @picture_set.animation), class: 'slideshow-img', alt: ''
   = link_to root_path, class: 'btn gallery-btn slideshow-stop' do
     = icon('grid')
-    Gallery
+    = _('Gallery')
   -# the sets are sorted newest first: next is newer, last is older
   - if @picture_set.next
     = link_to '‹', slideshow_set_path(@picture_set.next), class: 'btn gallery-btn slideshow-nav slideshow-newer',
-      aria: { label: 'Newer' }
+      aria: { label: _('Newer') }
   - if @picture_set.last
     = link_to '›', slideshow_set_path(@picture_set.last), class: 'btn gallery-btn slideshow-nav slideshow-older',
-      aria: { label: 'Older' }
+      aria: { label: _('Older') }

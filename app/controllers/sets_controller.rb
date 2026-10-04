@@ -19,7 +19,7 @@ class SetsController < ApplicationController
   # The job reports its progress to the kiosk through Turbo Stream broadcasts.
   # The response is empty: a status in it could arrive after the first broadcast and overwrite it.
   def create
-    CaptureJob.perform_later(PictureSet.next_id)
+    CaptureJob.perform_later(PictureSet.next_id, I18n.locale.to_s)
     render turbo_stream: ''
   end
 

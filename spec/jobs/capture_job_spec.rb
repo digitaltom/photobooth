@@ -25,6 +25,18 @@ RSpec.describe CaptureJob, type: :job do
     expect(YAML.safe_load_file(File.join(set.dir, 'set.yml'))).to include('caption' => OPTS.image_caption)
   end
 
+  it 'reports the steps in the locale of the kiosk' do
+    statuses = []
+    allow(Turbo::StreamsChannel).to receive(:broadcast_update_to) do |*, partial:, locals:, **|
+      statuses << ApplicationController.render(partial:, locals:)
+    end
+
+    CaptureJob.perform_now(id, 'de')
+
+    expect(statuses.join).to include('Action, Bild 1 / 4', 'Animation wird erstellt')
+    expect(I18n.locale).to eq :en
+  end
+
   it 'keeps a set with the photos taken before the camera failed' do
     allow(Camera).to receive(:capture) do |dir, date, &block|
       (1..2).each do |num|

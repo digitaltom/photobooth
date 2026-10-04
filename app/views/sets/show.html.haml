@@ -1,6 +1,6 @@
 .gallery-page
   %aside.gallery-side
-    %h1.gallery-title= link_to @picture_set.gallery.caption, root_path, title: 'All pictures'
+    %h1.gallery-title= link_to @picture_set.gallery.caption, root_path, title: _('All pictures')
     .gallery-count.set-date= l(@picture_set.taken_at, format: :long)
     -# the sets are sorted newest first: next is newer, last is older.
     -# The preview is the animation: the gallery loaded it before, so it comes from the browser cache.
@@ -10,10 +10,10 @@
           = link_to set_path(@picture_set.next), class: 'btn gallery-btn' do
             ‹
             = image_tag file_set_path(@picture_set.next, name: @picture_set.next.animation), class: 'set-nav-preview', alt: ''
-            Newer
+            = _('Newer')
         - if @picture_set.last
           = link_to set_path(@picture_set.last), class: 'btn gallery-btn' do
-            Older
+            = _('Older')
             = image_tag file_set_path(@picture_set.last, name: @picture_set.last.animation), class: 'set-nav-preview', alt: ''
             ›
     -# the kiosk takes the picture on the gallery page
@@ -21,14 +21,14 @@
       .gallery-actions
         = link_to root_path, class: 'btn gallery-btn' do
           = image_tag '/images/take_picture_animation.gif', class: 'shoot_img_icon', alt: ''
-          Take a picture
+          = _('Take a picture')
     .gallery-actions
       = link_to root_path, class: 'btn gallery-btn' do
         = icon('grid')
-        Gallery
+        = _('Gallery')
       = link_to file_set_path(@picture_set, name: @picture_set.animation, download: 1), class: 'btn gallery-btn' do
         = icon('download')
-        Save image
+        = _('Save image')
   %main.gallery-grid.set-grid
     = image_tag file_set_path(@picture_set, name: @picture_set.animation), class: 'gallery-img set-animation'
     - @picture_set.pictures.each do |picture|

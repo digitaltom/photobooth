@@ -121,8 +121,7 @@ The data partition is the only partition that keeps changes. `photobox-firstboot
 | --- | --- | --- |
 | `/boot/firmware/photobox.yml` | 1 | WLAN, passwords and SSH key, read at each boot |
 | `/var/lib/photobox/releases/<version>/` | 3 | one app release: the app code, Ruby (`vendor/ruby`), the gems (`vendor/bundle`), the compiled assets |
-| `/var/lib/photobox/current` | 3 | link to the active release. `photobox-update` changes it. |
-| `/opt/photobox` | 2 | link to `/var/lib/photobox/current`. `photobox.service` uses this path. |
+| `/var/lib/photobox/current` | 3 | link to the active release. `photobox-update` changes it. `photobox.service` uses this path. |
 | `/var/lib/photobox/photobox.env` | 3 | `SECRET_KEY_BASE` and `PHOTOBOX_STORAGE`, written by `photobox-firstboot` |
 | `/var/lib/photobox/galleries/` | 3 | the photos (gallery), see below |
 | `/usr/local/sbin/photobox-*` | 2 | the scripts of the image |
@@ -216,7 +215,7 @@ Make the root file system writable: on the laptop, remove `overlayroot=tmpfs:rec
 
 For the font settings, see [DEVELOPMENT.md](../DEVELOPMENT.md#fonts).
 
-On the image, put the font on the data partition, for example `/var/lib/photobox/fonts/simplicity.ttf`. Then set the absolute path in `/opt/photobox/config/options-local.yml`:
+On the image, put the font on the data partition, for example `/var/lib/photobox/fonts/simplicity.ttf`. Then set the absolute path in `/var/lib/photobox/current/config/options-local.yml`:
 
 ```yaml
 default:

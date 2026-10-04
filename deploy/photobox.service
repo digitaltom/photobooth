@@ -4,14 +4,14 @@ After=network.target
 
 [Service]
 User=photobox
-WorkingDirectory=/opt/photobox
+WorkingDirectory=/var/lib/photobox/current
 Environment=RAILS_ENV=production
 Environment=RAILS_LOG_TO_STDOUT=true
 # Ruby of the release (bin/build-image)
-Environment=PATH=/opt/photobox/vendor/ruby/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+Environment=PATH=/var/lib/photobox/current/vendor/ruby/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 # SECRET_KEY_BASE and PHOTOBOX_STORAGE, written by photobox-firstboot
 EnvironmentFile=-/var/lib/photobox/photobox.env
-ExecStart=/opt/photobox/bin/rails server
+ExecStart=/var/lib/photobox/current/bin/rails server
 Restart=on-failure
 
 [Install]

@@ -61,3 +61,9 @@ Style/BlockComments:
 
 Layout/MultilineOperationIndentation:
   EnforcedStyle: indented
+
+# gettext texts use %{name} tokens
+Style/FormatStringToken:
+  AllowedMethods:
+    - _
+    - n_

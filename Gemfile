@@ -6,16 +6,19 @@ ruby '~> 4.0.5'
 
 gem 'rails', '~> 8.1', '>= 8.1.3.1'
 
+gem 'gettext_i18n_rails'
 gem 'haml'
 gem 'importmap-rails'
 gem 'propshaft'
 gem 'puma'
+gem 'rails-i18n'
 gem 'rqrcode'
 gem 'stimulus-rails'
 gem 'turbo-rails'
 
 group :development do
   gem 'awesome_print'
+  gem 'gettext', require: false
 end
 
 group :development, :test do

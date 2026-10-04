@@ -1,0 +1,284 @@
+# German translations for app package.
+# Copyright (C) 2026 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the app package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: app 1.0.0\n"
+"Report-Msgid-Bugs-To: \n"
+"PO-Revision-Date: 2026-10-04 20:19+0200\n"
+"Last-Translator: Thomas Schmidt\n"
+"Language-Team: German\n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"\n"
+
+msgid "%{count} picture"
+msgid_plural "%{count} pictures"
+msgstr[0] "%{count} Bild"
+msgstr[1] "%{count} Bilder"
+
+msgid "%{size} free"
+msgstr "%{size} frei"
+
+msgid "%{size} used"
+msgstr "%{size} belegt"
+
+msgid "Action, taking picture %{step} / 4"
+msgstr "Action, Bild %{step} / 4"
+
+msgid "Activate"
+msgstr "Aktivieren"
+
+msgid "Active"
+msgstr "Aktiv"
+
+msgid "Active gallery: %{caption}"
+msgstr "Aktive Galerie: %{caption}"
+
+msgid "Admin"
+msgstr "Admin"
+
+msgid "All pictures"
+msgstr "Alle Bilder"
+
+msgid "Back"
+msgstr "Zurück"
+
+msgid "Camera"
+msgstr "Kamera"
+
+msgid "Caption of the new event"
+msgstr "Titel des neuen Events"
+
+msgid "Change admin password"
+msgstr "Admin-Passwort ändern"
+
+msgid "Change password"
+msgstr "Passwort ändern"
+
+msgid "Close"
+msgstr "Schließen"
+
+msgid "Connect your phone"
+msgstr "Verbinde dein Handy"
+
+msgid "Delete"
+msgstr "Löschen"
+
+msgid "Delete the gallery %{caption} with %{count} sets?"
+msgstr "Die Galerie %{caption} mit %{count} Sets löschen?"
+
+msgid "Download"
+msgstr "Herunterladen"
+
+msgid "Download set"
+msgstr "Alle herunterladen"
+
+msgid "Galleries"
+msgstr "Galerien"
+
+msgid "Gallery"
+msgstr "Galerie"
+
+msgid "Gallery deleted: %{caption}"
+msgstr "Galerie gelöscht: %{caption}"
+
+msgid "Gallery renamed to %{caption}"
+msgstr "Galerie umbenannt in %{caption}"
+
+msgid "Gallery:"
+msgstr "Galerie:"
+
+msgid "Hotspot is not running"
+msgstr "Der Hotspot läuft nicht"
+
+msgid "Image format on the camera:"
+msgstr "Bildformat der Kamera:"
+
+msgid "Image format: %{format}"
+msgstr "Bildformat: %{format}"
+
+msgid "Install this app release and restart the app?"
+msgstr "Diese App-Version installieren und die App neu starten?"
+
+msgid "Keep the setting of the camera"
+msgstr "Einstellung der Kamera behalten"
+
+msgid "Login"
+msgstr "Anmelden"
+
+msgid "Logout"
+msgstr "Abmelden"
+
+msgid "Name"
+msgstr "Name"
+
+msgid "Network"
+msgstr "Netzwerk"
+
+msgid "New password"
+msgstr "Neues Passwort"
+
+msgid "Newer"
+msgstr "Neuer"
+
+msgid "Old password"
+msgstr "Altes Passwort"
+
+msgid "Older"
+msgstr "Älter"
+
+msgid "Password"
+msgstr "Passwort"
+
+msgid "Password changed"
+msgstr "Passwort geändert"
+
+msgid "Password:"
+msgstr "Passwort:"
+
+msgid "Pictures that you already took keep their caption."
+msgstr "Bereits aufgenommene Bilder behalten ihren Titel."
+
+msgid "Print"
+msgstr "Drucken"
+
+msgid "Printable WLAN flyer"
+msgstr "WLAN-Flyer zum Ausdrucken"
+
+msgid "Processing animation"
+msgstr "Animation wird erstellt"
+
+msgid "Project"
+msgstr "Projekt"
+
+msgid "Quit"
+msgstr "Abbrechen"
+
+msgid "Rename"
+msgstr "Umbenennen"
+
+msgid "Repeat new password"
+msgstr "Neues Passwort wiederholen"
+
+msgid "Restart"
+msgstr "Neu starten"
+
+msgid "Restart the Photobox?"
+msgstr "Die Photobox neu starten?"
+
+msgid "Restarting…"
+msgstr "Startet neu…"
+
+msgid "Save caption"
+msgstr "Titel speichern"
+
+msgid "Save image"
+msgstr "Bild speichern"
+
+msgid "Scan to join the WLAN"
+msgstr "Scannen, um dem WLAN beizutreten"
+
+msgid "Scan to join the WLAN and see your pictures"
+msgstr "Scannen, um dem WLAN beizutreten und deine Bilder zu sehen"
+
+msgid "Set image format"
+msgstr "Bildformat setzen"
+
+msgid "Set to"
+msgstr "Stellen auf"
+
+msgid "Sets"
+msgstr "Sets"
+
+msgid "Size"
+msgstr "Größe"
+
+msgid "Slideshow"
+msgstr "Diashow"
+
+msgid "Smaller images are faster to download and print."
+msgstr "Kleinere Bilder lassen sich schneller herunterladen und drucken."
+
+msgid "Start new gallery"
+msgstr "Neue Galerie starten"
+
+msgid "State"
+msgstr "Status"
+
+msgid "Storage"
+msgstr "Speicher"
+
+msgid "System"
+msgstr "System"
+
+msgid "Take a picture"
+msgstr "Bild aufnehmen"
+
+msgid "Take pose!"
+msgstr "In Pose!"
+
+msgid "Tap to take a picture"
+msgstr "Tippen, um ein Bild aufzunehmen"
+
+msgid "The active gallery cannot be deleted"
+msgstr "Die aktive Galerie kann nicht gelöscht werden"
+
+msgid "The caption is the title of the gallery and is printed on the new pictures."
+msgstr "Der Titel ist der Name der Galerie und wird auf die neuen Bilder gedruckt."
+
+msgid "The password needs at least 8 characters"
+msgstr "Das Passwort braucht mindestens 8 Zeichen"
+
+msgid "The passwords do not match"
+msgstr "Die Passwörter stimmen nicht überein"
+
+msgid "Time on the Photobox:"
+msgstr "Zeit auf der Photobox:"
+
+msgid "Time set to %{time}"
+msgstr "Zeit gesetzt auf %{time}"
+
+msgid "Too many attempts, wait 3 minutes."
+msgstr "Zu viele Versuche, warte 3 Minuten."
+
+msgid "Update app"
+msgstr "App aktualisieren"
+
+msgid "Update started. The app restarts in about 1 minute. If the version stays the same, see journalctl -u photobox-upload."
+msgstr "Update gestartet. Die App startet in etwa 1 Minute neu. Wenn die Version gleich bleibt, siehe journalctl -u photobox-upload."
+
+msgid "Updates work on the Photobox image only"
+msgstr "Updates funktionieren nur auf dem Photobox-Image"
+
+msgid "Version:"
+msgstr "Version:"
+
+msgid "WLAN:"
+msgstr "WLAN:"
+
+msgid "Wrong old password"
+msgstr "Falsches altes Passwort"
+
+msgid "Wrong password"
+msgstr "Falsches Passwort"
+
+msgid "camera setting"
+msgstr "Kameraeinstellung"
+
+msgid "development"
+msgstr "Entwicklung"
+
+msgid "open"
+msgstr "offen"
+
+msgid "password %{password}"
+msgstr "Passwort %{password}"
+
+msgid "the time of this device"
+msgstr "die Zeit dieses Geräts"

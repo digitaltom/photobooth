@@ -1,15 +1,15 @@
 .wifi-sign.text-center
   %h1 Photobox
-  %p.lead Scan to join the WLAN and see your pictures
+  %p.lead= _('Scan to join the WLAN and see your pictures')
   .wifi-qr= wifi_qr_svg
   %p
-    WLAN:
+    = _('WLAN:')
     %b= wifi_ssid
   - if wifi_password
     %p
-      Password:
+      = _('Password:')
       %b= wifi_password
   %p= ApplicationHelper::PHOTOBOX_URL
   .no-print
-    %button.btn.btn-primary{ onclick: 'window.print()' } Print
-    = link_to 'Back', admin_path, class: 'btn btn-light'
+    %button.btn.btn-primary{ onclick: 'window.print()' }= _('Print')
+    = link_to _('Back'), admin_path, class: 'btn btn-light'

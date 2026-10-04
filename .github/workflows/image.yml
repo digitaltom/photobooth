@@ -2,6 +2,10 @@ name: Image
 
 # A tag v* builds the SD card image and attaches it to a GitHub release.
 # A manual run builds it as a workflow artifact only.
+#
+# Create and push a release tag:
+#   git tag -a v1.2 -m "v1.2"
+#   git push origin v1.2
 on:
   push:
     tags: [ 'v*' ]

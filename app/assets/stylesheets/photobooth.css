@@ -228,7 +228,7 @@ turbo-cable-stream-source {
   white-space: nowrap;
   align-items: center;
   gap: 6px;
-  color: #6b6864;
+  color: #a8a39c;
   text-decoration: none;
 }
 
@@ -382,6 +382,17 @@ turbo-cable-stream-source {
   padding: 2px 6px;
   border: 1px solid transparent;
   color: #3fb950;
+}
+
+/* active gallery: a faint tint of the btn-success green, not the bright bootstrap row */
+.admin .table-success {
+  --bs-table-bg: rgb(25 135 84 / .15);
+  --bs-table-color: inherit;
+  --bs-table-border-color: rgb(25 135 84 / .35);
+  --bs-table-hover-bg: rgb(25 135 84 / .22);
+  --bs-table-hover-color: inherit;
+  --bs-table-striped-bg: rgb(25 135 84 / .15);
+  --bs-table-active-bg: rgb(25 135 84 / .22);
 }
 
 .admin .table td {

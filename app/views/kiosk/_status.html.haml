@@ -3,9 +3,9 @@
 %h3
   %b
     - if step == :processing
-      Processing animation
+      = _('Processing animation')
     - elsif step.positive?
-      Action, taking picture #{step} / 4
+      = _('Action, taking picture %{step} / 4') % { step: }
 
 %div
   - done = step == :processing ? 4 : step - 1

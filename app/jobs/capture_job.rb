@@ -4,7 +4,14 @@
 class CaptureJob < ApplicationJob
   GPIO_LEDS = %w[PICTURE1 PICTURE2 PICTURE3 PICTURE4 PROCESSING].freeze
 
-  def perform(id)
+  # locale: the kiosk status texts are in the language of the kiosk
+  def perform(id, locale = I18n.default_locale)
+    I18n.with_locale(locale) { capture_set(id) }
+  end
+
+  private
+
+  def capture_set(id)
     picture_set = PictureSet.new(date: id)
     FileUtils.mkdir_p(picture_set.dir)
     started = now
@@ -25,8 +32,6 @@ class CaptureJob < ApplicationJob
   ensure
     GPIO_LEDS.each { |port| GpioPort.off(GpioPort::GPIO_PORTS[port]) }
   end
-
-  private
 
   # adds the polaroid threads, they run while the camera takes the next photo
   def capture(picture_set, threads)

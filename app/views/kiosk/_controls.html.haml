@@ -1,16 +1,16 @@
 = turbo_stream_from :kiosk
 
-.shoot-area{ data: { controller: 'countdown' } }
+.shoot-area{ data: { controller: 'countdown', countdown_text_value: _('Take pose!') } }
   = form_with url: picture_sets_path, data: { countdown_target: 'form' } do
     %button.shoot_button{ type: 'button', data: { action: 'countdown#start' } }
       = image_tag '/images/take_picture_animation.gif', class: 'shoot_img', alt: ''
-      .shoot_text Tap to take a picture
+      .shoot_text= _('Tap to take a picture')
 
   -# permanent: the gallery morph refresh must not close the dialog with the result
   %dialog#shoot-dialog.text-center{ data: { countdown_target: 'dialog', turbo_permanent: true,
                                            action: 'close->countdown#stop click->countdown#closeOnBackdrop' } }
     .shoot-content
-      %button.btn-close.dialog-quit{ type: 'button', aria: { label: 'Quit' },
+      %button.btn-close.dialog-quit{ type: 'button', aria: { label: _('Quit') },
                                     data: { countdown_target: 'quit', action: 'countdown#quit' } }
       %h3
         %b{ data: { countdown_target: 'text' } }

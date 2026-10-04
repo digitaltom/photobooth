@@ -16,6 +16,7 @@ Bundler.require(*Rails.groups)
 module RailsPhotobooth
   class Application < Rails::Application
     config.load_defaults 8.1
+    config.i18n.available_locales = %i[en de]
 
     # Rock Salt for the caption preview in the admin menu
     config.assets.paths << Rails.root.join('fonts')

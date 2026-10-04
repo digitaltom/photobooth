@@ -60,6 +60,9 @@ The app has these pages:
 - `/?kiosk=1`: The gallery with the record button for the tablet.
 - `/sets/<id>`: One set with the GIF, the 4 single pictures and the downloads.
 
+Add `?locale=de` to any page to show the UI in German. The browser keeps the language. `?locale=en` switches back to English, the default.
+The texts are in `locale/de/app.po`. After a change of the texts in the code, run `bin/rails gettext:find` to update the po files.
+
 ## Development
 
 [DEVELOPMENT.md](DEVELOPMENT.md) explains the local development setup.
