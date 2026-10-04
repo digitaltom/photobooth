@@ -13,7 +13,7 @@ runtime_pkgs=(gphoto2 imagemagick gpiod libyaml-0-2 network-manager avahi-daemon
               dnsmasq-base wpasupplicant)  # NetworkManager only recommends them, the hotspot needs both
 build_pkgs=(build-essential libssl-dev libyaml-dev libffi-dev zlib1g-dev)
 # /mnt is the build cache (tmp/image/cache), bind-mounted by bin/build-image.
-# Old Ruby and bundle versions pile up there, delete tmp/image/cache by hand
+# Old Ruby versions pile up there, delete tmp/image/cache by hand
 mkdir -p /mnt/apt/partial
 apt-get update
 apt-get -o Dir::Cache::Archives=/mnt/apt full-upgrade -y
@@ -30,12 +30,15 @@ fi
 cp -a "/mnt/ruby-$ruby_ver" "$app/vendor/ruby"
 export PATH=$app/vendor/ruby/bin:$PATH
 cd "$app"
-bundle_cache=/mnt/bundle-$ruby_ver-$(sha256sum Gemfile.lock | cut -c1-16)
+# one cache per Ruby version: a changed Gemfile.lock only installs the changed gems
+bundle_cache=/mnt/bundle-$ruby_ver
 [ ! -d "$bundle_cache" ] || cp -a "$bundle_cache" vendor/bundle
 bundle config set --local deployment true
 bundle config set --local without 'development test'
 bundle install --jobs "$(nproc)"
-[ -d "$bundle_cache" ] || cp -a vendor/bundle "$bundle_cache"
+bundle clean
+rm -rf "$bundle_cache"
+cp -a vendor/bundle "$bundle_cache"
 SECRET_KEY_BASE_DUMMY=1 RAILS_ENV=production bin/rails assets:precompile
 rm -rf "$app/tmp/cache"
 
