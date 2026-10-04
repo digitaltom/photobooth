@@ -85,6 +85,14 @@ RSpec.describe 'Locale', type: :request do
     expect(response.body).to include('Slideshow')
   end
 
+  it 'uses the browser language without a chosen locale' do
+    get '/', headers: { 'Accept-Language' => 'fr-CH, de-DE;q=0.9, en;q=0.8' }
+    expect(response.body).to include('<html lang="de">')
+
+    get '/?locale=en', headers: { 'Accept-Language' => 'de' }
+    expect(response.body).to include('<html lang="en">')
+  end
+
   it 'passes the locale to the capture job' do
     get '/?locale=de'
     expect { post '/picture_sets', as: :turbo_stream }.to have_enqueued_job(CaptureJob).with(anything, 'de')

@@ -10,11 +10,18 @@ class ApplicationController < ActionController::Base
 
   private
 
-  # ?locale=de switches the UI to German for all following requests, ?locale=en back to English
+  # ?locale=de switches the UI to German for all following requests, ?locale=en back to English.
+  # Without a chosen locale, the first supported language of the browser is used.
   def switch_locale(&)
     locale = params[:locale]
     cookies.permanent[:locale] = locale if locale.in?(FastGettext.available_locales)
-    I18n.with_locale(cookies[:locale].presence_in(FastGettext.available_locales) || I18n.default_locale, &)
+    I18n.with_locale(cookies[:locale].presence_in(FastGettext.available_locales) || browser_locale || I18n.default_locale, &)
+  end
+
+  # ponytail: takes the Accept-Language order as sent, ignores q-values (browsers send them sorted)
+  def browser_locale
+    request.headers['Accept-Language'].to_s.scan(/(?:^|,)\s*([a-z]{2})/i).flatten.map(&:downcase)
+           .find { it.in?(FastGettext.available_locales) }
   end
 
   # ?kiosk=1 turns the tablet into the kiosk for all following requests, ?kiosk=0 turns it off
