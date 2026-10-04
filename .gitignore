@@ -16,8 +16,9 @@ config/photobox.env
 .byebug_history
 .coveralls.yml
 
-/storage/*
-!/storage/.keep
+/storage/galleries/*
+!/storage/galleries/.keep
+/storage/photobox*.yml
 
 
 # Comment out these rules if you are OK with secrets being uploaded to the repo

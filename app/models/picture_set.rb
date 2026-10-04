@@ -20,7 +20,7 @@ class PictureSet
 
     # the admin menu will later point this to the USB stick
     def root
-      ENV['PHOTOBOX_STORAGE'].presence || OPTS.storage_path.presence || Rails.root.join('storage/sets').to_s
+      ENV['PHOTOBOX_STORAGE'].presence || OPTS.storage_path.presence || Rails.root.join('storage/galleries').to_s
     end
 
     def all

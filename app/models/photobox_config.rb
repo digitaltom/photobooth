@@ -23,6 +23,10 @@ class PhotoboxConfig
       write(:admin_password, password)
     end
 
+    def camera_imageformat=(format)
+      write(:camera_imageformat, format)
+    end
+
     private
 
     # the file that has the key, else photobox.yml

@@ -123,7 +123,7 @@ The data partition is the only partition that keeps changes. `photobox-firstboot
 | `/var/lib/photobox/current` | 3 | link to the active release. `photobox-update` changes it. |
 | `/opt/photobox` | 2 | link to `/var/lib/photobox/current`. `photobox.service` uses this path. |
 | `/var/lib/photobox/photobox.env` | 3 | `SECRET_KEY_BASE` and `PHOTOBOX_STORAGE`, written by `photobox-firstboot` |
-| `/var/lib/photobox/sets/` | 3 | the photos (gallery), see below |
+| `/var/lib/photobox/galleries/` | 3 | the photos (gallery), see below |
 | `/usr/local/sbin/photobox-*` | 2 | the scripts of the image |
 | logs | RAM | the app writes to the journal (`journalctl -u photobox`). The journal is in the RAM overlay, so it is lost at reboot. |
 
@@ -131,10 +131,10 @@ Put files that must stay on the data partition, or in `photobox.yml`.
 
 ### Gallery images
 
-The app stores each picture set in its own folder in `PHOTOBOX_STORAGE`. On the image, this is `/var/lib/photobox/sets/` on the data partition. The folder name is the date and time of the photo:
+The app stores each gallery in its own folder in `PHOTOBOX_STORAGE`. On the image, this is `/var/lib/photobox/galleries/` on the data partition. The name of a gallery folder is the caption. If you change the caption in the admin menu, the folder gets the new name. The file `event.yml` in the gallery folder has the caption and the creation time. Each picture set has its own folder in the gallery folder. The name of this folder is the date and time of the photo:
 
 ```
-/var/lib/photobox/sets/2026-10-03_14-05-12/
+/var/lib/photobox/galleries/freya-wird-50/2026-10-03_14-05-12/
   2026-10-03_14-05-12_1.jpg ... _4.jpg                    the 4 photos of the camera
   2026-10-03_14-05-12_1_polaroid.png ... _4_polaroid.png  the polaroid images
   2026-10-03_14-05-12_animation.gif                       the animation
@@ -145,7 +145,7 @@ The gallery shows each folder that has an `_animation.gif` file. The app reads t
 To copy the photos to the laptop, use this command:
 
 ```sh
-scp -r root@10.42.0.1:/var/lib/photobox/sets .
+scp -r root@10.42.0.1:/var/lib/photobox/galleries .
 ```
 
 ### First boot
@@ -153,7 +153,7 @@ scp -r root@10.42.0.1:/var/lib/photobox/sets .
 `photobox-firstboot` runs once, then it reboots the Pi:
 
 1. Create the SSH host keys, so that every Pi has its own keys.
-2. Write `SECRET_KEY_BASE` and `PHOTOBOX_STORAGE=/var/lib/photobox/sets` to `/var/lib/photobox/photobox.env`.
+2. Write `SECRET_KEY_BASE` and `PHOTOBOX_STORAGE=/var/lib/photobox/galleries` to `/var/lib/photobox/photobox.env`.
 3. Grow the data partition to the size of the SD card.
 4. Add `overlayroot=tmpfs:recurse=0` to `cmdline.txt`. This makes the root file system read-only from the next boot. `recurse=0` keeps the data partition writable.
 
@@ -183,7 +183,7 @@ photobox-update use <version>             # switch back (rollback)
 
 `photobox-update` keeps the 3 newest releases.
 
-To update the OS, flash a new image. Do not flash before you copy the photos. A new image deletes all data on the SD card. If you need them, copy `photobox.yml` and the sets in `/var/lib/photobox/sets` first.
+To update the OS, flash a new image. Do not flash before you copy the photos. A new image deletes all data on the SD card. If you need them, copy `photobox.yml` and the sets in `/var/lib/photobox/galleries` first.
 
 ## Useful commands on the Pi
 

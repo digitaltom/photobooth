@@ -5,19 +5,26 @@
     = link_to root_path, class: 'btn gallery-btn' do
       = icon('grid')
       Gallery
-    = button_to 'Logout', admin_logout_path, method: :delete, class: 'btn btn-danger'
+    = button_to 'Logout', admin_logout_path, method: :delete, class: 'btn gallery-btn'
 
   .card.mb-3
     .card-header Gallery
     .card-body
       %p
-        Data partition: #{number_to_human_size(@disk[:used])} used, #{number_to_human_size(@disk[:avail])} free
-      %meter.disk-meter{ min: 0, max: @disk[:size], value: @disk[:used], high: (@disk[:size] * 0.9).to_i }
+        Storage
+        %code= @disk[:path]
+        (#{@disk[:source]})
+      - used = (100.0 * @disk[:used] / @disk[:size]).round
+      .progress.disk-bar{ role: 'progressbar', aria: { valuenow: used, valuemin: 0, valuemax: 100 } }
+        .progress-bar{ class: ('bg-danger' if used > 90), style: "width: #{used}%" }
+          #{number_to_human_size(@disk[:used])} used
+        .disk-free #{number_to_human_size(@disk[:avail])} free
       %table.table
         %tr
           %th Gallery
           %th Sets
           %th Size
+          %th
           %th
           %th
         - @galleries.each do |gallery|
@@ -27,6 +34,22 @@
               %small.text-muted= gallery.name
             %td= gallery.sets_count
             %td= number_to_human_size(gallery.size)
+            %td
+              %button.btn.btn-light.btn-sm{ type: 'button', title: 'Rename', aria: { label: 'Rename' },
+                popovertarget: "caption-#{gallery.name}" }= icon('pencil')
+              -# native popover: no Bootstrap JS on this page
+              .admin-popover{ id: "caption-#{gallery.name}", popover: '' }
+                = form_with url: admin_gallery_caption_path(gallery), method: :patch, data: { controller: 'caption-preview' } do |f|
+                  .polaroid-preview
+                    .polaroid-photo
+                    .polaroid-caption{ data: { caption_preview_target: 'output' } }= gallery.caption
+                  .d-flex.flex-wrap.gap-2
+                    = f.text_field :caption, value: gallery.caption, class: 'form-control',
+                      data: { caption_preview_target: 'input', action: 'caption-preview#update' }
+                    = f.submit 'Save caption', class: 'btn btn-primary'
+                  %p.form-text
+                    The caption is the title of the gallery and is printed on the new pictures.
+                    Pictures that you already took keep their caption.
             %td
               = link_to download_gallery_path(gallery), class: 'btn btn-light btn-sm', title: 'Download',
                 aria: { label: 'Download' }, data: { turbo: false }, download: true do
@@ -42,24 +65,13 @@
       = form_with url: admin_galleries_path, class: 'd-flex flex-wrap gap-2' do |f|
         = f.text_field :caption, required: true, class: 'form-control',
           placeholder: 'Caption of the new event'
-        = f.submit 'Start new gallery', class: 'btn btn-primary'
+        = f.submit 'Start new gallery', class: 'btn btn-success'
 
   .card.mb-3
-    .card-header Caption of the active gallery
-    .card-body
-      = form_with url: admin_caption_path, method: :patch, data: { controller: 'caption-preview' } do |f|
-        .polaroid-preview
-          .polaroid-photo
-          .polaroid-caption{ data: { caption_preview_target: 'output' } }= @gallery.caption
-        .d-flex.flex-wrap.gap-2
-          = f.text_field :caption, value: @gallery.caption, class: 'form-control',
-            data: { caption_preview_target: 'input', action: 'caption-preview#update' }
-          = f.submit 'Save caption', class: 'btn btn-primary'
-        %p.form-text
-          Applies to new sets.
-
-  .card.mb-3
-    .card-header Network
+    .card-header
+      Network
+      %small.text-muted
+        WLAN #{wifi_ssid} · #{wifi_password ? "password #{wifi_password}" : 'open'} · #{ApplicationHelper::PHOTOBOX_URL}
     .card-body
       %table.table
         %tr
@@ -74,32 +86,45 @@
             %td
               %code= device[:mac]
             %td= device[:state]
-      = link_to 'Printable WLAN sign', admin_wifi_sign_path, class: 'btn btn-light'
+      = link_to admin_wifi_sign_path, class: 'btn btn-light' do
+        = icon('qr')
+        Printable WLAN sign
 
   .card.mb-3
-    .card-header Time
+    .card-header Camera
     .card-body
-      %p
-        Time on the Photobox:
-        %b= l(Time.now.getlocal, format: :long)
-      = form_with url: admin_time_path, method: :patch, class: 'd-flex flex-wrap gap-2', data: { controller: 'device-time' } do |f|
-        %button.btn.btn-primary{ type: 'button', data: { action: 'device-time#use' } } Use the time of this device
-        = f.datetime_local_field :time, step: 1, required: true, class: 'form-control', data: { device_time_target: 'input' }
-        = f.submit 'Set time', class: 'btn btn-light'
-
-  .card.mb-3
-    .card-header Admin password
-    .card-body
-      = form_with url: admin_password_path, method: :patch do |f|
-        = f.password_field :old_password, placeholder: 'Old password', required: true, class: 'form-control'
-        = f.password_field :new_password, placeholder: 'New password', required: true, minlength: 8, class: 'form-control'
-        = f.password_field :password_repeat, placeholder: 'Repeat new password', required: true, class: 'form-control'
-        = f.submit 'Change password', class: 'btn btn-primary'
+      %pre.small= @camera[:summary]
+      - if @camera[:current_imageformat]
+        %p
+          Image format on the camera:
+          %b= @camera[:current_imageformat]
+      -# only the choices of the camera, without a camera none
+      - formats = ['', *@camera[:imageformats]]
+      - choices = formats.map { |format| [format.empty? ? 'Keep the setting of the camera' : [format, Camera::IMAGEFORMATS[format]].compact.join(': '), format] }
+      = form_with url: admin_imageformat_path, method: :patch, class: 'd-flex flex-wrap gap-2' do |f|
+        = f.select :imageformat, choices, { selected: OPTS.camera_imageformat.to_s }, class: 'form-select w-auto'
+        = f.submit 'Set image format', class: 'btn btn-primary'
+      %p.form-text Smaller images are faster to download and print.
 
   .card.mb-3
     .card-header System
     .card-body
-      = button_to 'Restart', admin_power_path(command: 'reboot'), class: 'btn btn-warning',
-        form_class: 'inline-form', form: { data: { turbo_confirm: 'Restart the Photobox?' } }
-      = button_to 'Shut down', admin_power_path(command: 'poweroff'), class: 'btn btn-danger',
-        form_class: 'inline-form', form: { data: { turbo_confirm: 'Shut down the Photobox?' } }
+      %p
+        Time on the Photobox:
+        %b= l(Time.now.getlocal, format: :long)
+      = form_with url: admin_time_path, method: :patch, data: { controller: 'device-time' } do |f|
+        = f.hidden_field :time, data: { device_time_target: 'input' }
+        %button.btn.btn-primary{ type: 'button', data: { action: 'device-time#use' } }
+          Set to
+          %span{ data: { device_time_target: 'label' } } the time of this device
+      .d-flex.flex-wrap.gap-2.mt-3{ data: { controller: 'modal' } }
+        %button.btn.btn-warning{ type: 'button', data: { action: 'modal#open' } } Change admin password
+        -# no padding on the dialog: a tap on it counts as a tap on the backdrop
+        %dialog.admin-popover.p-0{ data: { modal_target: 'dialog', action: 'click->modal#closeOnBackdrop' } }
+          = form_with url: admin_password_path, method: :patch, class: 'd-grid gap-2 p-4' do |f|
+            = f.password_field :old_password, placeholder: 'Old password', required: true, class: 'form-control'
+            = f.password_field :new_password, placeholder: 'New password', required: true, minlength: 8, class: 'form-control'
+            = f.password_field :password_repeat, placeholder: 'Repeat new password', required: true, class: 'form-control'
+            = f.submit 'Change password', class: 'btn btn-primary'
+        = button_to 'Restart', admin_restart_path, class: 'btn btn-warning',
+          form: { data: { turbo_confirm: 'Restart the Photobox?' } }

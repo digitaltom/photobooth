@@ -3,7 +3,6 @@
 # Guests share the WLAN with the Pi: everything here needs the admin password (OPTS, photobox.yml overrides it).
 class AdminController < ApplicationController
   SESSION_TIMEOUT = 30.minutes
-  POWER_COMMANDS = %w[poweroff reboot].freeze
 
   before_action :require_admin, except: %i[login_form login]
   rate_limit to: 10, within: 3.minutes, only: :login,
@@ -14,6 +13,7 @@ class AdminController < ApplicationController
     @galleries = Gallery.all
     @devices = Network.devices
     @disk = Gallery.disk_usage
+    @camera = Camera.info
   end
 
   def login_form; end
@@ -46,9 +46,17 @@ class AdminController < ApplicationController
     redirect_to admin_path, notice: "Time set to #{time.strftime('%Y-%m-%d %H:%M')}"
   end
 
+  # empty: gphoto2 keeps the setting of the camera
+  def imageformat
+    PhotoboxConfig.camera_imageformat = params[:imageformat].to_s.strip
+    redirect_to admin_path, notice: "Image format: #{OPTS.camera_imageformat.presence || 'camera setting'}"
+  end
+
   def caption
-    Gallery.active.caption = params[:caption]
-    redirect_to admin_path, notice: 'Caption saved, it applies to new sets'
+    gallery = Gallery.find(params.expect(:id)).rename(params[:caption])
+    # the guests see the caption as the gallery title
+    Turbo::StreamsChannel.broadcast_refresh_to(:gallery) if gallery == Gallery.active
+    redirect_to admin_path, notice: "Gallery renamed to #{gallery.caption}"
   end
 
   def create_gallery
@@ -59,12 +67,9 @@ class AdminController < ApplicationController
     activate(Gallery.find(params.expect(:id)))
   end
 
-  def power
-    command = params.expect(:command)
-    return head :bad_request unless POWER_COMMANDS.include?(command)
-
-    Syscall.execute("systemctl #{command}")
-    redirect_to admin_path, notice: command == 'reboot' ? 'Restarting…' : 'Shutting down…'
+  def restart
+    Syscall.execute('systemctl reboot')
+    redirect_to admin_path, notice: 'Restarting…'
   end
 
   def wifi_sign; end

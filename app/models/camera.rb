@@ -4,6 +4,18 @@ class Camera
 
   FAKE_IMAGES = Rails.root.join('lib/fake_camera')
   RETRIES = 3
+  # Canon EOS labels, 'c' = normal instead of fine compression (sizes for a 24 MP sensor).
+  # S2 has one quality only, gphoto2 calls it S2 or cS2 by the compression that the camera reports.
+  IMAGEFORMATS = {
+    'L' => 'large, 6000x4000, fine',
+    'cL' => 'large, 6000x4000, normal',
+    'M' => 'medium, 3984x2656, fine',
+    'cM' => 'medium, 3984x2656, normal',
+    'S1' => 'small, 2976x1984, fine',
+    'cS1' => 'small, 2976x1984, normal',
+    'S2' => 'small, 2400x1600',
+    'cS2' => 'small, 2400x1600'
+  }.freeze
 
   # Takes 4 photos <date>_1.jpg .. <date>_4.jpg into dir, yields the number of each saved photo.
   def self.capture(dir, date, &)
@@ -41,6 +53,20 @@ class Camera
       Rails.logger.warn("Retrying capture (#{attempt}): #{e.message}") && retry if saved.zero? && attempt < RETRIES
       raise e
     end
+  end
+
+  # One gphoto2 process: the first block of --summary (model, version, serial number) and the imageformat choices.
+  # ponytail: no lock against a running capture, the camera is busy then and the capture retries
+  def self.info
+    return { summary: "Fake camera, copies the images in #{FAKE_IMAGES}", imageformats: [] } if OPTS.camera == 'fake'
+
+    output = Syscall.execute('gphoto2 --summary --get-config imageformat')
+    { summary: output[/^Camera summary:.*?(?=\n\s*\n|\z)/m],
+      current_imageformat: output[/^Current: (.*)$/, 1],
+      # JPEG only: the polaroids need JPEG files
+      imageformats: output.scan(/^Choice: \d+ (.*)$/).flatten.grep_v(/RAW/i) }
+  rescue StandardError => e
+    { summary: e.message, imageformats: [] }
   end
 
   def self.imageformat_option

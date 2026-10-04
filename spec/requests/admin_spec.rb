@@ -44,7 +44,7 @@ RSpec.describe 'Admin', type: :request do
   it 'shows the admin menu after login and ends the session after 30 minutes' do
     login
     get '/admin'
-    expect(response.body).to include('Logout', 'Start new gallery', 'Shut down')
+    expect(response.body).to include('Logout', 'Start new gallery', 'Restart')
 
     travel 31.minutes do
       get '/admin'
@@ -76,6 +76,21 @@ RSpec.describe 'Admin', type: :request do
     expect(PhotoboxConfig.admin_password?('new-password')).to be true
   end
 
+  it 'shows the camera and sets the image format' do
+    login
+    get '/admin'
+    expect(response.body).to include('Fake camera', 'Keep the setting of the camera')
+    expect(response.body).not_to include('cL: large')
+
+    allow(Camera).to receive(:info).and_return(summary: 'Canon EOS 2000D', imageformats: %w[cL])
+    get '/admin'
+    expect(response.body).to include('cL: large, 6000x4000, normal')
+
+    patch '/admin/imageformat', params: { imageformat: ' cL ' }
+    expect(flash[:notice]).to eq 'Image format: cL'
+    expect(File.read(OPTS.photobox_conf)).to include('camera_imageformat: "cL"')
+  end
+
   it 'starts and switches galleries' do
     login
     first = Gallery.active
@@ -86,9 +101,9 @@ RSpec.describe 'Admin', type: :request do
     expect(Gallery.active).to eq first
   end
 
-  it 'saves the caption of the active gallery' do
+  it 'renames a gallery' do
     login
-    patch '/admin/caption', params: { caption: 'Hochzeit' }
+    patch "/admin/galleries/#{Gallery.active.name}/caption", params: { caption: 'Hochzeit' }
     expect(Gallery.active.caption).to eq 'Hochzeit'
   end
 
@@ -110,12 +125,11 @@ RSpec.describe 'Admin', type: :request do
     expect(response).to redirect_to('/admin')
   end
 
-  it 'shuts down and restarts, nothing else' do
+  it 'restarts' do
     login
-    expect(Syscall).to receive(:execute).with('systemctl poweroff')
-    post '/admin/power', params: { command: 'poweroff' }
-    post '/admin/power', params: { command: 'rm -rf /' }
-    expect(response).to have_http_status(:bad_request)
+    expect(Syscall).to receive(:execute).with('systemctl reboot')
+    post '/admin/restart'
+    expect(response).to redirect_to('/admin')
   end
 
   it 'shows the WLAN sign with a QR code' do

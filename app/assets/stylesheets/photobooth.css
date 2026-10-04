@@ -381,7 +381,7 @@ turbo-cable-stream-source {
   display: inline-block;
   padding: 2px 6px;
   border: 1px solid transparent;
-  color: #ff4a00;
+  color: #3fb950;
 }
 
 .admin .table td {
@@ -426,10 +426,10 @@ turbo-cable-stream-source {
   --bs-btn-disabled-border-color: rgb(var(--tint) / .35);
 }
 
-/* the accent color of the shoot button */
+/* white: orange reads as red on the dark page */
 .admin .btn-primary {
-  --tint: 255 74 0;
-  --tint-text: 255 138 92;
+  --tint: 255 255 255;
+  --tint-text: 242 239 233;
 }
 
 .admin .btn-danger {
@@ -473,16 +473,37 @@ turbo-cable-stream-source {
   display: inline-block;
 }
 
-.disk-meter {
-  width: 100%;
+.disk-bar {
   height: 25px;
+  margin-bottom: 16px;
+}
+
+.disk-free {
+  flex: 1;
+  align-self: center;
+  text-align: center;
+  font-size: .75rem;
+}
+
+/* native popover with the caption form */
+.admin-popover {
+  width: min(360px, calc(100vw - 32px));
+  padding: 20px;
+  border: 1px solid #2c2b2a;
+  border-radius: 12px;
+  background: #1a1a1b;
+  color: #f2efe9;
+}
+
+.admin-popover::backdrop {
+  background: rgb(0 0 0 / .6);
 }
 
 .polaroid-preview {
   width: 300px;
   max-width: 100%;
   padding: 10px 10px 0;
-  margin-bottom: 10px;
+  margin: 10px auto 20px;
   background: snow;
   box-shadow: 2px 2px 8px #888;
   transform: rotate(-3deg);

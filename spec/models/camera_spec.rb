@@ -13,6 +13,29 @@ RSpec.describe Camera, type: :model do
 
   before { allow(OPTS).to receive(:camera).and_return('gphoto2') }
 
+  it 'reads the summary and the image formats' do
+    allow(Syscall).to receive(:execute).with('gphoto2 --summary --get-config imageformat').and_return(<<~OUT)
+      Camera summary:
+      Manufacturer: Canon Inc.
+      Model: Canon EOS 2000D
+
+      Capture Formats: JPEG
+      Label: Image Format
+      Current: cS2
+      Choice: 0 L
+      Choice: 1 cS2
+      Choice: 2 RAW + L
+      END
+    OUT
+    expect(Camera.info).to eq(summary: "Camera summary:\nManufacturer: Canon Inc.\nModel: Canon EOS 2000D",
+                              current_imageformat: 'cS2', imageformats: %w[L cS2])
+  end
+
+  it 'shows the error when there is no camera' do
+    allow(Syscall).to receive(:execute).and_raise('*** Error: No camera found. ***')
+    expect(Camera.info).to eq(summary: '*** Error: No camera found. ***', imageformats: [])
+  end
+
   it 'yields each photo number from the gphoto2 output' do
     expect(Syscall).to receive(:execute).with(/gphoto2 .*-F 4 .*#{date}_%n.jpg/, dir: '/tmp') do |&block|
       output.each(&block)

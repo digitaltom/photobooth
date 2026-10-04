@@ -10,11 +10,11 @@ if [ ! -f $env ]; then
   umask 077
   {
     echo "SECRET_KEY_BASE=$(tr -dc a-f0-9 < /dev/urandom | head -c 128)"
-    echo "PHOTOBOX_STORAGE=/var/lib/photobox/sets"
+    echo "PHOTOBOX_STORAGE=/var/lib/photobox/galleries"
   } > $env
   umask 022
 fi
-install -d -o photobox -g photobox /var/lib/photobox/sets
+install -d -o photobox -g photobox /var/lib/photobox/galleries
 
 part=$(findmnt -no SOURCE /var/lib/photobox)
 # growpart exits with 1 if the partition already fills the disk

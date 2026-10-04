@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# A gallery is a folder in PictureSet.root with the picture sets of one event and its event.yml (caption).
+# A gallery is a folder in PictureSet.root with the picture sets of one event and its event.yml (caption, created_at).
 # The file 'active' in PictureSet.root names the gallery that gets new sets and that guests see.
 class Gallery
 
@@ -10,7 +10,7 @@ class Gallery
 
     def all
       Dir.glob(File.join(PictureSet.root, '*/event.yml')).map { |file| new(File.basename(File.dirname(file))) }
-         .sort_by(&:name).reverse
+         .sort_by(&:created_at).reverse
     end
 
     def find(name)
@@ -24,21 +24,31 @@ class Gallery
     end
 
     def create(caption)
-      base = [Time.now.getlocal.strftime('%Y-%m-%d'), caption.to_s.parameterize.presence].compact.join('-')
-      name = base
-      name = "#{base}-#{(2..).find { |i| !File.exist?(File.join(PictureSet.root, "#{base}-#{i}")) }}" if
-        File.exist?(File.join(PictureSet.root, base))
-      gallery = new(name)
+      gallery = new(free_name(caption))
       FileUtils.mkdir_p(gallery.dir)
+      gallery.write_event('caption' => '', 'created_at' => Time.now.getlocal.iso8601)
       gallery.caption = caption
       gallery
     end
 
-    # bytes of the data partition
+    # device, mount point and bytes of the data partition
     def disk_usage
-      size, used, avail = Syscall.execute("df -B1 --output=size,used,avail #{PictureSet.root.shellescape}")
-                                 .lines.last.split.map(&:to_i)
-      { size: size, used: used, avail: avail }
+      source, *bytes = Syscall.execute("df -B1 --output=source,size,used,avail #{PictureSet.root.shellescape}")
+                              .lines.last.split
+      size, used, avail = bytes.map(&:to_i)
+      { path: PictureSet.root.to_s, source: source, size: size, used: used, avail: avail }
+    end
+
+    # folder name: the caption, with a number if the folder (or the 'active' file) exists
+    def free_name(caption)
+      base = slug(caption)
+      return base unless File.exist?(File.join(PictureSet.root, base))
+
+      "#{base}-#{(2..).find { |i| !File.exist?(File.join(PictureSet.root, "#{base}-#{i}")) }}"
+    end
+
+    def slug(caption)
+      caption.to_s.parameterize.presence || 'gallery'
     end
 
     private
@@ -77,13 +87,35 @@ class Gallery
   end
 
   def caption
-    (YAML.safe_load_file(event_file) || {})['caption'].to_s
+    event['caption'].to_s
   end
 
   # ImageMagick reads a file for a caption that starts with @
   def caption=(text)
-    text = text.to_s.strip.sub(/\A@+/, '')
-    File.write(event_file, { 'caption' => text }.to_yaml)
+    write_event(event.merge('caption' => text.to_s.strip.sub(/\A@+/, '')))
+  end
+
+  # galleries from before created_at: the time of the folder
+  def created_at
+    Time.zone.parse(event['created_at'].to_s) || File.mtime(dir)
+  end
+
+  def write_event(data)
+    File.write(event_file, data.to_yaml)
+  end
+
+  # The folder gets the new caption as its name.
+  # ponytail: a capture that runs during the rename writes into the old folder and fails
+  def rename(caption)
+    self.caption = caption
+    return self if name.match?(/\A#{Regexp.escape(Gallery.slug(caption))}(-\d+)?\z/)
+
+    new_name = Gallery.free_name(caption)
+    active = self == Gallery.active
+    File.rename(dir, File.join(PictureSet.root, new_name))
+    gallery = Gallery.new(new_name)
+    gallery.activate! if active
+    gallery
   end
 
   def sets_count
@@ -96,6 +128,10 @@ class Gallery
   end
 
   private
+
+  def event
+    File.exist?(event_file) ? YAML.safe_load_file(event_file) || {} : {}
+  end
 
   def event_file
     File.join(dir, 'event.yml')

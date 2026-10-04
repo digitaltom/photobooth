@@ -23,9 +23,10 @@ Rails.application.routes.draw do
     delete 'logout'
     patch 'password'
     patch 'time'
-    patch 'caption'
+    patch 'imageformat'
+    patch 'galleries/:id/caption', action: :caption, as: :gallery_caption
     get 'wifi_sign'
-    post 'power'
+    post 'restart'
     post 'galleries', action: :create_gallery
     patch 'galleries/:id/activate', action: :activate_gallery, as: :activate_gallery
   end

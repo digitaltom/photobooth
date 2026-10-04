@@ -35,7 +35,7 @@ OPTS = begin
     (options['default'] || {}).deep_merge(options[Rails.env] || {})
   end
   options = load_options.call('config/options.yml').deep_merge(load_options.call('config/options-local.yml'))
-  conf = File.expand_path(ENV['PHOTOBOX_CONF'].presence || options['photobox_conf'], Rails.root)
+  conf = File.expand_path(options['photobox_conf'], Rails.root)
   options.merge!(YAML.safe_load_file(conf) || {}) if File.exist?(conf)
   options['photobox_conf'] = conf
   ActiveSupport::OrderedOptions.new.merge!(options.symbolize_keys)
