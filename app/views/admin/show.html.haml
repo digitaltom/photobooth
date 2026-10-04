@@ -8,7 +8,7 @@
     = button_to 'Logout', admin_logout_path, method: :delete, class: 'btn gallery-btn'
 
   .card.mb-3
-    .card-header Gallery
+    .card-header Galleries
     .card-body
       %p
         Storage
@@ -17,51 +17,53 @@
       - used = (100.0 * @disk[:used] / @disk[:size]).round
       .progress.disk-bar{ role: 'progressbar', aria: { valuenow: used, valuemin: 0, valuemax: 100 } }
         .progress-bar{ class: ('bg-danger' if used > 90), style: "width: #{used}%" }
-          #{number_to_human_size(@disk[:used])} used
-        .disk-free #{number_to_human_size(@disk[:avail])} free
+          #{number_to_human_size(@disk[:used])} used (#{used}%)
+        .disk-free #{number_to_human_size(@disk[:avail])} free (#{(100.0 * @disk[:avail] / @disk[:size]).round}%)
       %table.table
         %tr
           %th Gallery
           %th Sets
           %th Size
           %th
-          %th
-          %th
         - @galleries.each do |gallery|
-          %tr
+          %tr{ class: ('table-success' if gallery == @gallery) }
             %td
               = gallery.caption
-              %small.text-muted= gallery.name
+              %small.text-muted= l(gallery.created_at.to_date)
             %td= gallery.sets_count
             %td= number_to_human_size(gallery.size)
             %td
-              %button.btn.btn-light.btn-sm{ type: 'button', title: 'Rename', aria: { label: 'Rename' },
-                popovertarget: "caption-#{gallery.name}" }= icon('pencil')
-              -# native popover: no Bootstrap JS on this page
-              .admin-popover{ id: "caption-#{gallery.name}", popover: '' }
-                = form_with url: admin_gallery_caption_path(gallery), method: :patch, data: { controller: 'caption-preview' } do |f|
-                  .polaroid-preview
-                    .polaroid-photo
-                    .polaroid-caption{ data: { caption_preview_target: 'output' } }= gallery.caption
-                  .d-flex.flex-wrap.gap-2
-                    = f.text_field :caption, value: gallery.caption, class: 'form-control',
-                      data: { caption_preview_target: 'input', action: 'caption-preview#update' }
-                    = f.submit 'Save caption', class: 'btn btn-primary'
-                  %p.form-text
-                    The caption is the title of the gallery and is printed on the new pictures.
-                    Pictures that you already took keep their caption.
-            %td
-              = link_to download_gallery_path(gallery), class: 'btn btn-light btn-sm', title: 'Download',
-                aria: { label: 'Download' }, data: { turbo: false }, download: true do
-                = icon('download')
-            %td
-              -# like a radio button: the active gallery is checked
-              - if gallery == @gallery
-                %span.admin-active{ title: 'Active', aria: { label: 'Active' } }= icon('check-circle')
-              - else
-                = button_to admin_activate_gallery_path(gallery), method: :patch, class: 'btn btn-light btn-sm',
-                  title: 'Activate', aria: { label: 'Activate' } do
-                  = icon('circle')
+              .d-flex.gap-1.justify-content-end
+                %button.btn.btn-light.btn-sm{ type: 'button', title: 'Rename', aria: { label: 'Rename' },
+                  popovertarget: "caption-#{gallery.name}" }= icon('pencil')
+                -# native popover: no Bootstrap JS on this page
+                .admin-popover{ id: "caption-#{gallery.name}", popover: '' }
+                  = form_with url: admin_gallery_caption_path(gallery), method: :patch, data: { controller: 'caption-preview' } do |f|
+                    .polaroid-preview
+                      .polaroid-photo
+                      .polaroid-caption{ data: { caption_preview_target: 'output' } }= gallery.caption
+                    .d-flex.flex-wrap.gap-2
+                      = f.text_field :caption, value: gallery.caption, class: 'form-control',
+                        data: { caption_preview_target: 'input', action: 'caption-preview#update' }
+                      = f.submit 'Save caption', class: 'btn btn-primary'
+                    %p.form-text
+                      The caption is the title of the gallery and is printed on the new pictures.
+                      Pictures that you already took keep their caption.
+                = link_to download_gallery_path(gallery), class: 'btn btn-light btn-sm', title: 'Download',
+                  aria: { label: 'Download' }, data: { turbo: false }, download: true do
+                  = icon('download')
+                -# like a radio button: the active gallery is checked
+                - if gallery == @gallery
+                  %span.admin-active{ title: 'Active', aria: { label: 'Active' } }= icon('check-circle')
+                - else
+                  = button_to admin_activate_gallery_path(gallery), method: :patch, class: 'btn btn-light btn-sm',
+                    title: 'Activate', aria: { label: 'Activate' } do
+                    = icon('circle')
+                - unless gallery == @gallery
+                  = button_to admin_destroy_gallery_path(gallery), method: :delete, class: 'btn btn-danger btn-sm',
+                    title: 'Delete', aria: { label: 'Delete' },
+                    form: { data: { turbo_confirm: "Delete the gallery #{gallery.caption} with #{gallery.sets_count} sets?" } } do
+                    = icon('trash')
       = form_with url: admin_galleries_path, class: 'd-flex flex-wrap gap-2' do |f|
         = f.text_field :caption, required: true, class: 'form-control',
           placeholder: 'Caption of the new event'
@@ -116,9 +118,20 @@
     .card-header System
     .card-body
       %p
-        Time on the Photobox:
-        %b= l(Time.now.getlocal, format: :long)
-      = form_with url: admin_time_path, method: :patch, data: { controller: 'device-time' } do |f|
+        Version:
+        %b= @version || 'development'
+        - if @revision
+          %code= @revision
+      - if @updatable
+        = form_with url: admin_update_path, multipart: true, class: 'd-flex flex-wrap gap-2 mb-3',
+          data: { turbo_confirm: 'Install this app release and restart the app?' } do |f|
+          = f.file_field :app, accept: '.zst', required: true, class: 'form-control w-auto'
+          = f.submit 'Update app', class: 'btn btn-warning'
+      = form_with url: admin_time_path, method: :patch, class: 'd-flex flex-wrap align-items-center gap-2',
+        data: { controller: 'device-time' } do |f|
+        %span
+          Time on the Photobox:
+          %b= l(Time.now.getlocal, format: :long)
         = f.hidden_field :time, data: { device_time_target: 'input' }
         %button.btn.btn-primary{ type: 'button', data: { action: 'device-time#use' } }
           Set to

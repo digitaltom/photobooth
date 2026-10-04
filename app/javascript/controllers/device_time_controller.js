@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 // Sends the local time of the iPad, the Pi has no real-time clock.
-// The button shows that time and updates it every second.
+// The button shows that time without seconds, the sent time keeps them.
 export default class extends Controller {
   static targets = ["input", "label"]
 
@@ -15,7 +15,7 @@ export default class extends Controller {
   }
 
   update() {
-    this.labelTarget.textContent = new Date().toLocaleString()
+    this.labelTarget.textContent = new Date().toLocaleString(undefined, { dateStyle: "short", timeStyle: "short" })
   }
 
   use() {

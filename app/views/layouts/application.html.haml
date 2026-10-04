@@ -15,7 +15,9 @@
     = yield(:head)
 
   %body{ class: ('kiosk' if kiosk?) }
-    - flash.each do |type, msg|
-      .alert{ class: type == 'notice' ? 'alert-success' : 'alert-danger', role: 'alert' }= msg
+    - if flash.any?
+      .position-fixed.top-0.start-50.translate-middle-x.mt-3.d-flex.flex-column.align-items-center.gap-2{ style: 'z-index: 1080; max-width: 90vw;' }
+        - flash.each do |type, msg|
+          .flash.alert.rounded-pill.shadow.px-4.py-2.m-0{ class: type == 'notice' ? 'alert-success' : 'alert-danger', role: 'alert' }= msg
 
     = yield

@@ -3,6 +3,8 @@
 # Guests share the WLAN with the Pi: everything here needs the admin password (OPTS, photobox.yml overrides it).
 class AdminController < ApplicationController
   SESSION_TIMEOUT = 30.minutes
+  # photobox-upload.service installs this file (deploy/image)
+  UPDATE_FILE = '/var/lib/photobox/upload/photobox-app.tar.zst'
 
   before_action :require_admin, except: %i[login_form login]
   rate_limit to: 10, within: 3.minutes, only: :login,
@@ -17,6 +19,10 @@ class AdminController < ApplicationController
     @eth_ip = Network.ip('eth0')
     @disk = Gallery.disk_usage
     @camera = Camera.info
+    # written by bin/build-image, missing in development
+    @version, @revision = %w[VERSION REVISION].map { |file| Rails.root.join(file).read.strip if Rails.root.join(file).exist? }
+    @revision ||= Syscall.execute('git rev-parse --short HEAD').strip
+    @updatable = updatable?
   end
 
   def login_form; end
@@ -70,9 +76,29 @@ class AdminController < ApplicationController
     activate(Gallery.find(params.expect(:id)))
   end
 
+  # the active gallery gets the new sets, it stays
+  def destroy_gallery
+    gallery = Gallery.find(params.expect(:id))
+    return redirect_to admin_path, alert: 'The active gallery cannot be deleted' if gallery == Gallery.active
+
+    label = gallery.caption.presence || gallery.name
+    FileUtils.rm_rf(gallery.dir)
+    redirect_to admin_path, notice: "Gallery deleted: #{label}"
+  end
+
   def restart
     Syscall.execute('systemctl reboot')
     redirect_to admin_path, notice: 'Restarting…'
+  end
+
+  # photobox-update runs in its own systemd unit, it restarts this app
+  def update
+    return redirect_to admin_path, alert: 'Updates work on the Photobox image only' unless updatable?
+
+    FileUtils.cp(params.expect(:app).path, UPDATE_FILE)
+    Syscall.execute('systemctl start --no-block photobox-upload.service')
+    redirect_to admin_path, notice: 'Update started. The app restarts in about 1 minute. ' \
+                                    'If the version stays the same, see journalctl -u photobox-upload.'
   end
 
   def wifi_sign; end
@@ -93,6 +119,11 @@ class AdminController < ApplicationController
 
     PhotoboxConfig.admin_password = password
     nil
+  end
+
+  # setup-chroot.sh creates the upload directory, it does not exist in development
+  def updatable?
+    File.directory?(File.dirname(UPDATE_FILE))
   end
 
   def activate(gallery)

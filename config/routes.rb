@@ -27,8 +27,10 @@ Rails.application.routes.draw do
     patch 'galleries/:id/caption', action: :caption, as: :gallery_caption
     get 'wifi_sign'
     post 'restart'
+    post 'update'
     post 'galleries', action: :create_gallery
     patch 'galleries/:id/activate', action: :activate_gallery, as: :activate_gallery
+    delete 'galleries/:id', action: :destroy_gallery, as: :destroy_gallery
   end
 
   # Captive portal: phone connectivity checks (/generate_204, /hotspot-detect.html) land here and open the gallery

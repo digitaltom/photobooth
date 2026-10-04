@@ -25,13 +25,14 @@ The root file system is read-only, so a power loss cannot damage it. To update t
 | File | Purpose |
 | --- | --- |
 | `photobox.service` | systemd service: Puma and the Solid Queue jobs in one process |
-| `polkit-photobox.rules` | lets the app set the time, shut down and restart (admin menu) |
+| `polkit-photobox.rules` | lets the app set the time, shut down, restart and start the app update (admin menu) |
 | `photobox.nft` | nftables rule: port 80 to Puma on port 3000 |
 | `image/setup-chroot.sh` | runs in the image chroot: packages, Ruby, gems, services |
 | `image/photobox.yml` | default settings on the boot partition |
 | `image/photobox-network` | applies `photobox.yml` at each boot: hotspot, root password, SSH key |
 | `image/photobox-firstboot` | runs once on the first boot |
 | `image/photobox-update` | installs or switches the app release |
+| `image/photobox-upload.service` | runs `photobox-update` for an app release from the admin menu |
 
 ## Build
 
@@ -182,6 +183,8 @@ photobox-update use <version>             # switch back (rollback)
 ```
 
 `photobox-update` keeps the 3 newest releases.
+
+You can also upload `photobox-app.tar.zst` in the admin menu (System). The app saves the file in `/var/lib/photobox/upload/`. Then it starts `photobox-upload.service`, which runs `photobox-update` as root. The admin menu shows the version and the commit of the current release. If the version does not change after the upload, run `journalctl -u photobox-upload`. The upload does not check a `.sha256` file.
 
 To update the OS, flash a new image. Do not flash before you copy the photos. A new image deletes all data on the SD card. If you need them, copy `photobox.yml` and the sets in `/var/lib/photobox/galleries` first.
 

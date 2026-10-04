@@ -71,9 +71,10 @@ rel=$mnt/var/lib/photobox/releases/$ver
 mkdir -p "$rel"
 (cd "$root" && git ls-files -z -- . ':!spec' | tar --null -T - -cf -) | tar -x -C "$rel"
 echo "$ver" > "$rel/VERSION"
+git -C "$root" rev-parse --short HEAD > "$rel/REVISION"
 
 install -m 755 "$root"/deploy/image/photobox-{network,firstboot,update} "$mnt/usr/local/sbin/"
-install -m 644 "$root"/deploy/image/photobox-{network,firstboot}.service "$mnt/etc/systemd/system/"
+install -m 644 "$root"/deploy/image/photobox-{network,firstboot,upload}.service "$mnt/etc/systemd/system/"
 install -m 644 "$root/deploy/image/photobox.yml" "$mnt/boot/firmware/photobox.yml"
 if [ -f "$root/deploy/image/photobox-local.yml" ]; then
   install -m 644 "$root/deploy/image/photobox-local.yml" "$mnt/boot/firmware/photobox-local.yml"

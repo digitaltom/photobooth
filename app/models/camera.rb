@@ -68,7 +68,7 @@ class Camera
   # One gphoto2 process: the first block of --summary (model, version, serial number) and the imageformat choices.
   # ponytail: no lock against a running capture, the camera is busy then and the capture retries
   def self.info
-    return { summary: "Fake camera, copies the images in #{FAKE_IMAGES}", imageformats: [] } if OPTS.camera == 'fake'
+    return { summary: "Fake camera, uses the images from #{FAKE_IMAGES}", imageformats: [] } if OPTS.camera == 'fake'
 
     output = Syscall.execute('gphoto2 --summary --get-config imageformat')
     { summary: output[/^Camera summary:.*?(?=\n\s*\n|\z)/m],

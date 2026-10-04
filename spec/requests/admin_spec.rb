@@ -101,6 +101,18 @@ RSpec.describe 'Admin', type: :request do
     expect(Gallery.active).to eq first
   end
 
+  it 'deletes a gallery, but not the active gallery' do
+    login
+    old = Gallery.active
+    post '/admin/galleries', params: { caption: 'Freya wird 50' }
+    delete "/admin/galleries/#{Gallery.active.name}"
+    expect(flash[:alert]).to eq 'The active gallery cannot be deleted'
+
+    delete "/admin/galleries/#{old.name}"
+    expect(Gallery.all).not_to include(old)
+    expect(File.exist?(old.dir)).to be false
+  end
+
   it 'renames a gallery' do
     login
     patch "/admin/galleries/#{Gallery.active.name}/caption", params: { caption: 'Hochzeit' }
@@ -150,6 +162,27 @@ RSpec.describe 'Admin', type: :request do
     expect(Syscall).to receive(:execute).with('systemctl reboot')
     post '/admin/restart'
     expect(response).to redirect_to('/admin')
+  end
+
+  it 'shows the version and hides the update outside the image' do
+    login
+    get '/admin'
+    expect(response.body).to include('development', `git rev-parse --short HEAD`.strip).and(exclude('Update app'))
+
+    post '/admin/update'
+    expect(flash[:alert]).to eq 'Updates work on the Photobox image only'
+  end
+
+  it 'starts the update with the uploaded app release' do
+    stub_const('AdminController::UPDATE_FILE', File.join(ENV.fetch('PHOTOBOX_STORAGE'), 'app.tar.zst'))
+    login
+    get '/admin'
+    expect(response.body).to include('Update app')
+
+    expect(Syscall).to receive(:execute).with('systemctl start --no-block photobox-upload.service')
+    post '/admin/update', params: { app: Rack::Test::UploadedFile.new(StringIO.new('release'), original_filename: 'photobox-app.tar.zst') }
+    expect(response).to redirect_to('/admin')
+    expect(File.read(AdminController::UPDATE_FILE)).to eq 'release'
   end
 
   it 'shows the WLAN sign with a QR code' do

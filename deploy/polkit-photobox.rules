@@ -1,7 +1,12 @@
-// The app runs as user photobox without a login session: the admin menu sets the time and shuts down or restarts.
+// The app runs as user photobox without a login session: the admin menu sets the time, shuts down or restarts and updates the app.
 polkit.addRule(function (action, subject) {
   if (subject.user == "photobox" &&
       /^org\.freedesktop\.(timedate1\.(set-time|set-ntp)|login1\.(power-off|reboot)(-multiple-sessions|-ignore-inhibit)?)$/.test(action.id)) {
+    return polkit.Result.YES;
+  }
+  // app update from the admin menu
+  if (subject.user == "photobox" && action.id == "org.freedesktop.systemd1.manage-units" &&
+      action.lookup("unit") == "photobox-upload.service" && action.lookup("verb") == "start") {
     return polkit.Result.YES;
   }
 });

@@ -550,6 +550,17 @@ turbo-cable-stream-source {
   background: rgba(0, 0, 0, 0.6);
 }
 
+.flash {
+  animation: flash-out 0.5s 20s forwards;
+}
+
+@keyframes flash-out {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
 @media print {
   body {
     background: #fff;
