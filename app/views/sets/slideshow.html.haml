@@ -1,14 +1,13 @@
-- if @picture_set.next
-  - content_for :head do
-    %meta{ 'http-equiv' => 'refresh', content: "8;url=#{slideshow_set_path(@picture_set.next)}" }
-
-.fullscreen
-  = image_tag file_set_path(@picture_set, name: @picture_set.animation)
-
-#button-start
-  = link_to root_path, class: 'btn btn-light btn-lg' do
-    %span
-      = image_tag '/images/clock_regular.png', class: 'shoot_img_btn'
-    %b Slideshow
-
-= render 'nav', picture_set: @picture_set, path_method: :slideshow_set_path
+.slideshow{ data: { controller: 'slideshow', slideshow_next_value: slideshow_set_path(@next) } }
+  .slideshow-progress{ data: { action: 'animationend->slideshow#next' } }
+  = image_tag file_set_path(@picture_set, name: @picture_set.animation), class: 'slideshow-img', alt: ''
+  = link_to root_path, class: 'btn gallery-btn slideshow-stop' do
+    = icon('grid')
+    Gallery
+  -# the sets are sorted newest first: next is newer, last is older
+  - if @picture_set.next
+    = link_to '‹', slideshow_set_path(@picture_set.next), class: 'btn gallery-btn slideshow-nav slideshow-newer',
+      aria: { label: 'Newer' }
+  - if @picture_set.last
+    = link_to '›', slideshow_set_path(@picture_set.last), class: 'btn gallery-btn slideshow-nav slideshow-older',
+      aria: { label: 'Older' }

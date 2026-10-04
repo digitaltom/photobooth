@@ -1,5 +1,10 @@
-.container.admin
-  %h2 Admin
-  = form_with url: admin_login_path do |f|
+-# dark Bootstrap colors for the form field
+.admin.admin-login{ data: { bs_theme: 'dark' } }
+  %h1.gallery-title Admin
+  = form_with url: admin_login_path, class: 'admin-login-form' do |f|
     = f.password_field :password, placeholder: 'Password', required: true, autofocus: true, class: 'form-control'
-    = f.submit 'Login', class: 'btn btn-primary btn-lg'
+    = f.submit 'Login', class: 'btn btn-primary'
+  .gallery-footer
+    = link_to root_path do
+      = icon('grid')
+      Gallery

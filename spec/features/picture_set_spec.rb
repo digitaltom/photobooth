@@ -11,8 +11,10 @@ feature 'Photobox picture set view', js: true do
 
   it 'shows the animation and the single pictures' do
     expect(page).to have_css('img.gallery-img')
-    expect(page).to have_css('img.img-fluid', count: 4)
-    expect(page).to have_link('Download GIF')
+    expect(page).to have_css('img.set-picture', count: 4)
+    expect(page).to have_link('Save image')
+    expect(page).to have_link('Gallery', href: '/')
+    expect(page).to have_css('.gallery-title a[href="/"]')
     expect(page).to have_css('.set-date', text: 'January 01, 2099 01:48')
   end
 

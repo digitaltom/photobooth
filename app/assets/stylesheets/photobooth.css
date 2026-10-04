@@ -21,9 +21,32 @@ body {
     user-select: text;
 }
 
+/* no padding on the dialog: a tap on it counts as a tap on the backdrop */
 #shoot-dialog {
     width: 95%;
+    padding: 0;
     color: #000;
+}
+
+.shoot-content {
+    padding: 16px;
+}
+
+#shoot-dialog::backdrop {
+    background: rgba(0, 0, 0, 0.6);
+}
+
+/* large enough to hit on the kiosk */
+.dialog-quit {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    font-size: 1.5rem;
+}
+
+/* the dialog focuses the button when it opens, the ring is only for keyboard users */
+.dialog-quit:focus:not(:focus-visible) {
+    box-shadow: none;
 }
 
 #shoot-progress {
@@ -35,54 +58,63 @@ body {
     padding: 10px;
 }
 
-.shoot_img_btn {
-    height: 20px;
-    margin: 0px 10px 0px 0px;
+/* slideshow: the animation fills the screen, the buttons float on it */
+.slideshow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100dvh;
+    padding: 16px;
 }
 
-.fullscreen {
+/* the time per set: the next set shows when the bar is full */
+.slideshow-progress {
     position: fixed;
-    top: 50%;
-    left: -5%;
-    width: 110%;
-}
-
-.fullscreen img {
-    position: absolute;
-    top: 0;
     left: 0;
-    right: 0;
     bottom: 0;
-    margin: auto;
-    max-width: 95%;
-    z-index: -10;
+    height: 4px;
+    background: #ff4a00;
+    animation: slideshow-progress 8s linear forwards;
 }
 
-#button-start {
-  position: absolute;
+@keyframes slideshow-progress {
+    from { width: 0; }
+    to { width: 100%; }
 }
 
-#button-start .btn {
-    margin: 5px 0px 0px 5px;
-    z-index: 10;
+.slideshow-img {
+    max-width: 100%;
+    max-height: 100%;
 }
 
-#button-last {
-    position: absolute;
-    top: 45%;
-    left: 3px;
+.slideshow .gallery-btn {
+    position: fixed;
+    flex: none;
+    opacity: .85;
 }
 
-#button-next {
-    position: absolute;
-    top: 45%;
-    right: 3px;
+.slideshow-stop {
+    top: 16px;
+    left: 16px;
 }
 
-#button-delete {
-    position: absolute;
-    right: 3px;
-    bottom: 3px;
+/* .slideshow in front: the .gallery-btn rules come later in this file */
+.slideshow .slideshow-nav {
+    top: 50%;
+    width: 64px;
+    height: 64px;
+    margin-top: -32px;
+    padding: 0 0 4px;
+    border-radius: 50%;
+    font-size: 2rem;
+}
+
+.slideshow-newer {
+    left: 16px;
+}
+
+.slideshow-older {
+    right: 16px;
 }
 
 /* turbo_stream_from elements must not take a grid cell or a flex gap */
@@ -120,10 +152,19 @@ turbo-cable-stream-source {
 }
 
 /* the gif has white corners, the clip keeps only the orange circle */
+.shoot_img, .shoot_img_icon {
+  clip-path: circle(37%);
+}
+
+/* the shoot button as icon in a button, the clip removes about a quarter of the gif */
+.shoot_img_icon {
+  height: 2em;
+  margin: -.4em -.2em;
+}
+
 .shoot_img {
   width: min(300px, 40vh);
   max-width: 100%;
-  clip-path: circle(37%);
   transition: transform .12s;
 }
 
@@ -169,16 +210,22 @@ turbo-cable-stream-source {
 
 .gallery-footer {
   display: flex;
-  flex-wrap: wrap;
   justify-content: space-between;
-  gap: 4px 16px;
+  gap: 16px;
   width: 100%;
   max-width: 400px;
   font-size: .8rem;
 }
 
+/* without the kiosk: below the pictures, at the end of the page */
+.gallery-page > .gallery-footer {
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+
 .gallery-footer a {
   display: inline-flex;
+  white-space: nowrap;
   align-items: center;
   gap: 6px;
   color: #6b6864;
@@ -193,17 +240,37 @@ turbo-cable-stream-source {
   background: #0d0d0e;
 }
 
-/* the set page shows the animation at a fixed size */
 .gallery-img {
-  width: 470px;
-  max-width: 95%;
-}
-
-.gallery-grid .gallery-img {
   display: block;
   width: 100%;
-  max-width: none;
   border-radius: 8px;
+}
+
+/* set page: the animation in its own row, the 4 polaroids below */
+.set-grid {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+@media (max-width: 600px) {
+  .set-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.gallery-title a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.set-nav-preview {
+  height: 32px;
+  border-radius: 4px;
+}
+
+.set-animation {
+  grid-column: 1 / -1;
+  max-width: 720px;
+  margin: 0 auto;
 }
 
 @media (min-width: 768px) {
@@ -240,7 +307,152 @@ turbo-cable-stream-source {
 }
 
 .admin {
-  padding-bottom: 30px;
+  max-width: 960px;
+  padding: 24px 16px 30px;
+  --bs-body-bg: #111112;
+  --bs-body-color: #f2efe9;
+  --bs-border-color: #2c2b2a;
+}
+
+.admin-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.admin-header .gallery-title {
+  flex: 1;
+  text-align: left;
+}
+
+.admin-header .gallery-btn {
+  flex: none;
+}
+
+.admin-header form {
+  margin: 0;
+}
+
+.admin-login {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 360px;
+  margin: 15vh auto 0;
+  text-align: center;
+}
+
+.admin-login-form {
+  display: grid;
+  gap: 8px;
+}
+
+.admin-login .gallery-footer {
+  justify-content: center;
+}
+
+/* small buttons and fields: the admin page has many of them */
+.admin .btn {
+  --bs-btn-padding-y: 3px;
+  --bs-btn-padding-x: 10px;
+  --bs-btn-font-size: .8rem;
+  --bs-btn-border-radius: 8px;
+}
+
+.admin .form-control {
+  padding: 3px 10px;
+  font-size: .8rem;
+  border-radius: 8px;
+}
+
+.admin .form-control:focus {
+  border-color: rgb(255 74 0 / .5);
+  box-shadow: 0 0 0 .2rem rgb(255 74 0 / .15);
+}
+
+.admin .btn-sm {
+  --bs-btn-padding-y: 2px;
+  --bs-btn-padding-x: 6px;
+}
+
+/* in the place and size of the activate button below it */
+.admin-active {
+  display: inline-block;
+  padding: 2px 6px;
+  border: 1px solid transparent;
+  color: #ff4a00;
+}
+
+.admin .table td {
+  vertical-align: middle;
+}
+
+.admin .gallery-btn {
+  padding: 3px 10px;
+  font-size: .8rem;
+  border-radius: 8px;
+}
+
+.admin .table .icon {
+  width: 1.1em;
+  height: 1.1em;
+}
+
+.admin .card {
+  --bs-card-bg: #1a1a1b;
+  --bs-card-cap-bg: #232324;
+  --bs-card-border-color: #2c2b2a;
+  --bs-card-border-radius: 12px;
+}
+
+.admin .table {
+  --bs-table-bg: transparent;
+}
+
+/* colored buttons: a dark tint with colored text, no bright fill on the dark page */
+.admin .btn-primary, .admin .btn-danger, .admin .btn-warning {
+  --bs-btn-bg: rgb(var(--tint) / .12);
+  --bs-btn-color: rgb(var(--tint-text));
+  --bs-btn-border-color: rgb(var(--tint) / .35);
+  --bs-btn-hover-bg: rgb(var(--tint) / .22);
+  --bs-btn-hover-color: rgb(var(--tint-text));
+  --bs-btn-hover-border-color: rgb(var(--tint) / .5);
+  --bs-btn-active-bg: rgb(var(--tint) / .22);
+  --bs-btn-active-color: rgb(var(--tint-text));
+  --bs-btn-active-border-color: rgb(var(--tint) / .5);
+  --bs-btn-disabled-bg: rgb(var(--tint) / .12);
+  --bs-btn-disabled-color: rgb(var(--tint-text));
+  --bs-btn-disabled-border-color: rgb(var(--tint) / .35);
+}
+
+/* the accent color of the shoot button */
+.admin .btn-primary {
+  --tint: 255 74 0;
+  --tint-text: 255 138 92;
+}
+
+.admin .btn-danger {
+  --tint: 220 53 69;
+  --tint-text: 240 128 138;
+}
+
+.admin .btn-warning {
+  --tint: 255 193 7;
+  --tint-text: 255 214 102;
+}
+
+/* like the gallery buttons */
+.admin .btn-light {
+  --bs-btn-bg: #232324;
+  --bs-btn-color: #f2efe9;
+  --bs-btn-border-color: #2c2b2a;
+  --bs-btn-hover-bg: #2c2b2a;
+  --bs-btn-hover-color: #f2efe9;
+  --bs-btn-hover-border-color: #3a3938;
+  --bs-btn-active-bg: #2c2b2a;
+  --bs-btn-active-color: #f2efe9;
+  --bs-btn-active-border-color: #3a3938;
 }
 
 .wifi-sign {
@@ -282,6 +494,7 @@ turbo-cable-stream-source {
 }
 
 .polaroid-caption {
+  color: #000;
   min-height: 40px;
   padding: 8px 0;
   font-family: "Rock Salt", cursive;
@@ -299,16 +512,20 @@ turbo-cable-stream-source {
   max-width: 90%;
 }
 
-/* the popover is centered in the top layer by the browser */
-.wifi-qr-popover {
-  padding: 20px;
+/* no padding on the dialog: a tap on it counts as a tap on the backdrop */
+.wifi-qr-dialog {
+  padding: 0;
   border: none;
   border-radius: 8px;
   color: #000;
   text-align: center;
 }
 
-.wifi-qr-popover::backdrop {
+.wifi-qr-content {
+  padding: 20px;
+}
+
+.wifi-qr-dialog::backdrop {
   background: rgba(0, 0, 0, 0.6);
 }
 

@@ -23,9 +23,12 @@ RSpec.describe 'Galleries', type: :request do
     expect(response).to have_http_status(:not_found)
   end
 
-  it 'shows the WLAN QR code in a popover in the gallery footer' do
-    get '/'
-    expect(response.body).to include('popovertarget="wifi-qr-popover"', 'popover="auto"', '<svg', 'href="http://10.42.0.1"')
+  it 'shows the WLAN QR code in a dialog on the kiosk only' do
+    get '/?kiosk=1'
+    expect(response.body).to include('id="wifi-qr-dialog"', '<svg', 'href="http://10.42.0.1"')
+
+    get '/?kiosk=0'
+    expect(response.body).not_to include('id="wifi-qr-dialog"')
   end
 
   it 'serves the web manifest for the kiosk on the home screen' do
@@ -39,6 +42,11 @@ RSpec.describe 'Galleries', type: :request do
   it 'links the download in the gallery footer' do
     get '/'
     expect(response.body).to include("href=\"/galleries/#{gallery.name}/download\"")
+  end
+
+  it 'links the slideshow from the newest set in the gallery footer' do
+    get '/'
+    expect(response.body).to include('href="/sets/2099-01-01_01-48-33/slideshow"')
   end
 
 end

@@ -10,7 +10,11 @@ class SetsController < ApplicationController
 
   def show; end
 
-  def slideshow; end
+  # loops: after the newest set it starts again with the oldest, so new sets show up too
+  def slideshow
+    # PictureSet is no ActiveRecord model, it has no PictureSet.last
+    @next = @picture_set.next || PictureSet.all.last # rubocop:disable Rails/RedundantActiveRecordAllMethod
+  end
 
   # The job reports its progress to the kiosk through Turbo Stream broadcasts.
   # The response is empty: a status in it could arrive after the first broadcast and overwrite it.

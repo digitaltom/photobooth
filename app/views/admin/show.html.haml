@@ -1,7 +1,11 @@
-.container.admin
+-# dark Bootstrap colors for the cards, tables and form fields
+.container.admin{ data: { bs_theme: 'dark' } }
   .admin-header
-    = button_to 'Logout', admin_logout_path, method: :delete, class: 'btn btn-danger btn-lg', form_class: 'float-end'
-    %h2 Admin
+    %h1.gallery-title Admin
+    = link_to root_path, class: 'btn gallery-btn' do
+      = icon('grid')
+      Gallery
+    = button_to 'Logout', admin_logout_path, method: :delete, class: 'btn btn-danger'
 
   .card.mb-3
     .card-header Gallery
@@ -24,13 +28,17 @@
             %td= gallery.sets_count
             %td= number_to_human_size(gallery.size)
             %td
-              = link_to 'Download', download_gallery_path(gallery), class: 'btn btn-light btn-sm',
-                data: { turbo: false }, download: true
+              = link_to download_gallery_path(gallery), class: 'btn btn-light btn-sm', title: 'Download',
+                aria: { label: 'Download' }, data: { turbo: false }, download: true do
+                = icon('download')
             %td
+              -# like a radio button: the active gallery is checked
               - if gallery == @gallery
-                %b active
+                %span.admin-active{ title: 'Active', aria: { label: 'Active' } }= icon('check-circle')
               - else
-                = button_to 'Activate', admin_activate_gallery_path(gallery), method: :patch, class: 'btn btn-light btn-sm'
+                = button_to admin_activate_gallery_path(gallery), method: :patch, class: 'btn btn-light btn-sm',
+                  title: 'Activate', aria: { label: 'Activate' } do
+                  = icon('circle')
       = form_with url: admin_galleries_path, class: 'd-flex flex-wrap gap-2' do |f|
         = f.text_field :caption, maxlength: Gallery::CAPTION_MAX_LENGTH, required: true, class: 'form-control',
           placeholder: 'Caption of the new event'
@@ -91,7 +99,7 @@
   .card.mb-3
     .card-header System
     .card-body
-      = button_to 'Restart', admin_power_path(command: 'reboot'), class: 'btn btn-warning btn-lg',
+      = button_to 'Restart', admin_power_path(command: 'reboot'), class: 'btn btn-warning',
         form_class: 'inline-form', form: { data: { turbo_confirm: 'Restart the Photobox?' } }
-      = button_to 'Shut down', admin_power_path(command: 'poweroff'), class: 'btn btn-danger btn-lg',
+      = button_to 'Shut down', admin_power_path(command: 'poweroff'), class: 'btn btn-danger',
         form_class: 'inline-form', form: { data: { turbo_confirm: 'Shut down the Photobox?' } }

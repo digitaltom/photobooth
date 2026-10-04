@@ -7,11 +7,15 @@
       .shoot_text Tap to take a picture
 
   -# permanent: the gallery morph refresh must not close the dialog with the result
-  %dialog#shoot-dialog.text-center{ data: { countdown_target: 'dialog', turbo_permanent: true } }
-    %h3
-      %b{ data: { countdown_target: 'text' } }
-    %progress#shoot-progress{ max: 100, value: 100, data: { countdown_target: 'progress' } }
-    #kiosk-status
-    -# copied into #kiosk-status when the countdown starts: 4 black and white images
-    %template{ data: { countdown_target: 'status' } }
-      = render 'kiosk/status', step: 0
+  %dialog#shoot-dialog.text-center{ data: { countdown_target: 'dialog', turbo_permanent: true,
+                                           action: 'close->countdown#stop click->countdown#closeOnBackdrop' } }
+    .shoot-content
+      %button.btn-close.dialog-quit{ type: 'button', aria: { label: 'Quit' },
+                                    data: { countdown_target: 'quit', action: 'countdown#quit' } }
+      %h3
+        %b{ data: { countdown_target: 'text' } }
+      %progress#shoot-progress{ max: 100, value: 100, data: { countdown_target: 'progress' } }
+      #kiosk-status
+      -# copied into #kiosk-status when the countdown starts: 4 black and white images
+      %template{ data: { countdown_target: 'status' } }
+        = render 'kiosk/status', step: 0
