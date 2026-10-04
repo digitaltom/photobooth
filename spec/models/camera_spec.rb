@@ -11,7 +11,10 @@ RSpec.describe Camera, type: :model do
      "Deleting file /capt0000.jpg on the camera\n"]
   end
 
-  before { allow(OPTS).to receive(:camera).and_return('gphoto2') }
+  before do
+    allow(OPTS).to receive(:camera).and_return('gphoto2')
+    allow(Camera).to receive(:drain)
+  end
 
   it 'reads the summary and the image formats' do
     allow(Syscall).to receive(:execute).with('gphoto2 --summary --get-config imageformat').and_return(<<~OUT)
@@ -61,6 +64,14 @@ RSpec.describe Camera, type: :model do
       raise 'PTP I/O error'
     end
     expect { Camera.capture('/tmp', date) { nil } }.to raise_error('PTP I/O error')
+    expect(Camera).to have_received(:drain)
+  end
+
+  it 'downloads leftover photos into a temp folder and ignores errors' do
+    allow(Camera).to receive(:drain).and_call_original
+    expect(Syscall).to receive(:execute).with('gphoto2 --wait-event-and-download=2s', dir: %r{/tmp|#{Dir.tmpdir}})
+                                        .and_raise('*** Error: No camera found. ***')
+    expect { Camera.drain }.not_to raise_error
   end
 
 end

@@ -25,11 +25,28 @@ RSpec.describe CaptureJob, type: :job do
     expect(YAML.safe_load_file(File.join(set.dir, 'set.yml'))).to include('caption' => OPTS.image_caption)
   end
 
-  it 'reports the error to the kiosk' do
+  it 'keeps a set with the photos taken before the camera failed' do
+    allow(Camera).to receive(:capture) do |dir, date, &block|
+      (1..2).each do |num|
+        FileUtils.cp(Camera::FAKE_IMAGES.join("#{num}.jpg"), File.join(dir, "#{date}_#{num}.jpg"))
+        block.call(num)
+      end
+      raise 'Image capture failed, got 2 of 4 photos'
+    end
+
+    CaptureJob.perform_now(id)
+
+    set = PictureSet.find(id)
+    expect(set.pictures.size).to eq(2)
+    expect(set.files).to all(satisfy { |name| File.exist?(File.join(set.dir, name)) })
+  end
+
+  it 'reports the error to the kiosk and removes the set folder' do
     allow(Camera).to receive(:capture).and_raise('Image capture failed')
     expect(Turbo::StreamsChannel).to receive(:broadcast_update_to).twice
 
     expect { CaptureJob.perform_now(id) }.to raise_error('Image capture failed')
+    expect(File).not_to exist(PictureSet.new(date: id).dir)
   end
 
 end

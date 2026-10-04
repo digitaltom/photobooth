@@ -49,10 +49,20 @@ class Camera
       end
       raise "Image capture failed, got #{saved} of 4 photos" unless saved == 4
     rescue StandardError => e
+      drain
       # only retry when no photo was taken yet, else the set would mix two sessions
       Rails.logger.warn("Retrying capture (#{attempt}): #{e.message}") && retry if saved.zero? && attempt < RETRIES
       raise e
     end
+  end
+
+  # A capture that stops after the shutter release can leave its photo in the camera RAM.
+  # The next capture would download it as its first photo, so download it to a temp folder and delete it.
+  # ponytail: only after a failure, a power loss during a capture still leaves the photo in the camera
+  def self.drain
+    Dir.mktmpdir { |tmp| Syscall.execute('gphoto2 --wait-event-and-download=2s', dir: tmp) }
+  rescue StandardError => e
+    Rails.logger.warn("Camera drain failed: #{e.message}")
   end
 
   # One gphoto2 process: the first block of --summary (model, version, serial number) and the imageformat choices.

@@ -14,7 +14,7 @@ class PictureSet
   MAGICK_ENV = "env MAGICK_THREAD_LIMIT=1 MAGICK_MEMORY_LIMIT=#{OPTS.imagemagick_memory_limit} " \
                "MAGICK_MAP_LIMIT=#{OPTS.imagemagick_map_limit}".freeze
 
-  attr_accessor :date, :dir, :gallery, :animation, :pictures, :next, :last
+  attr_accessor :date, :dir, :gallery, :animation, :next, :last
 
   class << self
 
@@ -60,7 +60,12 @@ class PictureSet
     @gallery = gallery
     @dir = File.join(gallery.dir, date)
     @animation = "#{date}#{ANIMATION_SUFFIX}"
-    @pictures = (1..4).map { |i| { polaroid: "#{date}_#{i}#{POLAROID_SUFFIX}", full: "#{date}_#{i}.jpg" } }
+  end
+
+  # a set can have less than 4 photos when the camera failed during the capture
+  def pictures
+    (1..4).map { |i| { polaroid: "#{date}_#{i}#{POLAROID_SUFFIX}", full: "#{date}_#{i}.jpg" } }
+          .select { |picture| File.exist?(File.join(dir, picture[:full])) }
   end
 
   # the folder name is the capture time
@@ -107,7 +112,7 @@ class PictureSet
       Rails.logger.info "Creating animation for #{dir}"
       frames = (1..4).map { |i| File.join(dir, "#{date}_#{i}#{FRAME_SUFFIX}") }
       # older sets have no frames: then ImageMagick reduces the colors of the polaroids here
-      suffix = frames.all? { |f| File.exist?(f) } ? FRAME_SUFFIX : POLAROID_SUFFIX
+      suffix = frames.any? { |f| File.exist?(f) } ? FRAME_SUFFIX : POLAROID_SUFFIX
       Syscall.execute("#{MAGICK_ENV} #{IMAGEMAGICK} -delay 60 -loop 0 #{date}_[1-4]#{suffix} #{animation}", dir: dir, timing: true)
       FileUtils.rm_f(frames)
     end

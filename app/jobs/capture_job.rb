@@ -8,7 +8,8 @@ class CaptureJob < ApplicationJob
     picture_set = PictureSet.new(date: id)
     FileUtils.mkdir_p(picture_set.dir)
     started = now
-    threads = capture(picture_set)
+    threads = []
+    capture(picture_set, threads)
     captured = now
     threads.each(&:join)
     picture_set.create_animation
@@ -19,6 +20,7 @@ class CaptureJob < ApplicationJob
     Turbo::StreamsChannel.broadcast_refresh_to(:gallery)
   rescue StandardError => e
     broadcast_kiosk('kiosk/error', message: e.message)
+    remove(picture_set, threads)
     raise
   ensure
     GPIO_LEDS.each { |port| GpioPort.off(GpioPort::GPIO_PORTS[port]) }
@@ -26,16 +28,27 @@ class CaptureJob < ApplicationJob
 
   private
 
-  # returns the polaroid threads, they run while the camera takes the next photo
-  def capture(picture_set)
+  # adds the polaroid threads, they run while the camera takes the next photo
+  def capture(picture_set, threads)
     angle = Random.rand(353..366)
-    threads = []
     step(1)
     Camera.capture(picture_set.dir, picture_set.date) do |num|
       threads << Thread.new { picture_set.convert_to_polaroid(num, angle) }
       step(num + 1)
     end
-    threads
+  rescue StandardError => e
+    raise if threads.empty?
+
+    # 1-3 photos (for example the camera cannot focus for the next one) still make a set
+    logger.warn "CaptureJob #{picture_set.date}: #{e.message}, keeping #{threads.size} photos"
+  end
+
+  # a failed capture (for example the camera cannot focus) leaves no half set in the gallery
+  def remove(picture_set, threads)
+    return unless picture_set
+
+    threads&.each { |thread| thread.join rescue nil } # rubocop:disable Style/RescueModifier
+    FileUtils.rm_rf(picture_set.dir)
   end
 
   # step 1..4: the camera takes photo n, step 5: processing
