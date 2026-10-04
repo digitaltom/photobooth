@@ -21,7 +21,7 @@ RSpec.describe 'Admin', type: :request do
     OPTS.wifi_ssid = 'Party;Box'
     OPTS.wifi_password = 'secret123'
     PhotoboxConfig.admin_password = 'admin-password'
-    allow(Network).to receive(:devices).and_return([])
+    allow(Network).to receive_messages(devices: [], hotspot?: true, ip: nil)
   end
 
   def login(password = 'admin-password')
@@ -115,6 +115,26 @@ RSpec.describe 'Admin', type: :request do
     login
     get '/admin'
     expect(response.body).to include('10.42.0.23', 'aa:bb:cc:dd:ee:ff').and(exclude('10.42.0.9'))
+  end
+
+  it 'shows the IP addresses of the WLAN and the ethernet device' do
+    allow(Network).to receive(:ip).and_call_original
+    allow(Syscall).to receive(:execute).and_call_original
+    allow(Syscall).to receive(:execute).with('ip -4 -o addr show dev wlan0')
+                                       .and_return("3: wlan0    inet 10.42.0.1/24 brd 10.42.0.255 scope global wlan0\n")
+    allow(Syscall).to receive(:execute).with('ip -4 -o addr show dev eth0').and_return('')
+    login
+    get '/admin'
+    expect(response.body).to include('IP 10.42.0.1').and(exclude('Ethernet'))
+  end
+
+  it 'hides the network data when the hotspot is down' do
+    allow(Network).to receive(:hotspot?).and_call_original
+    allow(Syscall).to receive(:execute).and_call_original
+    allow(Syscall).to receive(:execute).with('nmcli -g GENERAL.STATE con show photobox').and_return("\n")
+    login
+    get '/admin'
+    expect(response.body).to include('Hotspot is not running').and(exclude('SSID', '<th>MAC</th>'))
   end
 
   it 'sets the time' do

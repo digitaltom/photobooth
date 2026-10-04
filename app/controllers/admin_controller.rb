@@ -11,7 +11,10 @@ class AdminController < ApplicationController
   def show
     @gallery = Gallery.active
     @galleries = Gallery.all
-    @devices = Network.devices
+    @hotspot = Network.hotspot?
+    @devices = @hotspot ? Network.devices : []
+    @wlan_ip = Network.ip('wlan0') if @hotspot
+    @eth_ip = Network.ip('eth0')
     @disk = Gallery.disk_usage
     @camera = Camera.info
   end

@@ -71,21 +71,27 @@
     .card-header
       Network
       %small.text-muted
-        WLAN #{wifi_ssid} · #{wifi_password ? "password #{wifi_password}" : 'open'} · #{ApplicationHelper::PHOTOBOX_URL}
+        - if @hotspot
+          SSID #{wifi_ssid} · #{wifi_password ? "password #{wifi_password}" : 'open'} · IP #{@wlan_ip}
+        - else
+          Hotspot is not running
+        - if @eth_ip
+          · Ethernet #{@eth_ip}
     .card-body
-      %table.table
-        %tr
-          %th Name
-          %th IP
-          %th MAC
-          %th State
-        - @devices.each do |device|
+      - if @hotspot
+        %table.table
           %tr
-            %td= device[:name]
-            %td= device[:ip]
-            %td
-              %code= device[:mac]
-            %td= device[:state]
+            %th Name
+            %th IP
+            %th MAC
+            %th State
+          - @devices.each do |device|
+            %tr
+              %td= device[:name]
+              %td= device[:ip]
+              %td
+                %code= device[:mac]
+              %td= device[:state]
       = link_to admin_wifi_sign_path, class: 'btn btn-light' do
         = icon('qr')
         Printable WLAN sign

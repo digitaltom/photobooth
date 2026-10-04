@@ -19,6 +19,21 @@ class Network
       []
     end
 
+    # the NetworkManager connection from photobox-network, the state is empty when it is down
+    def hotspot?
+      Syscall.execute('nmcli -g GENERAL.STATE con show photobox').strip == 'activated'
+    rescue RuntimeError => e
+      Rails.logger.warn "No hotspot: #{e.message}"
+      false
+    end
+
+    # IPv4 address of a device, nil when it is down or missing
+    def ip(device)
+      Syscall.execute("ip -4 -o addr show dev #{device}")[/inet ([\d.]+)/, 1]
+    rescue RuntimeError
+      nil
+    end
+
     private
 
     # dnsmasq lease lines: expiry mac ip hostname client-id, '*' for an unknown hostname
