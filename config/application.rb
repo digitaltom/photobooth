@@ -4,8 +4,6 @@ require_relative 'boot'
 
 require 'rails'
 require 'active_model/railtie'
-# ActiveRecord only backs Solid Queue and Solid Cable, picture sets live on the filesystem
-require 'active_record/railtie'
 require 'active_job/railtie'
 require 'action_controller/railtie'
 require 'action_view/railtie'

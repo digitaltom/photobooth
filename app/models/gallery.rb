@@ -4,9 +4,6 @@
 # The file 'active' in PictureSet.root names the gallery that gets new sets and that guests see.
 class Gallery
 
-  # ponytail: fits Rock Salt at fontsize 13 on the 600 px polaroid, change it together with the font
-  CAPTION_MAX_LENGTH = 40
-
   attr_reader :name, :dir
 
   class << self
@@ -85,7 +82,7 @@ class Gallery
 
   # ImageMagick reads a file for a caption that starts with @
   def caption=(text)
-    text = text.to_s.strip.sub(/\A@+/, '').first(CAPTION_MAX_LENGTH)
+    text = text.to_s.strip.sub(/\A@+/, '')
     File.write(event_file, { 'caption' => text }.to_yaml)
   end
 

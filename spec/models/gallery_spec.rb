@@ -37,11 +37,10 @@ RSpec.describe Gallery, type: :model do
     expect(PictureSet.new(date: 'x').dir).to eq File.join(gallery.dir, 'x')
   end
 
-  it 'limits the caption and removes a leading @' do
+  it 'removes a leading @ from the caption' do
     gallery = Gallery.active
-    gallery.caption = "@/etc/passwd #{'x' * 50}"
-    expect(gallery.caption).to start_with('/etc/passwd')
-    expect(gallery.caption.size).to eq Gallery::CAPTION_MAX_LENGTH
+    gallery.caption = '@/etc/passwd'
+    expect(gallery.caption).to eq '/etc/passwd'
   end
 
   it 'reports the disk usage' do

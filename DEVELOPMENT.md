@@ -5,7 +5,7 @@ For the install on a Raspberry Pi, see [deploy/README.md](deploy/README.md).
 ## Setup
 
 1. Install Ruby (version in `.ruby-version`), for example with [rbenv](https://github.com/rbenv/rbenv).
-2. Install the packages: `gphoto2`, `imagemagick`, `gpiod` and `libsqlite3-dev`.
+2. Install the packages: `gphoto2`, `imagemagick` and `gpiod`.
 3. Run `bin/setup`.
 4. Start the server: `bin/rails server`. Then open `http://localhost:3000/?kiosk=1`.
 

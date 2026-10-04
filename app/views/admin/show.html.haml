@@ -40,7 +40,7 @@
                   title: 'Activate', aria: { label: 'Activate' } do
                   = icon('circle')
       = form_with url: admin_galleries_path, class: 'd-flex flex-wrap gap-2' do |f|
-        = f.text_field :caption, maxlength: Gallery::CAPTION_MAX_LENGTH, required: true, class: 'form-control',
+        = f.text_field :caption, required: true, class: 'form-control',
           placeholder: 'Caption of the new event'
         = f.submit 'Start new gallery', class: 'btn btn-primary'
 
@@ -52,11 +52,11 @@
           .polaroid-photo
           .polaroid-caption{ data: { caption_preview_target: 'output' } }= @gallery.caption
         .d-flex.flex-wrap.gap-2
-          = f.text_field :caption, value: @gallery.caption, maxlength: Gallery::CAPTION_MAX_LENGTH, class: 'form-control',
+          = f.text_field :caption, value: @gallery.caption, class: 'form-control',
             data: { caption_preview_target: 'input', action: 'caption-preview#update' }
           = f.submit 'Save caption', class: 'btn btn-primary'
         %p.form-text
-          Max. #{Gallery::CAPTION_MAX_LENGTH} characters, applies to new sets.
+          Applies to new sets.
 
   .card.mb-3
     .card-header Network

@@ -49,7 +49,6 @@ Rails.application.configure do
   # Use default logging formatter so that PID and timestamp are not suppressed.
   config.log_formatter = Logger::Formatter.new
 
-  # Jobs run in the Puma process (SOLID_QUEUE_IN_PUMA=1), the queue database lives in /run (see config/database.yml)
-  config.active_job.queue_adapter = :solid_queue
-  config.solid_queue.connects_to = { database: { writing: :queue } }
+  # One thread: one camera, a second tap waits until the current set is done.
+  config.active_job.queue_adapter = ActiveJob::QueueAdapters::AsyncAdapter.new(min_threads: 1, max_threads: 1)
 end

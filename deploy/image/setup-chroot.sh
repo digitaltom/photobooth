@@ -8,12 +8,12 @@ app=/var/lib/photobox/releases/$ver
 export DEBIAN_FRONTEND=noninteractive LC_ALL=C.UTF-8 APT_LISTCHANGES_FRONTEND=none BUNDLE_SILENCE_ROOT_WARNING=1
 rm -f /var/lib/man-db/auto-update  # no man-db index rebuild on each apt run (slow under qemu)
 
-runtime_pkgs=(gphoto2 imagemagick gpiod sqlite3 libyaml-0-2 network-manager avahi-daemon openssh-server
+runtime_pkgs=(gphoto2 imagemagick gpiod libyaml-0-2 network-manager avahi-daemon openssh-server
               nftables overlayroot cloud-guest-utils zstd curl iw rfkill polkitd
               dnsmasq-base wpasupplicant)  # NetworkManager only recommends them, the hotspot needs both
-build_pkgs=(build-essential libssl-dev libyaml-dev libffi-dev zlib1g-dev libsqlite3-dev)
+build_pkgs=(build-essential libssl-dev libyaml-dev libffi-dev zlib1g-dev)
 # /mnt is the build cache (tmp/image/cache), bind-mounted by bin/build-image.
-# ponytail: old Ruby and bundle versions pile up there, delete tmp/image/cache by hand
+# Old Ruby and bundle versions pile up there, delete tmp/image/cache by hand
 mkdir -p /mnt/apt/partial
 apt-get update
 apt-get -o Dir::Cache::Archives=/mnt/apt full-upgrade -y

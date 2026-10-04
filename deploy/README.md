@@ -124,7 +124,6 @@ The data partition is the only partition that keeps changes. `photobox-firstboot
 | `/opt/photobox` | 2 | link to `/var/lib/photobox/current`. `photobox.service` uses this path. |
 | `/var/lib/photobox/photobox.env` | 3 | `SECRET_KEY_BASE` and `PHOTOBOX_STORAGE`, written by `photobox-firstboot` |
 | `/var/lib/photobox/sets/` | 3 | the photos (gallery), see below |
-| `/run/photobox/` | RAM | the SQLite databases (`PHOTOBOX_DB_DIR`). They hold only volatile data. `db:prepare` creates them again at each start. |
 | `/usr/local/sbin/photobox-*` | 2 | the scripts of the image |
 | logs | RAM | the app writes to the journal (`journalctl -u photobox`). The journal is in the RAM overlay, so it is lost at reboot. |
 

@@ -2,9 +2,6 @@
 
 # Takes 4 photos, renders polaroids and the GIF, reports each step to the kiosk.
 class CaptureJob < ApplicationJob
-  # one camera: a second tap waits until this set is done
-  limits_concurrency to: 1, key: 'camera'
-
   GPIO_LEDS = %w[PICTURE1 PICTURE2 PICTURE3 PICTURE4 PROCESSING].freeze
 
   def perform(id)
