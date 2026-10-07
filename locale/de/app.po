@@ -79,6 +79,9 @@ msgstr "Herunterladen"
 msgid "Download set"
 msgstr "Alle herunterladen"
 
+msgid "Fullscreen"
+msgstr "Vollbild"
+
 msgid "Galleries"
 msgstr "Galerien"
 

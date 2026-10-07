@@ -63,6 +63,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    height: 100vh; /* Firefox < 101 has no dvh */
     height: 100dvh;
     padding: 16px;
 }
@@ -139,6 +140,27 @@ turbo-cable-stream-source {
   overflow-wrap: anywhere;
 }
 
+/* a long caption ends with … after 3 lines */
+.gallery-side .gallery-title {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+  /* with overflow: hidden the side panel would squeeze it below 3 lines */
+  flex: none;
+  /* Rock Salt glyphs reach 1.37em above and .42em below the baseline: with less than 1.8 the clip cuts
+     the 3rd line or shows the top of the 4th, the padding keeps the umlauts of the 1st line */
+  font-size: 1.75rem;
+  line-height: 1.8;
+  padding-top: .1em;
+}
+
+@media (max-height: 699px) {
+  .gallery-side .gallery-title {
+    -webkit-line-clamp: 2;
+  }
+}
+
 .gallery-count {
   margin-top: -8px;
   color: #8d8a85;
@@ -163,7 +185,10 @@ turbo-cable-stream-source {
 }
 
 .shoot_img {
-  width: min(300px, 40vh);
+  --shoot-size: min(300px, 40vh);
+  width: var(--shoot-size);
+  /* the clip hides the top 13% of the gif: no empty gap above the circle */
+  margin-top: calc(-.13 * var(--shoot-size));
   max-width: 100%;
   transition: transform .12s;
 }
@@ -210,8 +235,9 @@ turbo-cable-stream-source {
 
 .gallery-footer {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
-  gap: 16px;
+  gap: 8px 16px;
   width: 100%;
   max-width: 400px;
   font-size: .8rem;
@@ -223,13 +249,22 @@ turbo-cable-stream-source {
   padding: 24px 16px;
 }
 
-.gallery-footer a {
+.gallery-footer a,
+.gallery-footer button {
   display: inline-flex;
   white-space: nowrap;
   align-items: center;
   gap: 6px;
   color: #a8a39c;
   text-decoration: none;
+}
+
+/* the fullscreen button looks like the links */
+.gallery-footer button {
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
 }
 
 .gallery-grid {
@@ -276,27 +311,40 @@ turbo-cable-stream-source {
 @media (min-width: 768px) {
   .kiosk .gallery-page {
     display: flex;
+    height: 100vh; /* Firefox < 101 has no dvh */
     height: 100dvh;
   }
 
   .kiosk .gallery-side {
     width: 380px;
     flex: none;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: auto;
   }
 
-  /* the shoot button takes the free height between the title and the buttons */
+  /* the shoot button takes the free height between the title and the buttons, never less than its content */
   .kiosk .shoot-area {
     flex: 1;
-    min-height: 0;
     display: flex;
     align-items: center;
+  }
+
+  /* the circle fills the free height. ponytail: 290px is the rest of the panel with a 2-line text, a longer caption makes the panel scroll */
+  .kiosk .shoot_img {
+    --shoot-size: min(300px, calc(100vh - 290px));
   }
 
   .kiosk .gallery-grid {
     flex: 1;
     overflow-y: auto;
     align-content: start;
+  }
+}
+
+/* smaller pictures next to the side panel: 2 columns from 860px, from 976px 2 columns of 280px fit */
+@media (min-width: 768px) and (max-width: 975px) {
+  .kiosk .gallery-grid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   }
 }
 
@@ -496,7 +544,7 @@ turbo-cable-stream-source {
   font-size: .75rem;
 }
 
-/* native popover with the caption form */
+/* modal dialogs on the admin page */
 .admin-popover {
   width: min(360px, calc(100vw - 32px));
   padding: 20px;

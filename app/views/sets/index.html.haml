@@ -7,19 +7,28 @@
 - footer = capture do
   .gallery-footer
     -# turbo: false, Turbo Drive would fetch the archive as a page
-    = link_to download_gallery_path(@gallery), data: { turbo: false }, download: true do
-      = icon('download')
-      = _('Download set')
+    - unless kiosk?
+      = link_to download_gallery_path(@gallery), data: { turbo: false }, download: true do
+        = icon('download')
+        = _('Download set')
     -# starts with the newest set
     - if @picture_sets.any?
       = link_to slideshow_set_path(@picture_sets.first) do
         = icon('play')
         = _('Slideshow')
-    = link_to 'https://github.com/digitaltom/photobooth', title: _('Project'), aria: { label: _('Project') } do
-      = icon('github')
-    = link_to admin_path do
-      = icon('lock')
-      = _('Admin')
+    -# a second tap leaves fullscreen
+    %button{ type: 'button',
+             onclick: 'document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen()' }
+      = icon('fullscreen')
+      = _('Fullscreen')
+    -# guests get the download and the project, the kiosk operator gets the admin menu
+    - if kiosk?
+      = link_to admin_path do
+        = icon('lock')
+        = _('Admin')
+    - else
+      = link_to 'https://github.com/digitaltom/photobooth', title: _('Project'), aria: { label: _('Project') } do
+        = icon('github')
 
 .gallery-page
   %aside.gallery-side

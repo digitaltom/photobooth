@@ -34,21 +34,23 @@
             %td= number_to_human_size(gallery.size)
             %td
               .d-flex.gap-1.justify-content-end
-                %button.btn.btn-light.btn-sm{ type: 'button', title: _('Rename'), aria: { label: _('Rename') },
-                  popovertarget: "caption-#{gallery.name}" }= icon('pencil')
-                -# native popover: no Bootstrap JS on this page
-                .admin-popover{ id: "caption-#{gallery.name}", popover: '' }
-                  = form_with url: admin_gallery_caption_path(gallery), method: :patch, data: { controller: 'caption-preview' } do |f|
-                    .polaroid-preview
-                      .polaroid-photo
-                      .polaroid-caption{ data: { caption_preview_target: 'output' } }= gallery.caption
-                    .d-flex.flex-wrap.gap-2
-                      = f.text_field :caption, value: gallery.caption, class: 'form-control',
-                        data: { caption_preview_target: 'input', action: 'caption-preview#update' }
-                      = f.submit _('Save caption'), class: 'btn btn-primary'
-                    %p.form-text
-                      = _('The caption is the title of the gallery and is printed on the new pictures.')
-                      = _('Pictures that you already took keep their caption.')
+                %div{ data: { controller: 'modal' } }
+                  %button.btn.btn-light.btn-sm{ type: 'button', title: _('Rename'), aria: { label: _('Rename') },
+                    data: { action: 'modal#open' } }= icon('pencil')
+                  -# dialog, not popover: Firefox 101 on the Nexus 7 has no popover API
+                  %dialog.admin-popover.p-0{ data: { modal_target: 'dialog', action: 'click->modal#closeOnBackdrop' } }
+                    = form_with url: admin_gallery_caption_path(gallery), method: :patch, class: 'p-4',
+                      data: { controller: 'caption-preview' } do |f|
+                      .polaroid-preview
+                        .polaroid-photo
+                        .polaroid-caption{ data: { caption_preview_target: 'output' } }= gallery.caption
+                      .d-flex.flex-wrap.gap-2
+                        = f.text_field :caption, value: gallery.caption, class: 'form-control',
+                          data: { caption_preview_target: 'input', action: 'caption-preview#update' }
+                        = f.submit _('Save caption'), class: 'btn btn-primary'
+                      %p.form-text
+                        = _('The caption is the title of the gallery and is printed on the new pictures.')
+                        = _('Pictures that you already took keep their caption.')
                 = link_to download_gallery_path(gallery), class: 'btn btn-light btn-sm', title: _('Download'),
                   aria: { label: _('Download') }, data: { turbo: false }, download: true do
                   = icon('download')

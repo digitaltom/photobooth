@@ -57,14 +57,24 @@ RSpec.describe 'Galleries', type: :request do
     expect(response.parsed_body).to include('display' => 'standalone', 'start_url' => '/?kiosk=1')
   end
 
-  it 'links the download in the gallery footer' do
+  it 'links the download and the project in the gallery footer, but not on the kiosk' do
     get '/'
-    expect(response.body).to include("href=\"/galleries/#{gallery.name}/download\"")
+    expect(response.body).to include("href=\"/galleries/#{gallery.name}/download\"",
+                                     'href="https://github.com/digitaltom/photobooth"')
+
+    get '/?kiosk=1'
+    expect(response.body).not_to include("href=\"/galleries/#{gallery.name}/download\"")
+    expect(response.body).not_to include('href="https://github.com/digitaltom/photobooth"')
   end
 
   it 'links the slideshow from the newest set in the gallery footer' do
     get '/'
     expect(response.body).to include('href="/sets/2099-01-01_01-48-33/slideshow"')
+  end
+
+  it 'has a fullscreen button in the gallery footer' do
+    get '/'
+    expect(response.body).to include('document.documentElement.requestFullscreen()')
   end
 
 end

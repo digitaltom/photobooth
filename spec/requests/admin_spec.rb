@@ -200,9 +200,12 @@ RSpec.describe 'Admin', type: :request do
     expect(response.body).to include('<svg', 'Party;Box', 'secret123')
   end
 
-  it 'links the admin menu in the gallery footer' do
-    get '/'
+  it 'links the admin menu in the gallery footer on the kiosk only' do
+    get '/?kiosk=1'
     expect(response.body).to include('href="/admin"')
+
+    get '/?kiosk=0'
+    expect(response.body).not_to include('href="/admin"')
   end
 
 end

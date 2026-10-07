@@ -10,6 +10,8 @@
     %meta{ name: 'mobile-web-app-capable', content: 'yes' }
     %meta{ name: 'apple-mobile-web-app-status-bar-style', content: 'black' }
     = stylesheet_link_tag 'bootstrap-5.3.8/bootstrap.min', 'photobooth'
+    -# polyfills import maps for Firefox < 108 (Nexus 7 kiosk), modern browsers skip it
+    %script{ async: true, src: asset_path('es-module-shims.min.js') }
     = javascript_importmap_tags
     = csrf_meta_tags
     = yield(:head)
