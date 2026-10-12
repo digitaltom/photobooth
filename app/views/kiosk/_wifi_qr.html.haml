@@ -1,0 +1,21 @@
+-# locals: (label:)
+-# the kiosk offers no download: the button shows the QR code for the phones instead.
+-# Needs the modal controller around it.
+%button.btn.gallery-btn{ type: 'button', data: { action: 'modal#open' } }
+  = icon('qr')
+  = label
+-# permanent: the gallery morph refresh must not close it
+%dialog#wifi-qr-dialog.wifi-qr-dialog{ data: { modal_target: 'dialog', action: 'click->modal#closeOnBackdrop',
+                                              turbo_permanent: true } }
+  .wifi-qr-content
+    -# first in the dialog: it gets the focus when the dialog opens, not the gallery link
+    %form{ method: 'dialog' }
+      %button.btn-close.dialog-quit{ aria: { label: _('Close') } }
+    %p.lead= _('Scan to join the WLAN')
+    .wifi-qr= wifi_qr_svg
+    %p
+      = _('WLAN:')
+      %b= wifi_ssid
+    %p
+      = _('Gallery:')
+      = link_to ApplicationHelper::PHOTOBOX_URL, ApplicationHelper::PHOTOBOX_URL
