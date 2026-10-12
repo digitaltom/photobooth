@@ -31,8 +31,12 @@ The app sets them with `gpioset` from libgpiod. Set the chip with `gpio_chip` in
 
 ## Stream Deck
 
-An Elgato Stream Deck Mini on USB can start a picture. The app finds the device within 2 seconds after plug in.
-The top middle key shows the camera icon. A press on it starts the countdown on the open kiosk page.
+An Elgato Stream Deck Mini on USB can control the open kiosk page. The app finds the device within 2 seconds after plug in.
+
+- The top middle key shows the camera icon. A press on it starts the countdown.
+- The top left and top right keys show the newest and the second newest set. A press on them opens the set.
+- The text under the shoot button scrolls over the lower 3 keys, in the language of the kiosk. A press on them starts the countdown.
+
 The app reads and writes `/dev/hidrawN` and needs the udev rule [deploy/streamdeck.rules](deploy/streamdeck.rules).
 The image includes the rule. On a laptop, copy it to `/etc/udev/rules.d/` and add your user to the group `plugdev`.
 

@@ -1,0 +1,2 @@
+# Elgato Stream Deck Mini: the photobox user (group plugdev) reads the keys and writes the key image
+SUBSYSTEM=="hidraw", ATTRS{idVendor}=="0fd9", ATTRS{idProduct}=="0063", GROUP="plugdev", MODE="0660"

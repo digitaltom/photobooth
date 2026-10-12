@@ -18,14 +18,30 @@ feature 'Photobox kiosk', js: true do
     expect(page).to have_css('#shoot-progress', visible: :hidden, wait: 5)
   end
 
-  it 'counts down after a press of the Stream Deck key' do
+  # wait for the Turbo stream subscriptions (gallery and kiosk), else the broadcast gets lost
+  def wait_for_streams
+    expect(page).to have_css('turbo-cable-stream-source[connected]', count: 2, visible: :all)
+  end
+
+  it 'counts down after a press of the Stream Deck shoot key' do
     expect(CaptureJob).to receive(:perform_later)
 
-    # wait for the Turbo stream subscription, else the broadcast gets lost
-    expect(page).to have_css('turbo-cable-stream-source[connected]', visible: :all)
-    StreamDeck.trigger
+    wait_for_streams
+    StreamDeck.shoot
     expect(page).to have_content 'Take pose!'
     expect(page).to have_css('#shoot-progress', visible: :hidden, wait: 5)
+  end
+
+  it 'opens a set with a Stream Deck key and counts down on the gallery with the shoot key' do
+    allow(CaptureJob).to receive(:perform_later)
+    wait_for_streams
+    StreamDeck.show_set('2099-01-01_01-48-33')
+    expect(page).to have_current_path('/sets/2099-01-01_01-48-33')
+
+    expect(page).to have_css('turbo-cable-stream-source[connected]', visible: :all)
+    StreamDeck.shoot
+    expect(page).to have_current_path('/')
+    expect(page).to have_content 'Take pose!'
   end
 
   it 'quits the countdown without a picture' do

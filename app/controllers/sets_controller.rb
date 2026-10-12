@@ -6,6 +6,8 @@ class SetsController < ApplicationController
   def index
     @gallery = Gallery.active
     @picture_sets = PictureSet.all
+    # the gallery refresh after each capture also gets here
+    StreamDeck.update(@picture_sets) if kiosk?
   end
 
   def show; end
