@@ -53,6 +53,7 @@ ln -sfn "releases/$ver" /var/lib/photobox/current
 
 cp "$app/deploy/photobox.service" /etc/systemd/system/
 cp "$app/deploy/polkit-photobox.rules" /etc/polkit-1/rules.d/50-photobox.rules
+cp "$app/deploy/streamdeck.rules" /etc/udev/rules.d/50-streamdeck.rules
 # the admin menu writes the admin password into photobox.yml on the boot partition (FAT has no owners)
 sed -i -E "s#^(\S+\s+/boot/firmware\s+vfat\s+)defaults#\1defaults,gid=$(id -g photobox),fmask=0113,dmask=0002#" /etc/fstab
 grep -q "/boot/firmware.*gid=$(id -g photobox)" /etc/fstab

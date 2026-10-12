@@ -14,13 +14,9 @@ RSpec.describe Gallery, type: :model do
     end
   end
 
-  it 'moves sets from before galleries into the first gallery' do
-    FileUtils.mkdir_p(File.join(PictureSet.root, 'old'))
-    FileUtils.touch(File.join(PictureSet.root, "old/old#{PictureSet::ANIMATION_SUFFIX}"))
-
+  it 'creates the first gallery on the first start' do
     gallery = Gallery.active
     expect(gallery.caption).to eq OPTS.image_caption
-    expect(gallery.sets_count).to eq 1
     expect(Gallery.active).to eq gallery
     expect(Gallery.all.size).to eq 1
   end
@@ -53,6 +49,16 @@ RSpec.describe Gallery, type: :model do
     expect(File.exist?(File.join(renamed.dir, 'x'))).to be true
     expect(Gallery.active).to eq renamed
     expect(renamed.rename('Hochzeit')).to eq renamed
+  end
+
+  it 'sorts a gallery without created_at by the time of its folder' do
+    newer = Gallery.create('New')
+    old = Gallery.create('Old')
+    old.write_event('caption' => 'Old')
+    FileUtils.touch(old.dir, mtime: 1.year.ago.to_time)
+
+    expect(old.created_at).to be_within(1.minute).of(1.year.ago)
+    expect(Gallery.all).to eq [newer, old]
   end
 
   it 'removes a leading @ from the caption' do

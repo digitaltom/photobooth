@@ -29,6 +29,13 @@ LEDs can get connected to the Raspberry Pi's [gpio ports](https://www.raspberryp
 It uses port 23 for 'ready', the ports 4,5,6,17  for picture 1-4 and port 24 for 'image processing'.
 The app sets them with `gpioset` from libgpiod. Set the chip with `gpio_chip` in the options.
 
+## Stream Deck
+
+An Elgato Stream Deck Mini on USB can start a picture. The app finds the device within 2 seconds after plug in.
+The top middle key shows the camera icon. A press on it starts the countdown on the open kiosk page.
+The app reads and writes `/dev/hidrawN` and needs the udev rule [deploy/streamdeck.rules](deploy/streamdeck.rules).
+The image includes the rule. On a laptop, copy it to `/etc/udev/rules.d/` and add your user to the group `plugdev`.
+
 ## Tests and linting
 
 ```sh
@@ -43,7 +50,6 @@ The `test` environment always uses the `fake` camera.
 - `rake picture_set:record`: Trigger a new picture from console
 - `rake picture_set:recreate_polaroid_images[path]`: Re-create all polaroid images in a batch
 - `rake picture_set:recreate_animations[path]`: Re-create all animations in a batch
-- `rake picture_set:export[output,path]`: Export all images into one output directory
 
 ## Fonts
 

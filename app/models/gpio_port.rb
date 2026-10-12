@@ -14,23 +14,23 @@ class GpioPort
 
   class << self
 
-    def on(num)
-      set(num, 1)
+    def on(name)
+      set(name, 1)
     end
 
-    def off(num)
-      set(num, 0)
+    def off(name)
+      set(name, 0)
     end
 
     private
 
     # -t0: set the line and exit instead of holding it
-    def set(num, value)
+    def set(name, value)
       return unless AVAILABLE
 
-      Syscall.execute("gpioset -t0 -c #{OPTS.gpio_chip} #{num}=#{value}")
+      Syscall.execute("gpioset -t0 -c #{OPTS.gpio_chip} #{GPIO_PORTS.fetch(name)}=#{value}")
     rescue StandardError => e
-      Rails.logger.warn("GPIO #{num}=#{value} failed: #{e.message}")
+      Rails.logger.warn("GPIO #{name}=#{value} failed: #{e.message}")
     end
 
   end

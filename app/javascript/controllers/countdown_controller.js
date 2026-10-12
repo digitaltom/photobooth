@@ -4,8 +4,13 @@ import { Controller } from "@hotwired/stimulus"
 // From then on the CaptureJob broadcasts each step into #kiosk-status.
 // The quit button only shows during the countdown: a running capture job cannot be stopped.
 export default class extends Controller {
-  static targets = ["form", "dialog", "text", "progress", "status", "quit"]
+  static targets = ["form", "dialog", "text", "progress", "status", "quit", "trigger"]
   static values = { delay: { type: Number, default: 2000 }, text: { type: String, default: "Take pose!" } }
+
+  // the Stream Deck key: each press broadcasts a new trigger element
+  triggerTargetConnected() {
+    this.start()
+  }
 
   start() {
     if (this.dialogTarget.open) return

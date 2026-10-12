@@ -30,7 +30,7 @@ class CaptureJob < ApplicationJob
     remove(picture_set, threads)
     raise
   ensure
-    GPIO_LEDS.each { |port| GpioPort.off(GpioPort::GPIO_PORTS[port]) }
+    GPIO_LEDS.each { |port| GpioPort.off(port) }
   end
 
   # adds the polaroid threads, they run while the camera takes the next photo
@@ -58,13 +58,8 @@ class CaptureJob < ApplicationJob
 
   # step 1..4: the camera takes photo n, step 5: processing
   def step(num)
-    if num <= 4
-      GpioPort.on(GpioPort::GPIO_PORTS["PICTURE#{num}"])
-      broadcast_kiosk('kiosk/status', step: num)
-    else
-      GpioPort.on(GpioPort::GPIO_PORTS['PROCESSING'])
-      broadcast_kiosk('kiosk/status', step: :processing)
-    end
+    GpioPort.on(num <= 4 ? "PICTURE#{num}" : 'PROCESSING')
+    broadcast_kiosk('kiosk/status', step: num <= 4 ? num : :processing)
   end
 
   def now

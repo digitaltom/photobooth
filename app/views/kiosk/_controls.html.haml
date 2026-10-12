@@ -5,6 +5,8 @@
     %button.shoot_button{ type: 'button', data: { action: 'countdown#start' } }
       = image_tag '/images/take_picture_animation.gif', class: 'shoot_img', alt: ''
       .shoot_text= _('Tap to take a picture')
+  -# StreamDeck.trigger puts a countdown trigger target in here
+  #kiosk-trigger
 
   -# permanent: the gallery morph refresh must not close the dialog with the result
   %dialog#shoot-dialog.text-center{ data: { countdown_target: 'dialog', turbo_permanent: true,

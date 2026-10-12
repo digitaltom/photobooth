@@ -20,7 +20,7 @@ class Gallery
     def active
       name = File.read(active_file).strip if File.exist?(active_file)
       gallery = all.detect { |g| g.name == name }
-      gallery || all.first&.tap(&:activate!) || migrate
+      gallery || all.first&.tap(&:activate!) || create(OPTS.image_caption).tap(&:activate!)
     end
 
     def create(caption)
@@ -55,16 +55,6 @@ class Gallery
 
     def active_file
       File.join(PictureSet.root, 'active')
-    end
-
-    # first start: the sets from before galleries existed move into the first gallery
-    def migrate
-      gallery = create(OPTS.image_caption)
-      Dir.glob(File.join(PictureSet.root, "*/*#{PictureSet::ANIMATION_SUFFIX}")).each do |animation|
-        FileUtils.mv(File.dirname(animation), gallery.dir)
-      end
-      gallery.activate!
-      gallery
     end
 
   end

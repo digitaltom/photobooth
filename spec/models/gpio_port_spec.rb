@@ -8,17 +8,17 @@ RSpec.describe GpioPort, type: :model do
 
   it 'turns on pin' do
     expect(Syscall).to receive(:execute).with('gpioset -t0 -c gpiochip0 5=1')
-    GpioPort.on(5)
+    GpioPort.on('PICTURE2')
   end
 
   it 'turns off pin' do
     expect(Syscall).to receive(:execute).with('gpioset -t0 -c gpiochip0 5=0')
-    GpioPort.off(5)
+    GpioPort.off('PICTURE2')
   end
 
   it 'continues if gpioset fails' do
     expect(Syscall).to receive(:execute).and_raise('busy')
-    expect { GpioPort.on(5) }.not_to raise_error
+    expect { GpioPort.on('PICTURE2') }.not_to raise_error
   end
 
 end

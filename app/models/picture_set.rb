@@ -111,7 +111,7 @@ class PictureSet
     else
       Rails.logger.info "Creating animation for #{dir}"
       frames = (1..4).map { |i| File.join(dir, "#{date}_#{i}#{FRAME_SUFFIX}") }
-      # older sets have no frames: then ImageMagick reduces the colors of the polaroids here
+      # a recreated animation has no frames (deleted below): then ImageMagick reduces the colors of the polaroids here
       suffix = frames.any? { |f| File.exist?(f) } ? FRAME_SUFFIX : POLAROID_SUFFIX
       Syscall.execute("#{MAGICK_ENV} #{IMAGEMAGICK} -delay 60 -loop 0 #{date}_[1-4]#{suffix} #{animation}", dir: dir, timing: true)
       FileUtils.rm_f(frames)
