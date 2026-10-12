@@ -18,6 +18,22 @@ RSpec.describe 'Sets', type: :request do
     expect(response.media_type).to eq 'image/gif'
   end
 
+  it 'serves the polaroids of a set before it has its animation' do
+    dir = PictureSet.new(date: '2100-01-01_00-00-00').dir
+    FileUtils.mkdir_p(dir)
+    # the photo and its polaroid, the camera takes photo 2 now
+    %w[_1.jpg _1_polaroid.png].each do |suffix|
+      FileUtils.cp(File.join(PictureSet.find(id).dir, "#{id}#{suffix}"), File.join(dir, "2100-01-01_00-00-00#{suffix}"))
+    end
+
+    get '/sets/2100-01-01_00-00-00/files/2100-01-01_00-00-00_1_polaroid.png'
+    expect(response).to have_http_status(:ok)
+    get '/sets/2100-01-01_00-00-00/files/2100-01-01_00-00-00_2_polaroid.png'
+    expect(response).to have_http_status(:not_found)
+  ensure
+    FileUtils.rm_rf(dir)
+  end
+
   it 'does not serve other files' do
     get "/sets/#{id}/files/..%2F..%2Fsecret"
     expect(response).to have_http_status(:not_found)
@@ -66,6 +82,14 @@ RSpec.describe 'Kiosk', type: :request do
     expect(response.body).not_to include('shoot_button', '<body class="kiosk">')
     get '/'
     expect(response.body).not_to include('shoot_button')
+  end
+
+  it 'takes true and false for the kiosk mode too' do
+    get '/?kiosk=true'
+    expect(response.body).to include('<body class="kiosk">')
+
+    get '/?kiosk=false'
+    expect(response.body).not_to include('<body class="kiosk">')
   end
 end
 

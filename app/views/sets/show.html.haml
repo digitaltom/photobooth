@@ -22,13 +22,16 @@
         = link_to root_path, class: 'btn gallery-btn' do
           = image_tag '/images/take_picture_animation.gif', class: 'shoot_img_icon', alt: ''
           = _('Take a picture')
-    .gallery-actions
+    .gallery-actions{ data: { controller: ('modal' if kiosk?) } }
       = link_to root_path, class: 'btn gallery-btn' do
         = icon('grid')
         = _('Gallery')
-      = link_to file_set_path(@picture_set, name: @picture_set.animation, download: 1), class: 'btn gallery-btn' do
-        = icon('download')
-        = _('Save image')
+      - if kiosk?
+        = render 'kiosk/wifi_qr', label: _('Save image')
+      - else
+        = link_to file_set_path(@picture_set, name: @picture_set.animation, download: 1), class: 'btn gallery-btn' do
+          = icon('download')
+          = _('Save image')
   %main.gallery-grid.set-grid
     = image_tag file_set_path(@picture_set, name: @picture_set.animation), class: 'gallery-img set-animation'
     - @picture_set.pictures.each do |picture|

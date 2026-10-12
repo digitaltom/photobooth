@@ -68,7 +68,7 @@ feature 'Photobox kiosk', js: true do
   end
 
   it 'closes the QR code dialog with its close button' do
-    click_button('Connect your phone')
+    click_button('Download pictures')
     find('#wifi-qr-dialog button[aria-label="Close"]').click
     expect(page).to have_no_css('#wifi-qr-dialog[open]')
   end
@@ -76,7 +76,7 @@ feature 'Photobox kiosk', js: true do
   it 'closes the QR code dialog on a tap outside, without a picture' do
     expect(CaptureJob).not_to receive(:perform_later)
 
-    click_button('Connect your phone')
+    click_button('Download pictures')
     expect(page).to have_css('#wifi-qr-dialog[open]')
     # tap on the backdrop, right over the shoot button
     x, y = evaluate_script('(r => [r.x + r.width / 2, r.y + r.height / 2])' \

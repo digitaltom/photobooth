@@ -23,11 +23,11 @@ class ApplicationController < ActionController::Base
            .find { it.in?(FastGettext.available_locales) }
   end
 
-  # ?kiosk=1 turns the tablet into the kiosk for all following requests, ?kiosk=0 turns it off
+  # ?kiosk=1 or ?kiosk=true turns the tablet into the kiosk for all following requests, ?kiosk=0 or ?kiosk=false turns it off
   def remember_kiosk
     return unless params.key?(:kiosk)
 
-    params[:kiosk] == '1' ? cookies.permanent[:kiosk] = '1' : cookies.delete(:kiosk)
+    ActiveModel::Type::Boolean.new.cast(params[:kiosk]) ? cookies.permanent[:kiosk] = '1' : cookies.delete(:kiosk)
   end
 
   def kiosk?

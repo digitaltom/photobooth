@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class SetsController < ApplicationController
-  before_action :set_picture_set, only: %i[show slideshow file]
+  before_action :set_picture_set, only: %i[show slideshow]
 
   def index
     @gallery = Gallery.active
@@ -25,12 +25,15 @@ class SetsController < ApplicationController
     render turbo_stream: ''
   end
 
-  # sets live outside public/ (USB stick), so only the known file names are served
+  # Sets live outside public/ (USB stick), so only the known file names are served.
+  # Also for a set without animation yet: the kiosk shows the polaroids during the capture (CaptureJob).
   def file
+    picture_set = PictureSet.new(date: params.expect(:id))
     name = params.expect(:name)
-    raise ActionController::RoutingError, 'File not found' unless @picture_set.files.include?(name)
+    path = File.join(picture_set.dir, name)
+    raise ActionController::RoutingError, 'File not found' unless picture_set.files.include?(name) && File.file?(path)
 
-    send_file File.join(@picture_set.dir, name), disposition: params[:download] ? 'attachment' : 'inline'
+    send_file path, disposition: params[:download] ? 'attachment' : 'inline'
   end
 
   private

@@ -65,7 +65,7 @@ msgstr ""
 msgid "Close"
 msgstr ""
 
-msgid "Connect your phone"
+msgid "Download pictures"
 msgstr ""
 
 msgid "Delete"

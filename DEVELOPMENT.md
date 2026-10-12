@@ -32,6 +32,7 @@ The app sets them with `gpioset` from libgpiod. Set the chip with `gpio_chip` in
 ## Stream Deck
 
 An Elgato Stream Deck Mini on USB can control the open kiosk page. The app finds the device within 2 seconds after plug in.
+The app supports the Stream Deck Mini (USB ID `0fd9:0063`) only. It ignores other Stream Deck models.
 
 - The top middle key shows the camera icon. A press on it starts the countdown.
 - The top left and top right keys show the newest and the second newest set. A press on them opens the set.

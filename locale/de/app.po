@@ -64,8 +64,8 @@ msgstr "Passwort ändern"
 msgid "Close"
 msgstr "Schließen"
 
-msgid "Connect your phone"
-msgstr "Verbinde dein Handy"
+msgid "Download pictures"
+msgstr "Bilder herunterladen"
 
 msgid "Delete"
 msgstr "Löschen"
