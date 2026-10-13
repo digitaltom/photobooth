@@ -45,7 +45,7 @@ rm -rf "$app/tmp/cache"
 apt-get purge -y --auto-remove "${build_pkgs[@]}"
 apt-get clean
 
-id photobox || useradd --system --create-home --groups plugdev,gpio,video photobox
+id photobox || useradd --system --create-home --groups gpio,video photobox
 chown -R photobox:photobox "$app"
 # the admin menu saves an uploaded app release here, photobox-upload.service installs it
 install -d -o photobox -g photobox /var/lib/photobox/upload

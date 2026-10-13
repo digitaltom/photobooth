@@ -25,21 +25,24 @@ The app stores the picture sets in `storage/sets`. To use another folder, set `P
 
 ## Status LEDs
 
-LEDs can get connected to the Raspberry Pi's [gpio ports](https://www.raspberrypi.org/documentation/usage/gpio/).
-It uses port 23 for 'ready', the ports 4,5,6,17  for picture 1-4 and port 24 for 'image processing'.
+You can connect LEDs to the [GPIO ports](https://www.raspberrypi.org/documentation/usage/gpio/) of the Raspberry Pi.
+The app uses port 23 for "ready" and port 24 for "image processing".
+Ports 4, 5, 6 and 17 show the pictures 1 to 4.
 The app sets them with `gpioset` from libgpiod. Set the chip with `gpio_chip` in the options.
 
 ## Stream Deck
 
 An Elgato Stream Deck Mini on USB can control the open kiosk page. The app finds the device within 2 seconds after plug in.
 The app supports the Stream Deck Mini (USB ID `0fd9:0063`) only. It ignores other Stream Deck models.
+Connect the Stream Deck directly to the computer or to a powered USB hub.
+If the power is too low, the device disconnects when the app turns on the key lights. The log then shows `Input/output error`.
 
 - The top middle key shows the camera icon. A press on it starts the countdown.
 - The top left and top right keys show the newest and the second newest set. A press on them opens the set.
 - The text under the shoot button scrolls over the lower 3 keys, in the language of the kiosk. A press on them starts the countdown.
 
 The app reads and writes `/dev/hidrawN` and needs the udev rule [deploy/streamdeck.rules](deploy/streamdeck.rules).
-The image includes the rule. On a laptop, copy it to `/etc/udev/rules.d/` and add your user to the group `plugdev`.
+The rule gives all users access to the device. The image includes the rule. On a laptop, copy it to `/etc/udev/rules.d/` and plug the device in again.
 
 ## Tests and linting
 

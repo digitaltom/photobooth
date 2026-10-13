@@ -64,6 +64,7 @@ class StreamDeck # rubocop:disable Metrics/ClassLength
     # one handle to write (the animation thread), one to read the keys
     def run(path)
       File.open(path, 'wb') do |out|
+        out.sync = true # hidraw takes one report per write, a buffer joins them and the Mini drops off USB
         feature(out, 0x0B, 0x63) # reset
         feature(out, 0x05, 0x55, 0xAA, 0xD1, 0x01, BRIGHTNESS)
         write_key(out, SHOOT_KEY, bmp(image(ICON.to_s, *FIT)))
