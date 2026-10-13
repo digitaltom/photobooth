@@ -63,3 +63,17 @@ The `test` environment always uses the `fake` camera.
 
 To change to another font for the captions, set `font` in `config/options-local.yml` to a `.ttf` path or to an ImageMagick font name.
 To show the font names that ImageMagick knows, run `magick -list font`.
+
+## Release
+
+A tag `v*` starts the workflow `.github/workflows/image.yml`. It runs the tests, builds the SD card image, and creates a GitHub release.
+
+1. Commit all changes on `master` and push them.
+2. Make sure that the tests pass: `bin/rspec`.
+3. Pick the next version after the newest tag. To show the tags, run `git tag`.
+4. Create the tag, for example `git tag -a v1.3 -m "v1.3"`.
+5. Push the tag: `git push origin v1.3`.
+6. Wait for the workflow on GitHub. It takes some minutes.
+
+The release holds the image, the app release `photobox-app.tar.zst` and the repository file for Raspberry Pi Imager. GitHub writes the release notes from the commits.
+To update a running Photobox to the new release, run `photobox-update latest` on it. For details, see [deploy/README.md](deploy/README.md).
