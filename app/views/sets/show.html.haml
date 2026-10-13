@@ -32,6 +32,13 @@
         = link_to file_set_path(@picture_set, name: @picture_set.animation, download: 1), class: 'btn gallery-btn' do
           = icon('download')
           = _('Save image')
+    -# at the bottom and small: no delete by mistake
+    - if kiosk?
+      .gallery-actions.set-delete
+        = button_to set_path(@picture_set), method: :delete, class: 'btn gallery-btn',
+          form: { data: { turbo_confirm: _('Delete this picture?') } } do
+          = icon('trash')
+          = _('Delete')
   %main.gallery-grid.set-grid
     = image_tag file_set_path(@picture_set, name: @picture_set.animation), class: 'gallery-img set-animation'
     - @picture_set.pictures.each do |picture|

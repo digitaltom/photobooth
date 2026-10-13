@@ -4,8 +4,9 @@ require 'open3'
 
 # Elgato Stream Deck Mini (USB HID) on the kiosk. The keys count 0..5 from the top left:
 #   0, 2:    the newest and the second newest set, a press opens it on the kiosk
-#   1:       the camera icon, a press starts the countdown on the kiosk
+#   1:       the camera icon, a press starts the countdown on the kiosk, during the countdown 4, 3, 2, 1
 #   3, 4, 5: the text under the shoot button of the kiosk scrolls over them, a press also starts the countdown
+#   1, 3, 4, 5 during a shoot: the 4 photo slots of the kiosk status, as in kiosk/_status
 # Protocol as in python-elgato-streamdeck (StreamDeckMini), read and written through /dev/hidrawN.
 class StreamDeck # rubocop:disable Metrics/ClassLength
 
@@ -13,21 +14,31 @@ class StreamDeck # rubocop:disable Metrics/ClassLength
   SHOOT_KEY = 1
   SET_KEYS = [0, 2].freeze
   TEXT_KEYS = [3, 4, 5].freeze
+  SHOOT_KEYS = [SHOOT_KEY, *TEXT_KEYS].freeze # photo 1..4
   # hardware knobs, tune them on the device
   BRIGHTNESS = 80 # percent
-  SCROLL_STEP = 8 # pixels per frame
+  SCROLL_STEP = 4 # pixels per frame
   FRAME_DELAY = 0.05 # seconds between the frames, on top of the USB transfer of 3 keys
   SIZE = 80 # pixels of a key
+  GAP = 27 # pixels hidden between two keys: about 4 mm at the key's 80 px / 12 mm
+  # pixels from the left edge of the first text key to the right edge of the last one
+  SPAN = (TEXT_KEYS.size * (SIZE + GAP)) - GAP
   ANIMATION_DELAY = 0.6 # seconds per frame, as -delay 60 in PictureSet#create_animation
+  SHOOT_DELAY = 0.1 # seconds per frame of shoot_animation.gif
   # an image centered on a black key
   FIT = %W[-background black -alpha remove -alpha off -resize #{SIZE}x#{SIZE} -gravity center -extent #{SIZE}x#{SIZE}].freeze
   ICON = Rails.public_path.join('images/take_picture.png')
+  # photo taken, current photo, next photos
+  SHOOT_IMAGES = %w[shoot_still.png shoot_animation.gif shoot_still_sw.png].map { Rails.root.join('app/assets/images', it) }
   PAGE = 1024 # image report: 16 bytes header + image data
   HEADER = 16
   HIDIOCSFEATURE = 0xC0114806 # _IOC(_IOC_READ | _IOC_WRITE, 'H', 0x06, 17)
   RETRY = 2 # seconds, also the time until a plugged in device shows up
 
   class << self
+
+    # CaptureJob#step: 1..4 = taking photo n, 5 = processing, nil = no shoot
+    attr_writer :step
 
     # polls for the device, so it connects on plug in and again after an unplug
     def start
@@ -44,6 +55,12 @@ class StreamDeck # rubocop:disable Metrics/ClassLength
           sleep RETRY
         end
       end
+    end
+
+    # The kiosk opens its dialog and counts down for seconds, 0: the dialog closed (quit, Escape, job done).
+    # The keys show the countdown and the shoot only while the dialog is open.
+    def countdown(seconds)
+      @countdown = ([now + seconds, seconds] if seconds.positive?)
     end
 
     # The kiosk page calls it with its sets and in its locale. The keys change on the next frame.
@@ -67,7 +84,6 @@ class StreamDeck # rubocop:disable Metrics/ClassLength
         out.sync = true # hidraw takes one report per write, a buffer joins them and the Mini drops off USB
         feature(out, 0x0B, 0x63) # reset
         feature(out, 0x05, 0x55, 0xAA, 0xD1, 0x01, BRIGHTNESS)
-        write_key(out, SHOOT_KEY, bmp(image(ICON.to_s, *FIT)))
         Rails.logger.info('Stream Deck connected')
         @error = nil
         writer = Thread.new { animate(out) }
@@ -93,39 +109,64 @@ class StreamDeck # rubocop:disable Metrics/ClassLength
       id ? show_set(id) : shoot
     end
 
-    def animate(out)
+    def animate(out) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
       drawn = strip = thumbs = shown = nil
       offset = 0
+      icon = image(ICON.to_s, *FIT)
+      shoot = SHOOT_IMAGES.map { image(it.to_s, '-coalesce', *FIT) }
+      digits = (1..4).map { digit(it) }
       loop do
         state = @state
         unless state == drawn
           thumbs = SET_KEYS.each_index.map { |i| thumbnail(state[:sets][i]&.last) }
           strip = text_strip(drawn = state)
-          shown = []
+          shown = {}
         end
-        draw_sets(out, thumbs, shown)
-        offset = draw_text(out, strip, offset)
+        SET_KEYS.each_with_index { |key, i| draw_key(out, key, thumbs[i], ANIMATION_DELAY, shown) }
+        if (step = shoot_step)
+          draw_shoot(out, shoot, step, shown)
+          offset = 0 # after the shoot the text scrolls in from the right again
+        else
+          draw_key(out, SHOOT_KEY, countdown_digit(digits) || icon, SHOOT_DELAY, shown)
+          offset = draw_text(out, strip, offset)
+          TEXT_KEYS.each { shown.delete(it) }
+        end
         sleep FRAME_DELAY
       end
     end
 
-    # returns the offset of the next frame
-    def draw_text(out, strip, offset)
-      TEXT_KEYS.each_with_index { |key, i| write_key(out, key, bmp(strip, offset + (i * SIZE))) }
-      (offset + SCROLL_STEP) % ((strip.bytesize / (SIZE * 3)) - (TEXT_KEYS.size * SIZE))
+    # the photo of the capture job, only while the kiosk shows the dialog: after an Escape the job runs on without it
+    def shoot_step
+      @step if @countdown
     end
 
-    # The frames of a set animation follow each other in thumbs (see image), each with SIZE columns.
-    # shown: the frame on each key, a key only gets written when its frame changes
-    def draw_sets(out, thumbs, shown)
-      tick = (Process.clock_gettime(Process::CLOCK_MONOTONIC) / ANIMATION_DELAY).to_i
-      thumbs.each_with_index do |raw, i|
-        frame = tick % (raw.bytesize / (SIZE * SIZE * 3))
-        next if frame == shown[i]
+    # as kiosk/_status: a color still for each photo taken, the animation for the current photo, a gray still for the next ones
+    # images: taken, current, coming (SHOOT_IMAGES)
+    def draw_shoot(out, images, step, shown)
+      SHOOT_KEYS.each_with_index { |key, i| draw_key(out, key, images[(i + 1 <=> step) + 1], SHOOT_DELAY, shown) }
+    end
 
-        write_key(out, SET_KEYS[i], bmp(raw, frame * SIZE))
-        shown[i] = frame
-      end
+    # returns the offset of the next frame
+    def draw_text(out, strip, offset)
+      TEXT_KEYS.each_with_index { |key, i| write_key(out, key, bmp(strip, offset + (i * (SIZE + GAP)))) }
+      (offset + SCROLL_STEP) % ((strip.bytesize / (SIZE * 3)) - SPAN)
+    end
+
+    # digits[0..3]: 1..4, the countdown of the kiosk shows 4, 3, 2, 1 one after the other, nil after it
+    def countdown_digit(digits)
+      ends, seconds = @countdown
+      left = ends && (ends - now)
+      digits[(left / seconds * digits.size).ceil - 1] if left&.positive?
+    end
+
+    # The frames of an animation follow each other in raw (see image), each with SIZE columns.
+    # shown: key => image and frame on it, a key only gets written when they change
+    def draw_key(out, key, raw, delay, shown)
+      frame = (now / delay).to_i % (raw.bytesize / (SIZE * SIZE * 3))
+      return if shown[key] == [raw.object_id, frame]
+
+      write_key(out, key, bmp(raw, frame * SIZE))
+      shown[key] = [raw.object_id, frame]
     end
 
     # 24 bit BMP of the key from SIZE columns of a transposed image (see image).
@@ -147,6 +188,16 @@ class StreamDeck # rubocop:disable Metrics/ClassLength
     end
 
     private
+
+    def now
+      Process.clock_gettime(Process::CLOCK_MONOTONIC)
+    end
+
+    # a white digit on a black key
+    def digit(num)
+      image('-background', 'black', '-fill', 'white', '-font', PictureSet.font, '-pointsize', '64',
+            '-size', "#{SIZE}x#{SIZE}", '-gravity', 'center', "label:#{num}")
+    end
 
     def device
       uevent = Dir['/sys/class/hidraw/hidraw*/device/uevent'].find { |file| File.read(file).include?(HID_ID) }
@@ -175,11 +226,11 @@ class StreamDeck # rubocop:disable Metrics/ClassLength
       thumbnail(nil)
     end
 
-    # The text with the width of the 3 keys in black on both sides: it scrolls in from the right and out to the left
+    # The text with the width of the 3 keys and their gaps in black on both sides: it scrolls in from the right and out to the left
     def text_strip(state)
       image('-background', 'black', '-fill', 'white', '-font', PictureSet.font, '-pointsize', '36',
             '-size', "x#{SIZE}", '-gravity', 'center', "label:#{state[:text]}",
-            '-bordercolor', 'black', '-border', "#{TEXT_KEYS.size * SIZE}x0")
+            '-bordercolor', 'black', '-border', "#{SPAN}x0")
     end
 
   end

@@ -119,7 +119,7 @@ class AdminController < ApplicationController
 
   # the values of the option camera (Camera.capture)
   def cameras
-    { 'gphoto2' => _('Camera (gphoto2)'), 'webcam' => _('USB webcam'), 'fake' => _('Sample images (no camera)') }
+    { 'gphoto2' => _('Camera (gphoto2)'), 'webcam' => _('Webcam'), 'fake' => _('Sample images (no camera)') }
   end
   helper_method :cameras
 

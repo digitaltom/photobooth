@@ -5,10 +5,10 @@ default:
   # Rock Salt: Apache License 2.0, see fonts/LICENSE.txt
   font: 'fonts/RockSalt-Regular.ttf'
 
-  # 'gphoto2' for a real camera, 'webcam' for a USB webcam (ffmpeg), 'fake' copies the sample images in lib/fake_camera
+  # 'gphoto2' for a real camera, 'webcam' for a USB webcam (ffmpeg) or else a libcamera camera, 'fake' copies the sample images in lib/fake_camera
   # The admin menu writes a new one to photobox.yml.
   camera: 'gphoto2'
-  # webcam only (the first USB webcam): a frame size like '1280x720'. Empty: the default size of the webcam.
+  # USB webcam only: a frame size like '1280x720'. Empty: the default size of the webcam.
   # The admin menu offers the sizes of the webcam and writes a new one to photobox.yml.
   webcam_size: ''
   # gphoto2 imageformat, a label or index from `gphoto2 --get-config imageformat`. Empty: keep the setting of the camera.

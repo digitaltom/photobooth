@@ -21,8 +21,9 @@ development:
   camera: 'fake'
 ```
 
-To use a USB webcam instead of a gphoto2 camera, set `camera: 'webcam'`.
+To use a webcam instead of a gphoto2 camera, set `camera: 'webcam'`.
 The app takes each photo with ffmpeg from the first USB webcam in `/dev/v4l/by-id/`.
+Without a USB webcam, the app uses the first libcamera camera, for example the built-in MIPI camera of a laptop. Install `gstreamer-plugin-libcamera` (openSUSE) or `gstreamer1.0-libcamera` (Debian) and `libcamera-tools`. The libcamera camera uses its default size.
 The admin menu shows the frame sizes of the webcam in the image format list. Without a size, the webcam uses its default size, often 640x480.
 A webcam gives lower image quality than a DSLR camera.
 

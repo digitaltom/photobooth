@@ -74,6 +74,9 @@ msgstr ""
 msgid "Delete"
 msgstr ""
 
+msgid "Delete this picture?"
+msgstr ""
+
 msgid "Delete the gallery %{caption} with %{count} sets?"
 msgstr ""
 
@@ -150,6 +153,9 @@ msgid "Password changed"
 msgstr ""
 
 msgid "Password:"
+msgstr ""
+
+msgid "Picture deleted"
 msgstr ""
 
 msgid "Pictures that you already took keep their caption."
@@ -263,7 +269,7 @@ msgstr ""
 msgid "Too many attempts, wait 3 minutes."
 msgstr ""
 
-msgid "USB webcam"
+msgid "Webcam"
 msgstr ""
 
 msgid "Unknown camera"

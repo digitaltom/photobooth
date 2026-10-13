@@ -32,20 +32,33 @@ class Camera
     end
   end
 
-  # One ffmpeg process per photo from a V4L2 (USB) webcam. -ss 1 drops the first second of frames:
-  # the webcam adjusts its exposure in that time, the first frames are too dark.
+  # One process per photo: ffmpeg for a USB webcam, else libcamera (for example the MIPI camera of a laptop).
   # A shot starts camera_delay s after the start of the previous shot, as with gphoto2 -I.
-  # Without webcam_size, the webcam uses its default size.
-  # ponytail: no -input_format, a size that the webcam has in MJPEG only can fail, add it when a webcam needs it
   def self.webcam(dir, date)
-    device = webcam_device.shellescape
-    size = "-video_size #{OPTS.webcam_size.to_s.shellescape} " if OPTS.webcam_size.present?
+    device = usb_webcam
     (1..4).each do |num|
       started = Process.clock_gettime(Process::CLOCK_MONOTONIC)
-      Syscall.execute("ffmpeg -loglevel error -y -f v4l2 #{size}-i #{device} -ss 1 -frames:v 1 -q:v 2 #{date}_#{num}.jpg", dir: dir)
+      file = "#{date}_#{num}.jpg"
+      Syscall.execute(device ? ffmpeg_command(device, file) : libcamera_command(file), dir: dir)
       yield num
       sleep [OPTS.camera_delay.to_f - (Process.clock_gettime(Process::CLOCK_MONOTONIC) - started), 0].max if num < 4
     end
+  end
+
+  # -ss 1 drops the first second of frames: the webcam adjusts its exposure in that time, the first frames are too dark.
+  # Without webcam_size, the webcam uses its default size.
+  # ponytail: no -input_format, a size that the webcam has in MJPEG only can fail, add it when a webcam needs it
+  def self.ffmpeg_command(device, file)
+    size = "-video_size #{OPTS.webcam_size.to_s.shellescape} " if OPTS.webcam_size.present?
+    "ffmpeg -loglevel error -y -f v4l2 #{size}-i #{device.shellescape} -ss 1 -frames:v 1 -q:v 2 #{file}"
+  end
+
+  # ffmpeg cannot read from libcamera. The first camera of libcamera, 30 frames (about 1 s) for the auto exposure:
+  # libcamerasrc has no num-buffers, identity sends the end of stream.
+  # multifilesink writes each frame to the same file, the last frame stays.
+  # ponytail: libcamera default size, no webcam_size, add caps (video/x-raw,width=,height=) when a camera needs it
+  def self.libcamera_command(file)
+    "gst-launch-1.0 -q -e libcamerasrc ! identity eos-after=30 ! videoconvert ! jpegenc quality=95 ! multifilesink location=#{file}"
   end
 
   # One process for all photos: every gphoto2 start opens a new PTP session (1-2 s).
@@ -87,7 +100,7 @@ class Camera
   # ponytail: no lock against a running capture, the camera is busy then and the capture retries
   def self.info
     return { summary: "Fake camera, uses the images from #{FAKE_IMAGES}", imageformats: [] } if OPTS.camera == 'fake'
-    return { summary: "Webcam #{File.basename(webcam_device)}", imageformats: webcam_sizes(webcam_device) } if OPTS.camera == 'webcam'
+    return webcam_info if OPTS.camera == 'webcam'
 
     output = Syscall.execute('gphoto2 --summary --get-config imageformat')
     { summary: output[/^Camera summary:.*?(?=\n\s*\n|\z)/m],
@@ -98,10 +111,19 @@ class Camera
     { summary: e.message, imageformats: [] }
   end
 
+  def self.webcam_info
+    device = usb_webcam
+    return { summary: "Webcam #{File.basename(device)}", imageformats: webcam_sizes(device) } if device
+
+    # cam (libcamera-tools) prints "1: Internal front camera (\_SB_.PC00.LNK1)", its log goes to stderr
+    name = Syscall.execute('cam -l 2>/dev/null || true')[/^1: (.*)$/, 1] || raise('No webcam found')
+    { summary: "Webcam #{name} (libcamera)", imageformats: [] }
+  end
+
   # The capture node of the first USB webcam: udev links it as /dev/v4l/by-id/<id>-video-index0.
   # /dev/video0 can be another device, for example the codec of the Raspberry Pi.
-  def self.webcam_device
-    Dir['/dev/v4l/by-id/*-video-index0'].min || raise('No webcam found')
+  def self.usb_webcam
+    Dir['/dev/v4l/by-id/*-video-index0'].min
   end
 
   # The frame sizes of all pixel formats, the largest first. ffmpeg prints a line per format and exits with an error:

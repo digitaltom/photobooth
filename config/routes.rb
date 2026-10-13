@@ -6,8 +6,9 @@ Rails.application.routes.draw do
   # "Add to Home Screen" on the iPad opens the kiosk full screen
   get 'manifest' => 'rails/pwa#manifest', as: :pwa_manifest
   post 'picture_sets' => 'sets#create'
+  post 'countdown' => 'sets#countdown'
 
-  resources :sets, only: %i[show] do
+  resources :sets, only: %i[show destroy] do
     member do
       get :slideshow
       get 'files/:name', action: :file, as: :file, constraints: { name: %r{[^/]+} }

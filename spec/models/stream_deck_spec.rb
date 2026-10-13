@@ -44,18 +44,40 @@ RSpec.describe StreamDeck, type: :model do
     thumbs = [StreamDeck.send(:thumbnail, File.join(set.dir, set.animation)), StreamDeck.send(:thumbnail, nil)]
     keys = []
     allow(StreamDeck).to receive(:write_key) { |_, key, bmp| keys << [key, bmp] }
-    shown = []
+    shown = {}
+    draw = -> { StreamDeck::SET_KEYS.each_with_index { |key, i| StreamDeck.draw_key(io, key, thumbs[i], StreamDeck::ANIMATION_DELAY, shown) } }
 
     allow(Process).to receive(:clock_gettime).and_return(0.0)
-    StreamDeck.draw_sets(io, thumbs, shown)
-    StreamDeck.draw_sets(io, thumbs, shown)
+    2.times { draw.call }
     expect(keys.map(&:first)).to eq [0, 2]
 
     # the next frame, only on the key with the animation
     allow(Process).to receive(:clock_gettime).and_return(StreamDeck::ANIMATION_DELAY)
-    StreamDeck.draw_sets(io, thumbs, shown)
+    draw.call
     expect(keys.map(&:first)).to eq [0, 2, 0]
     expect(keys.last.last).not_to eq keys.first.last
+  end
+
+  it 'shows the photo slots of the kiosk status during a shoot' do
+    images = %w[red blue gray].map { StreamDeck.send(:image, "xc:#{it}", *StreamDeck::FIT) } # taken, current, coming
+    keys = {}
+    allow(StreamDeck).to receive(:write_key) { |_, key, bmp| keys[key] = bmp }
+
+    StreamDeck.draw_shoot(io, images, 2, {})
+    expect(keys).to eq(StreamDeck::SHOOT_KEYS.zip(images.values_at(0, 1, 2, 2).map { StreamDeck.bmp(it) }).to_h)
+  end
+
+  it 'counts down 4, 3, 2, 1 on the camera key with the kiosk' do
+    allow(Process).to receive(:clock_gettime).and_return(0.0)
+    StreamDeck.countdown(2.0)
+    shown = [0.0, 0.6, 1.1, 1.9, 2.0].map do |time|
+      allow(Process).to receive(:clock_gettime).and_return(time)
+      StreamDeck.countdown_digit([1, 2, 3, 4])
+    end
+    expect(shown).to eq [4, 3, 2, 1, nil]
+
+    StreamDeck.countdown(0)
+    expect(StreamDeck.countdown_digit([1, 2, 3, 4])).to be_nil
   end
 
   it 'scrolls the text in the locale of the kiosk' do

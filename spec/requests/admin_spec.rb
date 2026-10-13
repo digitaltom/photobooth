@@ -94,10 +94,10 @@ RSpec.describe 'Admin', type: :request do
   it 'sets the camera' do
     login
     get '/admin'
-    expect(response.body).to include('USB webcam')
+    expect(response.body).to include('Webcam')
 
     patch '/admin/camera', params: { camera: 'webcam' }
-    expect(flash[:notice]).to eq 'Camera: USB webcam'
+    expect(flash[:notice]).to eq 'Camera: Webcam'
     expect(File.read(OPTS.photobox_conf)).to include('camera: "webcam"')
     expect(OPTS.camera).to eq 'webcam'
 

@@ -4,6 +4,18 @@
 class CaptureJob < ApplicationJob
   GPIO_LEDS = %w[PICTURE1 PICTURE2 PICTURE3 PICTURE4 PROCESSING].freeze
 
+  class Cancelled < StandardError; end
+
+  # The kiosk closed its dialog (Escape): the jobs enqueued before stop at their next step, without a set.
+  # ponytail: gphoto2 runs on until its next output line (SIGPIPE), it can take one more photo, Camera.drain removes it
+  def self.cancel
+    @cancelled_at = Time.current
+  end
+
+  class << self
+    attr_reader :cancelled_at
+  end
+
   # locale: the kiosk status texts are in the language of the kiosk
   def perform(id, locale = I18n.default_locale)
     I18n.with_locale(locale) { capture_set(id) }
@@ -21,15 +33,17 @@ class CaptureJob < ApplicationJob
     threads.each(&:join)
     picture_set.create_animation
     picture_set.write_yml
-    logger.info format('CaptureJob %<id>s: capture %<capture>.1fs, render %<render>.1fs',
-                       id: id, capture: captured - started, render: now - captured)
+    log_times(id, started, captured)
     show(id)
+  rescue Cancelled
+    logger.info "CaptureJob #{id}: cancelled on the kiosk"
+    remove(picture_set, threads)
   rescue StandardError => e
     broadcast_kiosk('kiosk/error', message: e.message)
     remove(picture_set, threads)
     raise
   ensure
-    GPIO_LEDS.each { |port| GpioPort.off(port) }
+    devices_off
   end
 
   # adds the polaroid threads, they run while the camera takes the next photo
@@ -47,7 +61,7 @@ class CaptureJob < ApplicationJob
       step(num + 1)
     end
   rescue StandardError => e
-    raise if threads.empty?
+    raise if threads.empty? || e.is_a?(Cancelled)
 
     # 1-3 photos (for example the camera cannot focus for the next one) still make a set
     logger.warn "CaptureJob #{picture_set.date}: #{e.message}, keeping #{threads.size} photos"
@@ -63,6 +77,9 @@ class CaptureJob < ApplicationJob
 
   # step 1..4: the camera takes photo n, step 5: processing
   def step(num)
+    raise Cancelled if cancelled?
+
+    StreamDeck.step = num
     GpioPort.on(num <= 4 ? "PICTURE#{num}" : 'PROCESSING')
     update_status(step: num <= 4 ? num : :processing)
   end
@@ -76,6 +93,9 @@ class CaptureJob < ApplicationJob
   # The camera steps and the polaroid threads change the status, the lock keeps their broadcasts in order
   def update_status(**changes)
     @status_lock.synchronize do
+      # a polaroid thread of a cancelled job must not show its photo in the status of the next shoot
+      next if cancelled?
+
       @status = @status.merge(changes)
       yield @status if block_given?
       broadcast_kiosk('kiosk/status', **@status)
@@ -87,6 +107,20 @@ class CaptureJob < ApplicationJob
     Turbo::StreamsChannel.broadcast_action_to(:kiosk, action: :visit,
                                                       attributes: { url: Rails.application.routes.url_helpers.set_path(id) })
     Turbo::StreamsChannel.broadcast_refresh_to(:gallery)
+  end
+
+  def devices_off
+    StreamDeck.step = nil
+    GPIO_LEDS.each { |port| GpioPort.off(port) }
+  end
+
+  def log_times(id, started, captured)
+    logger.info format('CaptureJob %<id>s: capture %<capture>.1fs, render %<render>.1fs',
+                       id: id, capture: captured - started, render: now - captured)
+  end
+
+  def cancelled?
+    self.class.cancelled_at&.>(enqueued_at || Time.current)
   end
 
   def now

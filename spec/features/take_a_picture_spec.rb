@@ -67,6 +67,23 @@ feature 'Photobox kiosk', js: true do
     sleep 2.5
   end
 
+  it 'quits the countdown and the running capture job with Escape' do
+    expect(CaptureJob).to receive(:perform_later).once
+    cancels = 0
+    allow(CaptureJob).to receive(:cancel) { cancels += 1 }
+
+    click_button('take a picture')
+    find('#shoot-dialog').send_keys(:escape)
+    expect(page).to have_no_css('#shoot-dialog[open]')
+
+    click_button('take a picture')
+    expect(page).to have_css('#shoot-progress', visible: :hidden, wait: 5)
+    find('#shoot-dialog').send_keys(:escape)
+    expect(page).to have_no_css('#shoot-dialog[open]')
+    # the fetch of the close arrives later
+    page.document.synchronize { raise Capybara::ExpectationNotMet, "#{cancels} cancels" unless cancels == 2 }
+  end
+
   it 'closes the QR code dialog with its close button' do
     click_button('Download pictures')
     find('#wifi-qr-dialog button[aria-label="Close"]').click

@@ -101,9 +101,26 @@ RSpec.describe Camera, type: :model do
                                 imageformats: %w[1280x960 1280x720 640x480 160x120])
     end
 
-    it 'shows an error without a webcam' do
-      allow(Dir).to receive(:[]).with('/dev/v4l/by-id/*-video-index0').and_return([])
-      expect(Camera.info).to eq(summary: 'No webcam found', imageformats: [])
+    context 'without a USB webcam' do
+      before { allow(Dir).to receive(:[]).with('/dev/v4l/by-id/*-video-index0').and_return([]) }
+
+      it 'takes each photo with libcamera' do
+        (1..4).each do |num|
+          expect(Syscall).to receive(:execute).with(/gst-launch-1.0 .*libcamerasrc .*location=#{date}_#{num}\.jpg/, dir: '/tmp').ordered
+        end
+        expect { |b| Camera.capture('/tmp', date, &b) }.to yield_successive_args(1, 2, 3, 4)
+      end
+
+      it 'shows the first libcamera camera' do
+        allow(Syscall).to receive(:execute).with('cam -l 2>/dev/null || true')
+                                           .and_return("Available cameras:\n1: Internal front camera (\\_SB_.PC00.LNK1)\n")
+        expect(Camera.info).to eq(summary: 'Webcam Internal front camera (\_SB_.PC00.LNK1) (libcamera)', imageformats: [])
+      end
+
+      it 'shows an error without a libcamera camera' do
+        allow(Syscall).to receive(:execute).with('cam -l 2>/dev/null || true').and_return('')
+        expect(Camera.info).to eq(summary: 'No webcam found', imageformats: [])
+      end
     end
   end
 

@@ -28,4 +28,13 @@ feature 'Photobox picture set view', js: true do
     expect(page).to have_no_css('#wifi-qr-dialog[open]')
   end
 
+  it 'asks before the delete on the kiosk only' do
+    expect(page).to have_no_button('Delete')
+
+    visit '/sets/2099-01-01_01-48-33?kiosk=1'
+    message = dismiss_confirm { click_button('Delete') }
+    expect(message).to eq 'Delete this picture?'
+    expect(page).to have_current_path('/sets/2099-01-01_01-48-33?kiosk=1')
+  end
+
 end

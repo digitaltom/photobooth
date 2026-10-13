@@ -51,6 +51,34 @@ RSpec.describe 'Sets', type: :request do
     expect(response.body).not_to include('http-equiv="refresh"')
   end
 
+  it 'deletes a set on the kiosk only' do
+    allow(FileUtils).to receive(:rm_rf)
+    delete "/sets/#{id}"
+    expect(response).to have_http_status(:forbidden)
+    expect(FileUtils).not_to have_received(:rm_rf)
+
+    get '/?kiosk=1'
+    delete "/sets/#{id}"
+    expect(FileUtils).to have_received(:rm_rf).with(PictureSet.new(date: id).dir)
+    expect(response).to redirect_to('/')
+    expect(flash[:notice]).to eq 'Picture deleted'
+  end
+
+  it 'counts down on the Stream Deck and stops the capture job for the kiosk only' do
+    allow(StreamDeck).to receive(:countdown)
+    allow(CaptureJob).to receive(:cancel)
+    post '/countdown', params: { delay: 2000 }
+    expect(response).to have_http_status(:forbidden)
+
+    get '/?kiosk=1'
+    post '/countdown', params: { delay: 2000 }
+    post '/countdown', params: { delay: 0 }
+    expect(StreamDeck).to have_received(:countdown).with(2.0).ordered
+    expect(StreamDeck).to have_received(:countdown).with(0.0).ordered
+    # the kiosk closed its dialog: the capture job stops too
+    expect(CaptureJob).to have_received(:cancel).once
+  end
+
   it 'returns 404 for unknown sets' do
     get '/sets/2018-04-10_11-22-3'
     expect(response).to have_http_status(:not_found)

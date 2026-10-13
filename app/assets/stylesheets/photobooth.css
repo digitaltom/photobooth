@@ -297,6 +297,18 @@ turbo-cable-stream-source {
   text-decoration: none;
 }
 
+/* the side panel is a column: margin-top: auto puts it at the bottom */
+.set-delete {
+  margin-top: auto;
+  justify-content: center;
+}
+
+.set-delete .gallery-btn {
+  padding: 3px 10px;
+  font-size: .75rem;
+  color: #8d8a85;
+}
+
 .set-nav-preview {
   height: 32px;
   border-radius: 4px;

@@ -77,6 +77,30 @@ RSpec.describe CaptureJob, type: :job do
     expect(set.files).to all(satisfy { |name| File.exist?(File.join(set.dir, name)) })
   end
 
+  it 'stops at the next step without a set and without an error when the kiosk cancels it' do
+    allow(Turbo::StreamsChannel).to receive(:broadcast_update_to)
+    allow(Camera).to receive(:capture) do |dir, date, &block|
+      (1..2).each do |num|
+        FileUtils.cp(Camera::FAKE_IMAGES.join("#{num}.jpg"), File.join(dir, "#{date}_#{num}.jpg"))
+        block.call(num)
+        CaptureJob.cancel
+      end
+      raise 'no third photo after the cancel'
+    end
+    job = CaptureJob.new(id)
+    job.enqueued_at = 1.second.ago
+
+    expect { job.perform_now }.not_to raise_error
+    expect(Dir.exist?(PictureSet.new(date: id).dir)).to be false
+    expect(Turbo::StreamsChannel).not_to have_received(:broadcast_update_to).with(any_args, hash_including(partial: 'kiosk/error'))
+    expect(StreamDeck.instance_variable_get(:@step)).to be_nil
+
+    # a later shoot runs
+    allow(Camera).to receive(:capture).and_call_original
+    CaptureJob.new(id).tap { it.enqueued_at = Time.current }.perform_now
+    expect(PictureSet.find(id).pictures.size).to eq 4
+  end
+
   it 'reports the error to the kiosk and removes the set folder' do
     allow(Camera).to receive(:capture).and_raise('Image capture failed')
     expect(Turbo::StreamsChannel).to receive(:broadcast_update_to).twice
