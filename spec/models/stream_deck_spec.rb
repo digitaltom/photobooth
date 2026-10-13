@@ -21,7 +21,11 @@ RSpec.describe StreamDeck, type: :model do
   it 'builds the same BMP as ImageMagick with the rotation and flip of the Mini' do
     expected, = Open3.capture2(PictureSet::IMAGEMAGICK, StreamDeck::ICON.to_s, *StreamDeck::FIT,
                                '-rotate', '-90', '-flip', '-type', 'TrueColor', 'BMP3:-', binmode: true)
-    expect(StreamDeck.bmp(icon).byteslice(54..)).to eq expected.byteslice((-80 * 80 * 3)..)
+    expected = expected.byteslice((-80 * 80 * 3)..).bytes
+    actual = StreamDeck.bmp(icon).byteslice(54..).bytes
+    expect(actual.size).to eq expected.size
+    # ImageMagick 6 (CI) rounds the BMP and the raw pixels apart by 1, a wrong rotation or flip differs a lot more
+    expect(actual.zip(expected).map { |a, b| (a - b).abs }.max).to be <= 2
   end
 
   it 'writes the key image in pages of 1024 bytes' do
