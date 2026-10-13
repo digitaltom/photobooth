@@ -103,6 +103,9 @@
   .card.mb-3
     .card-header= _('Camera')
     .card-body
+      = form_with url: admin_camera_path, method: :patch, class: 'd-flex flex-wrap gap-2 mb-3' do |f|
+        = f.select :camera, cameras.invert, { selected: OPTS.camera.to_s }, class: 'form-select w-auto'
+        = f.submit _('Set camera'), class: 'btn btn-primary'
       %pre.small= @camera[:summary]
       - if @camera[:current_imageformat]
         %p
@@ -112,7 +115,7 @@
       - formats = ['', *@camera[:imageformats]]
       - choices = formats.map { |format| [format.empty? ? _('Keep the setting of the camera') : [format, Camera::IMAGEFORMATS[format]].compact.join(': '), format] }
       = form_with url: admin_imageformat_path, method: :patch, class: 'd-flex flex-wrap gap-2' do |f|
-        = f.select :imageformat, choices, { selected: OPTS.camera_imageformat.to_s }, class: 'form-select w-auto'
+        = f.select :imageformat, choices, { selected: OPTS[Camera.imageformat_key].to_s }, class: 'form-select w-auto'
         = f.submit _('Set image format'), class: 'btn btn-primary'
       %p.form-text= _('Smaller images are faster to download and print.')
 

@@ -5,12 +5,16 @@ default:
   # Rock Salt: Apache License 2.0, see fonts/LICENSE.txt
   font: 'fonts/RockSalt-Regular.ttf'
 
-  # 'gphoto2' for a real camera, 'fake' copies the sample images in lib/fake_camera
+  # 'gphoto2' for a real camera, 'webcam' for a USB webcam (ffmpeg), 'fake' copies the sample images in lib/fake_camera
+  # The admin menu writes a new one to photobox.yml.
   camera: 'gphoto2'
+  # webcam only (the first USB webcam): a frame size like '1280x720'. Empty: the default size of the webcam.
+  # The admin menu offers the sizes of the webcam and writes a new one to photobox.yml.
+  webcam_size: ''
   # gphoto2 imageformat, a label or index from `gphoto2 --get-config imageformat`. Empty: keep the setting of the camera.
   # Use JPEG only, no RAW. Canon EOS labels: see Camera::IMAGEFORMATS. The admin menu writes a new one to photobox.yml.
   camera_imageformat: 'cS2'
-  # minimum seconds from the start of a shot to the start of the next shot (gphoto2 -I), fake camera: seconds per photo
+  # minimum seconds from the start of a shot to the start of the next shot (gphoto2 -I, webcam), fake camera: seconds per photo
   camera_delay: 3
 
   # per ImageMagick process, 4 run in parallel (Pi 3 B: 1 GB RAM)

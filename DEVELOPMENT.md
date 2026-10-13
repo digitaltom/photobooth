@@ -5,7 +5,7 @@ For the install on a Raspberry Pi, see [deploy/README.md](deploy/README.md).
 ## Setup
 
 1. Install Ruby (version in `.ruby-version`), for example with [rbenv](https://github.com/rbenv/rbenv).
-2. Install the packages: `gphoto2`, `imagemagick` and `gpiod`.
+2. Install the packages: `gphoto2`, `imagemagick` and `gpiod`. For a webcam, also install `ffmpeg`.
 3. Run `bin/setup`.
 4. Start the server: `bin/rails server`. Then open `http://localhost:3000/?kiosk=1`.
 
@@ -20,6 +20,11 @@ For development without a camera, use the `fake` camera. It copies the sample im
 development:
   camera: 'fake'
 ```
+
+To use a USB webcam instead of a gphoto2 camera, set `camera: 'webcam'`.
+The app takes each photo with ffmpeg from the first USB webcam in `/dev/v4l/by-id/`.
+The admin menu shows the frame sizes of the webcam in the image format list. Without a size, the webcam uses its default size, often 640x480.
+A webcam gives lower image quality than a DSLR camera.
 
 The app stores the picture sets in `storage/sets`. To use another folder, set `PHOTOBOX_STORAGE` or `storage_path`.
 

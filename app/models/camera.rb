@@ -25,8 +25,26 @@ class Camera
         FileUtils.cp(FAKE_IMAGES.join("#{num}.jpg"), File.join(dir, "#{date}_#{num}.jpg"))
         yield num
       end
+    elsif OPTS.camera == 'webcam'
+      webcam(dir, date, &)
     else
       gphoto2(dir, date, &)
+    end
+  end
+
+  # One ffmpeg process per photo from a V4L2 (USB) webcam. -ss 1 drops the first second of frames:
+  # the webcam adjusts its exposure in that time, the first frames are too dark.
+  # A shot starts camera_delay s after the start of the previous shot, as with gphoto2 -I.
+  # Without webcam_size, the webcam uses its default size.
+  # ponytail: no -input_format, a size that the webcam has in MJPEG only can fail, add it when a webcam needs it
+  def self.webcam(dir, date)
+    device = webcam_device.shellescape
+    size = "-video_size #{OPTS.webcam_size.to_s.shellescape} " if OPTS.webcam_size.present?
+    (1..4).each do |num|
+      started = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+      Syscall.execute("ffmpeg -loglevel error -y -f v4l2 #{size}-i #{device} -ss 1 -frames:v 1 -q:v 2 #{date}_#{num}.jpg", dir: dir)
+      yield num
+      sleep [OPTS.camera_delay.to_f - (Process.clock_gettime(Process::CLOCK_MONOTONIC) - started), 0].max if num < 4
     end
   end
 
@@ -69,6 +87,7 @@ class Camera
   # ponytail: no lock against a running capture, the camera is busy then and the capture retries
   def self.info
     return { summary: "Fake camera, uses the images from #{FAKE_IMAGES}", imageformats: [] } if OPTS.camera == 'fake'
+    return { summary: "Webcam #{File.basename(webcam_device)}", imageformats: webcam_sizes(webcam_device) } if OPTS.camera == 'webcam'
 
     output = Syscall.execute('gphoto2 --summary --get-config imageformat')
     { summary: output[/^Camera summary:.*?(?=\n\s*\n|\z)/m],
@@ -77,6 +96,25 @@ class Camera
       imageformats: output.scan(/^Choice: \d+ (.*)$/).flatten.grep_v(/RAW/i) }
   rescue StandardError => e
     { summary: e.message, imageformats: [] }
+  end
+
+  # The capture node of the first USB webcam: udev links it as /dev/v4l/by-id/<id>-video-index0.
+  # /dev/video0 can be another device, for example the codec of the Raspberry Pi.
+  def self.webcam_device
+    Dir['/dev/v4l/by-id/*-video-index0'].min || raise('No webcam found')
+  end
+
+  # The frame sizes of all pixel formats, the largest first. ffmpeg prints a line per format and exits with an error:
+  #   [video4linux2,v4l2 @ 0x5555] Raw       :     yuyv422 :           YUYV 4:2:2 : 640x480 160x120
+  def self.webcam_sizes(device)
+    output = Syscall.execute("ffmpeg -hide_banner -f v4l2 -list_formats all -i #{device.shellescape} || true")
+    output.lines.grep(/(Raw|Compressed)\s*:/).flat_map { |line| line.split(' : ').last.split }
+          .grep(/\A\d+x\d+\z/).uniq.sort_by { |size| -size.split('x').map(&:to_i).inject(:*) }
+  end
+
+  # the option that the image format select of the admin menu writes
+  def self.imageformat_key
+    OPTS.camera == 'webcam' ? :webcam_size : :camera_imageformat
   end
 
   def self.imageformat_option

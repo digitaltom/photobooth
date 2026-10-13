@@ -52,6 +52,12 @@ msgstr "Zurück"
 msgid "Camera"
 msgstr "Kamera"
 
+msgid "Camera (gphoto2)"
+msgstr "Kamera (gphoto2)"
+
+msgid "Camera: %{camera}"
+msgstr "Kamera: %{camera}"
+
 msgid "Caption of the new event"
 msgstr "Titel des neuen Events"
 
@@ -64,9 +70,6 @@ msgstr "Passwort ändern"
 msgid "Close"
 msgstr "Schließen"
 
-msgid "Download pictures"
-msgstr "Bilder herunterladen"
-
 msgid "Delete"
 msgstr "Löschen"
 
@@ -75,6 +78,9 @@ msgstr "Die Galerie %{caption} mit %{count} Sets löschen?"
 
 msgid "Download"
 msgstr "Herunterladen"
+
+msgid "Download pictures"
+msgstr "Bilder herunterladen"
 
 msgid "Download set"
 msgstr "Alle herunterladen"
@@ -178,6 +184,9 @@ msgstr "Die Photobox neu starten?"
 msgid "Restarting…"
 msgstr "Startet neu…"
 
+msgid "Sample images (no camera)"
+msgstr "Beispielbilder (keine Kamera)"
+
 msgid "Save caption"
 msgstr "Titel speichern"
 
@@ -189,6 +198,9 @@ msgstr "Scannen, um dem WLAN beizutreten"
 
 msgid "Scan to join the WLAN and see your pictures"
 msgstr "Scannen, um dem WLAN beizutreten und deine Bilder zu sehen"
+
+msgid "Set camera"
+msgstr "Kamera setzen"
 
 msgid "Set image format"
 msgstr "Bildformat setzen"
@@ -249,6 +261,12 @@ msgstr "Zeit gesetzt auf %{time}"
 
 msgid "Too many attempts, wait 3 minutes."
 msgstr "Zu viele Versuche, warte 3 Minuten."
+
+msgid "USB webcam"
+msgstr "USB-Webcam"
+
+msgid "Unknown camera"
+msgstr "Unbekannte Kamera"
 
 msgid "Update app"
 msgstr "App aktualisieren"

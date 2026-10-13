@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: app 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-07 23:09+0200\n"
-"PO-Revision-Date: 2026-10-07 23:09+0200\n"
+"POT-Creation-Date: 2026-10-13 12:10+0200\n"
+"PO-Revision-Date: 2026-10-13 12:10+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -53,6 +53,12 @@ msgstr ""
 msgid "Camera"
 msgstr ""
 
+msgid "Camera (gphoto2)"
+msgstr ""
+
+msgid "Camera: %{camera}"
+msgstr ""
+
 msgid "Caption of the new event"
 msgstr ""
 
@@ -65,9 +71,6 @@ msgstr ""
 msgid "Close"
 msgstr ""
 
-msgid "Download pictures"
-msgstr ""
-
 msgid "Delete"
 msgstr ""
 
@@ -75,6 +78,9 @@ msgid "Delete the gallery %{caption} with %{count} sets?"
 msgstr ""
 
 msgid "Download"
+msgstr ""
+
+msgid "Download pictures"
 msgstr ""
 
 msgid "Download set"
@@ -179,6 +185,9 @@ msgstr ""
 msgid "Restarting…"
 msgstr ""
 
+msgid "Sample images (no camera)"
+msgstr ""
+
 msgid "Save caption"
 msgstr ""
 
@@ -189,6 +198,9 @@ msgid "Scan to join the WLAN"
 msgstr ""
 
 msgid "Scan to join the WLAN and see your pictures"
+msgstr ""
+
+msgid "Set camera"
 msgstr ""
 
 msgid "Set image format"
@@ -249,6 +261,12 @@ msgid "Time set to %{time}"
 msgstr ""
 
 msgid "Too many attempts, wait 3 minutes."
+msgstr ""
+
+msgid "USB webcam"
+msgstr ""
+
+msgid "Unknown camera"
 msgstr ""
 
 msgid "Update app"

@@ -91,6 +91,25 @@ RSpec.describe 'Admin', type: :request do
     expect(File.read(OPTS.photobox_conf)).to include('camera_imageformat: "cL"')
   end
 
+  it 'sets the camera' do
+    login
+    get '/admin'
+    expect(response.body).to include('USB webcam')
+
+    patch '/admin/camera', params: { camera: 'webcam' }
+    expect(flash[:notice]).to eq 'Camera: USB webcam'
+    expect(File.read(OPTS.photobox_conf)).to include('camera: "webcam"')
+    expect(OPTS.camera).to eq 'webcam'
+
+    patch '/admin/imageformat', params: { imageformat: '1280x720' }
+    expect(File.read(OPTS.photobox_conf)).to include('webcam_size: "1280x720"')
+
+    patch '/admin/camera', params: { camera: 'rm -rf' }
+    expect(flash[:alert]).to eq 'Unknown camera'
+  ensure
+    OPTS.camera = 'fake'
+  end
+
   it 'starts and switches galleries' do
     login
     first = Gallery.active

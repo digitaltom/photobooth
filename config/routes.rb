@@ -23,6 +23,7 @@ Rails.application.routes.draw do
     delete 'logout'
     patch 'password'
     patch 'time'
+    patch 'camera'
     patch 'imageformat'
     patch 'galleries/:id/caption', action: :caption, as: :gallery_caption
     get 'wifi_sign'

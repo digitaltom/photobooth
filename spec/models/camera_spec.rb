@@ -74,4 +74,37 @@ RSpec.describe Camera, type: :model do
     expect { Camera.drain }.not_to raise_error
   end
 
+  context 'with a webcam' do
+    let(:device) { '/dev/v4l/by-id/usb-046d_0825_A1B2-video-index0' }
+
+    before do
+      allow(OPTS).to receive_messages(camera: 'webcam', camera_delay: 0)
+      allow(Dir).to receive(:[]).and_call_original
+      allow(Dir).to receive(:[]).with('/dev/v4l/by-id/*-video-index0').and_return([device])
+    end
+
+    it 'takes each photo with one ffmpeg process from the first webcam' do
+      allow(OPTS).to receive(:webcam_size).and_return('1280x720')
+      (1..4).each do |num|
+        expect(Syscall).to receive(:execute).with(/ffmpeg .*-video_size 1280x720 -i #{device} .*#{date}_#{num}\.jpg/, dir: '/tmp').ordered
+      end
+      expect { |b| Camera.capture('/tmp', date, &b) }.to yield_successive_args(1, 2, 3, 4)
+    end
+
+    it 'offers the frame sizes of the webcam, the largest first' do
+      allow(Syscall).to receive(:execute).with(/-list_formats all -i #{device}/).and_return(<<~OUT)
+        [video4linux2,v4l2 @ 0x5555] Raw       :     yuyv422 :           YUYV 4:2:2 : 640x480 160x120 1280x720
+        [video4linux2,v4l2 @ 0x5555] Compressed:       mjpeg :          Motion-JPEG : 640x480 1280x960
+        /dev/video0: Immediate exit requested
+      OUT
+      expect(Camera.info).to eq(summary: 'Webcam usb-046d_0825_A1B2-video-index0',
+                                imageformats: %w[1280x960 1280x720 640x480 160x120])
+    end
+
+    it 'shows an error without a webcam' do
+      allow(Dir).to receive(:[]).with('/dev/v4l/by-id/*-video-index0').and_return([])
+      expect(Camera.info).to eq(summary: 'No webcam found', imageformats: [])
+    end
+  end
+
 end

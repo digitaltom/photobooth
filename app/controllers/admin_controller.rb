@@ -57,10 +57,20 @@ class AdminController < ApplicationController
     redirect_to admin_path, notice: format(_('Time set to %{time}'), time: time.strftime('%Y-%m-%d %H:%M'))
   end
 
-  # empty: gphoto2 keeps the setting of the camera
+  # the next capture uses the new camera, no restart
+  def camera
+    camera = params.expect(:camera)
+    return redirect_to admin_path, alert: _('Unknown camera') unless cameras.key?(camera)
+
+    PhotoboxConfig.camera = camera
+    redirect_to admin_path, notice: format(_('Camera: %{camera}'), camera: cameras[camera])
+  end
+
+  # gphoto2: an imageformat, webcam: a frame size. Empty: the camera keeps its setting.
   def imageformat
-    PhotoboxConfig.camera_imageformat = params[:imageformat].to_s.strip
-    redirect_to admin_path, notice: format(_('Image format: %{format}'), format: OPTS.camera_imageformat.presence || _('camera setting'))
+    key = Camera.imageformat_key
+    PhotoboxConfig.public_send(:"#{key}=", params[:imageformat].to_s.strip)
+    redirect_to admin_path, notice: format(_('Image format: %{format}'), format: OPTS[key].presence || _('camera setting'))
   end
 
   def caption
@@ -106,6 +116,12 @@ class AdminController < ApplicationController
   def wifi_sign; end
 
   private
+
+  # the values of the option camera (Camera.capture)
+  def cameras
+    { 'gphoto2' => _('Camera (gphoto2)'), 'webcam' => _('USB webcam'), 'fake' => _('Sample images (no camera)') }
+  end
+  helper_method :cameras
 
   def require_admin
     return redirect_to admin_login_path unless admin?

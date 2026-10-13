@@ -23,8 +23,16 @@ class PhotoboxConfig
       write(:admin_password, password)
     end
 
+    def camera=(camera)
+      write(:camera, camera)
+    end
+
     def camera_imageformat=(format)
       write(:camera_imageformat, format)
+    end
+
+    def webcam_size=(size)
+      write(:webcam_size, size)
     end
 
     private
