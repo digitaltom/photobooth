@@ -14,6 +14,8 @@ require 'capybara/cuprite'
 
 Capybara.register_driver :cuprite do |app|
   Capybara::Cuprite::Driver.new(app, window_size: [2360, 1640], # iPad Air 4 resolution
+                                     # a cold Chrome start on the CI runner can take more than the default 10 seconds
+                                     process_timeout: 30,
                                      # English UI, also on a desktop with a German LANG
                                      browser_options: { 'no-sandbox' => nil, 'accept-lang' => 'en' })
 end
