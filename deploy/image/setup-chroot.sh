@@ -24,7 +24,8 @@ ruby_ver=$(cat "$app/.ruby-version")
 if [ ! -d "/mnt/ruby-$ruby_ver" ]; then
   curl -fsSL https://github.com/rbenv/ruby-build/archive/refs/heads/master.tar.gz | tar -xz -C /tmp
   RUBY_CONFIGURE_OPTS="--enable-load-relative --disable-install-doc" \
-    /tmp/ruby-build-master/bin/ruby-build "$ruby_ver" "/mnt/ruby-$ruby_ver"
+    /tmp/ruby-build-master/bin/ruby-build "$ruby_ver" "/mnt/ruby-$ruby_ver" ||
+    { tail -n 100 /tmp/ruby-build.*.log; exit 1; }  # the CI output shows no compiler error, the cleanup deletes the log
   rm -rf /tmp/ruby-build-master
 fi
 cp -a "/mnt/ruby-$ruby_ver" "$app/vendor/ruby"
