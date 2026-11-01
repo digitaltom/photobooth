@@ -22,13 +22,13 @@ apt-get -o Dir::Cache::Archives=/mnt/apt install -y --no-install-recommends "${r
 # Ruby lives in the release, so an app update (photobox-update) can also update Ruby
 ruby_ver=$(cat "$app/.ruby-version")
 if [ ! -d "/mnt/ruby-$ruby_ver" ]; then
-  curl -fsSL https://github.com/rbenv/ruby-build/archive/refs/heads/master.tar.gz | tar -xz -C /tmp
-  # compile in the build cache: the packages fill the small root partition, /tmp has no room for the build
-  rm -rf /mnt/ruby-build-tmp && mkdir /mnt/ruby-build-tmp
-  TMPDIR=/mnt/ruby-build-tmp RUBY_CONFIGURE_OPTS="--enable-load-relative --disable-install-doc" \
-    /tmp/ruby-build-master/bin/ruby-build "$ruby_ver" "/mnt/ruby-$ruby_ver" ||
-    { tail -n 100 /mnt/ruby-build-tmp/ruby-build.*.log; exit 1; }  # the CI output shows no compiler error
-  rm -rf /tmp/ruby-build-master /mnt/ruby-build-tmp
+  # prebuilt relocatable Ruby (Homebrew portable-ruby, OpenSSL and libyaml built in).
+  # A new .ruby-version needs the rv-ruby release tag that has it: https://github.com/spinel-coop/rv-ruby/releases
+  rv_release=20261023
+  curl -fsSL "https://github.com/spinel-coop/rv-ruby/releases/download/$rv_release/ruby-$ruby_ver.arm64_linux.tar.gz" |
+    tar -xz -C /mnt
+  mv "/mnt/rv-ruby@$ruby_ver/$ruby_ver" "/mnt/ruby-$ruby_ver"
+  rm -rf "/mnt/rv-ruby@$ruby_ver"
 fi
 cp -a "/mnt/ruby-$ruby_ver" "$app/vendor/ruby"
 export PATH=$app/vendor/ruby/bin:$PATH

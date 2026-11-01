@@ -68,7 +68,7 @@ The build does these steps:
 4. Install the scripts, the services and the default `photobox.yml`. Add the data partition to `/etc/fstab`. Remove the resize step of Raspberry Pi OS from `cmdline.txt`, because it can only grow the last partition.
 5. Run `image/setup-chroot.sh` in a chroot:
    - Install the security updates and the packages.
-   - Compile Ruby (version from `.ruby-version`) with ruby-build into `<release>/vendor/ruby`.
+   - Download the prebuilt Ruby (version from `.ruby-version`) from [rv-ruby](https://github.com/spinel-coop/rv-ruby/releases) into `<release>/vendor/ruby`.
    - Run `bundle install` (without development and test) and `assets:precompile`.
    - Remove the build packages again.
    - Create the user `photobox` and enable the services. Allow the SSH login for root.
