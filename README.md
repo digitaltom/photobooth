@@ -29,14 +29,14 @@ The general hardware setup looks like this:
 |    with Browser    +-------------> | (eg. Raspberry Pi) |
 |                    |               |                    |
 +--------------------+               +-------+------------+
-                                             | gpio ports
-                                       Wires |
-                                             |
-                                      +------v--------+
-                                      |  o o o o o o  |
-                                      |  Status LEDs  |
-                                      |               |
-                                      +---------------+
+                                       ^     | gpio ports
+                             USB Cable |     | Wires
+                                (HID)  |     |
++--------------------+                 |  +--v------------+
+|  [ ] [ ] [ ]       |                 |  |  o o o o o o  |
+|  [ ] [ ] [ ]       +-----------------+  |  Status LEDs  |
+| Stream Deck Mini   |                    |               |
++--------------------+                    +---------------+
 ```
 
 ## Deploy
