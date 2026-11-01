@@ -9,7 +9,7 @@ export DEBIAN_FRONTEND=noninteractive LC_ALL=C.UTF-8 APT_LISTCHANGES_FRONTEND=no
 rm -f /var/lib/man-db/auto-update  # no man-db index rebuild on each apt run (slow under qemu)
 
 runtime_pkgs=(gphoto2 ffmpeg imagemagick gpiod libyaml-0-2 network-manager avahi-daemon openssh-server
-              nftables overlayroot cloud-guest-utils zstd curl iw rfkill polkitd
+              nftables overlayroot cloud-guest-utils zstd curl iw rfkill polkitd vim
               dnsmasq-base wpasupplicant)  # NetworkManager only recommends them, the hotspot needs both
 build_pkgs=(build-essential libssl-dev libyaml-dev libffi-dev zlib1g-dev)
 # /mnt is the build cache (tmp/image/cache), bind-mounted by bin/build-image.
@@ -48,7 +48,7 @@ rm -rf "$app/tmp/cache"
 apt-get purge -y --auto-remove "${build_pkgs[@]}"
 apt-get clean
 
-id photobox || useradd --system --create-home --groups gpio,video photobox
+id photobox || useradd --system --create-home --groups gpio,video,plugdev photobox  # plugdev: the libgphoto2 udev rules give cameras this group
 chown -R photobox:photobox "$app"
 # the admin menu saves an uploaded app release here, photobox-upload.service installs it
 install -d -o photobox -g photobox /var/lib/photobox/upload

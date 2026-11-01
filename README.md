@@ -72,7 +72,7 @@ Anything is not working when following this manual? Please open an [issue](https
 
 ## My Photobooth:
 
-My current photobox setup is a Raspberry Pi 3B, a Canon M50 with a 22mm lens and power adapter. As display I use an Ipad Air 4.
+My current photobox setup is a Raspberry Pi 3B, a Canon M50 with a 22mm lens and power adapter. As display I use a Nexus 7 tablet.
 To power all of it without a power plug, I use a 22mAh power bank with 3 USB ports.
 All build into an old wooden suitcase. It can run completely from battery for the whole evening.
 
