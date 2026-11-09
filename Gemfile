@@ -4,7 +4,7 @@ source 'https://rubygems.org'
 
 ruby '~> 4.0.5'
 
-gem 'rails', '~> 8.1', '>= 8.1.3.1'
+gem 'rails', '~> 8.1'
 
 gem 'gettext_i18n_rails'
 gem 'haml'
